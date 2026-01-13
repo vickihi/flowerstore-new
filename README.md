@@ -18,3 +18,49 @@ This project is developed and maintained by:
 * **Xia He**
 
 ---
+
+## 🚀 Getting Started
+
+To set up the project environment on your local machine, follow these instructions:
+
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/582-41B-VA/flowerstore](https://github.com/582-41B-VA/flowerstore)
+cd flowerstore
+```
+### Install Project & Dependencies
+```bash
+uv sync
+```
+### Initialize the Database
+```
+uv run manage.py migrate
+```
+### Run the Development Server
+```
+uv run manage.py runserver
+```
+## How to Make Changes
+
+1. Make sure your local main branch is up to date with the remote main
+   branch by running `git pull`.
+
+2. From your local main branch, create a local feature branch with
+   `git checkout -b <branch-name>`, where `<branch-name>` corresponds to
+   the name of the feature you will implement.
+
+3. Apply Model Changes `uv run manage.py makemigrations`,
+`uv run manage.py migrate`
+4. Commit your changes with `git add <path>` and `git commit` (many
+   times if necessary).
+
+5. Once your code is ready, push your commits to GitHub with
+   `git push -u origin <branch-name>`.
+
+6. Incorporate the latest changes from the main branch into your
+    local feature branch with `git rebase main`.
+
+## Roadmap
+[x] Milestone 0: Repository Setup & Environment Initialization.
+
+[ ] Milestone 1: Project Planning & Requirements.
