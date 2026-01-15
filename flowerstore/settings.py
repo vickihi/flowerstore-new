@@ -15,6 +15,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Base URL to access media files
+MEDIA_URL = '/media/' 
+# Directory to store uploaded media files
+MEDIA_ROOT = BASE_DIR / 'media' 
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -37,7 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "flowerproducts",
+    'flowerproducts.apps.FlowerproductsConfig',  # register flowerproducts app
+
 ]
 
 MIDDLEWARE = [
