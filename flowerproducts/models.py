@@ -21,9 +21,9 @@ class Product(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='flowerproducts/')
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
-    created_at = models.DateTimeField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ['-created_at', 'name']
