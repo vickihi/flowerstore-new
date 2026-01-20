@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -14,19 +13,23 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to="flowerproducts/")
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
-    created_at = models.DateTimeField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField("created at", auto_now_add=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ["-created_at", "name"]
 
     def __str__(self):
         return self.name
+    
+    @property
+    def is_available(self):
+        return self.quantity > 0
 
     @property
     def is_available(self):
