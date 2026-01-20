@@ -16,9 +16,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Base URL to access media files
-MEDIA_URL = '/media/' 
+MEDIA_URL = "/media/"
 # Directory to store uploaded media files
-MEDIA_ROOT = BASE_DIR / 'media' 
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # Quick-start development settings - unsuitable for production
@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'flowerproducts.apps.FlowerproductsConfig',  # register flowerproducts app
-
+    "flowerproducts.apps.FlowerproductsConfig",  # register flowerproducts app
 ]
 
 MIDDLEWARE = [
