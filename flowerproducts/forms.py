@@ -8,12 +8,10 @@ class IndexForm(forms.Form):
         ("popular", "Most popular"),
     ]
     sort_order = forms.ChoiceField(
-        label="Order by", required=False, choises=SORT_ORDERS
+        label="Order by", required=False, choices=SORT_ORDERS
     )
-    
 
     available = forms.BooleanField(
         required=False,
         label="Only available",
     )
-

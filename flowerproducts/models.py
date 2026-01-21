@@ -22,14 +22,14 @@ class Product(models.Model):
     created_at = models.DateTimeField("created at", auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
-    views_count = models.PositiveIntegerField(default=0)  #add this field for sorting
+    views_count = models.PositiveIntegerField(default=0)  # add this field for sorting
 
     class Meta:
         ordering = ["-created_at", "name"]
 
     def __str__(self):
         return self.name
-    
+
     @property
     def is_available(self):
         return self.quantity > 0

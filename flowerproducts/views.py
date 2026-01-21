@@ -14,7 +14,7 @@ def index(request):
         "price_desc": "-price",
         "popular": "-views_count",
     }
-
+    products = Product.objects.all()
     sort = request.GET.get("sort")
     if sort in SORT_MAP:
         products = products.order_by(SORT_MAP[sort])
@@ -25,5 +25,3 @@ def index(request):
     }
 
     return render(request, "products/home.html", context)
-
-
