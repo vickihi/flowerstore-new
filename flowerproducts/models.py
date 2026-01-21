@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -26,10 +27,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
-    @property
-    def is_available(self):
-        return self.quantity > 0
 
     @property
     def is_available(self):

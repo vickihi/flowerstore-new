@@ -1,25 +1,20 @@
 from django.shortcuts import render
-from .models import Product, Category
+from .models import Product
+from .forms import IndexForm
 
 
 def index(request):
-    products = Product.objects.all()
-    categories = Category.objects.all()
+    form = IndexForm(request.GET)
+    if not form.is_valid():
+        form = IndexForm()
 
-    # Sorting
-    SORT_MAP = {
-        "price_asc": "price",
-        "price_desc": "-price",
-    }
-
-    sort = request.GET.get("sort")
-    if sort in SORT_MAP:
-        products = products.order_by(SORT_MAP[sort])
+    default_sort_order = IndexForm.SORT_ORDERS[0][0]
+    sort_order = form.cleaned_data["sort_order"] or default_sort_order
+    products = Product.objects.order_by(sort_order)
 
     context = {
         "products": products,
-        "categories": categories,
-        "current_sort": sort,
+        "form": form,
     }
 
     return render(request, "products/home.html", context)
