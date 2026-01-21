@@ -1,27 +1,30 @@
 from django.shortcuts import render
 from .models import Product
 from .forms import IndexForm
-
-
+ 
+# Create your views here.
 def index(request):
     form = IndexForm(request.GET)
-    if not form.is_valid():
-        form = IndexForm()
 
-    # Sorting
-    SORT_MAP = {
-        "price_asc": "price",
-        "price_desc": "-price",
-        "popular": "-views_count",
-    }
-    products = Product.objects.all()
-    sort = request.GET.get("sort")
-    if sort in SORT_MAP:
-        products = products.order_by(SORT_MAP[sort])
+    sort_order = IndexForm.SORT_ORDERS[0][0]
+    filter_category = None
+    products = Product.objects.available()
 
-    context = {
-        "products": products,
-        "form": form,
-    }
+    if form.is_valid():
+        sort_order = form.cleaned_data.get("sort_order") or sort_order
+        filter_category = form.cleaned_data.get("filter_category")
 
-    return render(request, "products/home.html", context)
+    if filter_category:
+        products = products.filter(category_id=filter_category)
+
+    products = products.order_by(sort_order)
+
+    return render(
+        request,
+        "flowerproducts/index.html",
+        {
+            "products": products,
+            "form": form,
+        }
+    )
+

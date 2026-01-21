@@ -1,44 +1,25 @@
 {% extends "base.html" %}
-
-{% block title %}Products{% endblock %}
+{% block title %}Flower Products{% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'home' %}">Home</a></li>
 {% endblock %}
 
 {% block main %}
-<h1>Products</h1>
-
-<form method="get">
-    <label>
-        Filter by:
-        <select name="availability">
-            <option value="all">All</option>
-            <option value="available">On sale</option>
-        </select>
-    </label>
-
-    <label>
-        Sort by:
-        <select name="sort">
-            <option value="price_desc">Price (High to low)</option>
-            <option value="price_asc">Price (Low to high)</option>
-            <option value="popular">Most popular</option>
-        </select>
-    </label>
-
-    <button type="submit">Apply</button>
-</form>
-
-<ul>
-    {% for product in products %}
-        <li>
-            <a href="{% url 'products:detail' product.id %}">
-                {{ product.name }}
-            </a>
-        </li>
-    {% empty %}
-        <li>No products found.</li>
-    {% endfor %}
-</ul>
-{% endblock %}
+    <h1>Our Products</h1>
+    <form>
+        {{ form }}
+        <button>Apply</button>
+    </form>
+    <ul>
+        {% for product in products %}
+            <li>
+                <strong>{{ product.name }}</strong> - ${{ product.price }} <br>
+                {{ product.description }} <br>
+                Quantity: {{ product.quantity }} <br>
+                Category: {{ product.category.name }} <br>
+                Created at: {{ product.created_at|date:"Y-m-d" }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock main %}
