@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from .models import Product, Category
+from .models import Product
+from .forms import IndexForm
 
 
 def index(request):
-    products = Product.objects.all()
-    categories = Category.objects.all()
+    form = IndexForm(request.GET)
+    if not form.is_valid():
+        form = IndexForm()
 
     # Sorting
     SORT_MAP = {
@@ -19,8 +21,7 @@ def index(request):
 
     context = {
         "products": products,
-        "categories": categories,
-        "current_sort": sort,
+        "form": form,
     }
 
     return render(request, "products/home.html", context)
