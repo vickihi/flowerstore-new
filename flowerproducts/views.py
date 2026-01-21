@@ -10,6 +10,7 @@ def index(request):
     SORT_MAP = {
         "price_asc": "price",
         "price_desc": "-price",
+        "popular": "-views_count",
     }
 
     sort = request.GET.get("sort")
@@ -23,3 +24,5 @@ def index(request):
     }
 
     return render(request, "products/home.html", context)
+
+
