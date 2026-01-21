@@ -8,9 +8,16 @@ def index(request):
     if not form.is_valid():
         form = IndexForm()
 
-    default_sort_order = IndexForm.SORT_ORDERS[0][0]
-    sort_order = form.cleaned_data["sort_order"] or default_sort_order
-    products = Product.objects.order_by(sort_order)
+    # Sorting
+    SORT_MAP = {
+        "price_asc": "price",
+        "price_desc": "-price",
+        "popular": "-views_count",
+    }
+
+    sort = request.GET.get("sort")
+    if sort in SORT_MAP:
+        products = products.order_by(SORT_MAP[sort])
 
     context = {
         "products": products,
@@ -18,3 +25,5 @@ def index(request):
     }
 
     return render(request, "products/home.html", context)
+
+
