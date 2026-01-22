@@ -8,7 +8,7 @@ class IndexForm(forms.Form):
     ]
 
     sort_order = forms.ChoiceField(
-        label="Order by", required=False, choises=SORT_ORDERS
+        label="Order by", required=False, choices=SORT_ORDERS
     )
     
 
@@ -16,3 +16,8 @@ class IndexForm(forms.Form):
         required=False,
     )
 
+    filter_category = forms.ModelChoiceField(
+        label="Category",
+        required=False,
+        queryset=Category.objects.all(),
+    )

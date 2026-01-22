@@ -8,7 +8,7 @@ def index(request):
 
     sort_order = IndexForm.SORT_ORDERS[0][0]
     filter_category = None
-    products = Product.objects.available()
+    products = Product.objects.all()
 
     if form.is_valid():
         sort_order = form.cleaned_data.get("sort_order") or sort_order
@@ -27,4 +27,6 @@ def index(request):
             "form": form,
         }
     )
+
+
 
