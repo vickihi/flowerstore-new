@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from .models import Product
 from .forms import IndexForm
- 
+
+
 # Create your views here.
 def index(request):
     form = IndexForm(request.GET)
@@ -25,8 +26,20 @@ def index(request):
         {
             "products": products,
             "form": form,
-        }
+        },
     )
 
 
-
+def product_detail(request, product_id: int):
+    product = Product.objects.get(pk=product_id)
+    related_products = Product.objects.filter(category=product.category).exclude(
+        pk=product_id
+    )[:4]
+    return render(
+        request,
+        "flowerproducts/product_detail.html",
+        {
+            "product": product,
+            "related_products": related_products,
+        },
+    )

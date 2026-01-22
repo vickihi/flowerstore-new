@@ -1,10 +1,11 @@
 from typing import Self
 from django.db import models
 
+
 class ProductQuerySet(models.QuerySet):
     def available(self) -> Self:
         return self.filter(quantity__gt=0)
-    
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -16,7 +17,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Product(models.Model):
     objects = ProductQuerySet.as_manager()
@@ -36,14 +37,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
-    # @property
-    # def is_available(self):
-    #     return self.quantity > 0
-    
+
+    @property
+    def is_available(self):
+        return self.quantity > 0
+
     # # ===========================
     # @classmethod
     # def available_products(cls) -> list[Self]:
     #     return [product for product in cls.objects.all() if product.is_available]
-
-
