@@ -12,26 +12,36 @@
 
 <body>
 
-    <header id="site-header">
-        <a id="logo" href="{% url 'home' %}">
-            Flower Store
-        </a>
-    </header>
+<header id="site-header">
+    <a id="logo" href="{% url 'flowerproducts:index' %}">
+        Flower Store
+    </a>
+</header>
 
-    <nav id="breadcrumbs">
-        <ul>
-            {% block breadcrumbs %}{% endblock %}
-        </ul>
-    </nav>
+<nav id="main-nav">
+    <ul>
+        <li>
+            <a href="{% url 'flowerproducts:index' %}">Home</a>
+        </li>
+        <li>
+            <a href="">Products</a>
+        </li>
+        <li>
+            <a href="{% url 'flowerproducts:categories' %}">
+                Categories
+            </a>
+        </li>
+    </ul>
+</nav>
 
-    <main
+<main
         class="
             {{ request.resolver_match.app_name }}
             {{ request.resolver_match.url_name }}
         "
-    >
-        {% block main %}{% endblock %}
-    </main>
+>
+    {% block main %}{% endblock %}
+</main>
 
 </body>
 </html>

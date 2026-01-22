@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category
+
 
 
 class IndexForm(forms.Form):
@@ -8,14 +8,16 @@ class IndexForm(forms.Form):
         ("-price", "Price (high to low)"),
         ("-created_at", "Date (newest to oldest)"),
         ("created_at", "Date (oldest to newest)"),
+        ("views_count", "Most popular")
     ]
 
     sort_order = forms.ChoiceField(
-        label="Order by", required=False, choices=SORT_ORDERS
+        label="Order by", required=False, choices=SORT_ORDERS,
     )
 
     available = forms.BooleanField(
         required=False,
+        label="Show only available products",
     )
 
     filter_category = forms.ModelChoiceField(

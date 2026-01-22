@@ -1,4 +1,5 @@
 from typing import Self
+
 from django.db import models
 
 
@@ -40,7 +41,11 @@ class Product(models.Model):
 
     @property
     def is_available(self):
+        """Convenience property for templates and admin.
+        Avoid using this for queryset filtering.
+        """
         return self.quantity > 0
+       
 
     # # ===========================
     # @classmethod
