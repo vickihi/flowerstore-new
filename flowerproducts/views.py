@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from .models import Product
+
 from .forms import IndexForm
- 
+from .models import Product, Category
+
+
 # Create your views here.
 def index(request):
     form = IndexForm(request.GET)
@@ -23,6 +25,42 @@ def index(request):
         request,
         "flowerproducts/index.html",
         {
+            "products": products,
+            "form": form,
+        }
+    )
+
+
+def category_list(request):
+
+    categories = Category.objects.all()
+    return render(
+        request,
+        "flowerproducts/categories.html",
+        {"categories": categories},
+    )
+
+
+def category_detail(request, category_id):
+    category = Category.objects.get(id=category_id)
+    form = IndexForm(request.GET)
+    sort_order = IndexForm.SORT_ORDERS[0][0]
+
+    products = (
+        Product.objects
+        .filter(category=category)
+    )
+
+    if form.is_valid():
+        sort_order = form.cleaned_data.get("sort_order") or sort_order
+
+    products = products.order_by(sort_order)
+
+    return render(
+        request,
+        "flowerproducts/category.html",
+        {
+            "category": category,
             "products": products,
             "form": form,
         }

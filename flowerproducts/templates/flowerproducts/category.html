@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <h1> {{ category.name }}</h1>
+
+    <ul>
+        {% for product in products %}
+            <li>
+                <strong>{{ product.name }}</strong> - ${{ product.price }}
+                {{ product.description }}
+                Quantity: {{ product.quantity }}
+                Category: {{ product.category.name }}
+                Created at: {{ product.created_at|date:"Y-m-d" }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
