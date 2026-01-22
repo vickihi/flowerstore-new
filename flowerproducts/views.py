@@ -10,7 +10,7 @@ def index(request):
 
     sort_order = IndexForm.SORT_ORDERS[0][0]
     filter_category = None
-    products = Product.objects.available()
+    products = Product.objects.all()
 
     if form.is_valid():
         sort_order = form.cleaned_data.get("sort_order") or sort_order
@@ -27,7 +27,7 @@ def index(request):
         {
             "products": products,
             "form": form,
-        }
+        },
     )
 
 
@@ -66,3 +66,16 @@ def category_detail(request, category_id):
         }
     )
 
+def product_detail(request, product_id: int):
+    product = Product.objects.get(pk=product_id)
+    related_products = Product.objects.filter(category=product.category).exclude(
+        pk=product_id
+    )[:4]
+    return render(
+        request,
+        "flowerproducts/product_detail.html",
+        {
+            "product": product,
+            "related_products": related_products,
+        },
+    )

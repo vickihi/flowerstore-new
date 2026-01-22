@@ -45,3 +45,9 @@ class Product(models.Model):
         Avoid using this for queryset filtering.
         """
         return self.quantity > 0
+       
+
+    # # ===========================
+    # @classmethod
+    # def available_products(cls) -> list[Self]:
+    #     return [product for product in cls.objects.all() if product.is_available]

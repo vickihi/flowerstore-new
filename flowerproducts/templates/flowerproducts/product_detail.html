@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} - Flower Store{% endblock %}
+{% block breadcrumbs %}
+    <li><a href="{% url 'home' %}">Home</a></li>
+{% endblock %}
+{% block main %}
+    <h1>{{ product.name }}</h1>
+    
+    <section class="product">
+        <div class="product__grid">
+            <div class="product__image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <div class="product__image--placeholder" aria-hidden="true">No image</div>
+                {% endif %}
+            </div>
+
+            <div class="product__info">
+                <div>
+                    <h1 class="product__title">{{ product.name }}</h1>
+                    <p class="product__desc">{{ product.description }}</p>
+
+                    <div class="product__priceblock">
+                        <h3 class="text-primary">${{ product.price|floatformat:2 }}</h3>
+                        {% if product.is_available %}
+                        <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="cta-row">
+                                <button type="submit" class="btn btn-primary">Add to Cart</button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary btn-lg" disabled>
+                            <i class="bi bi-cart-x"></i> Out of Stock
+                        </button>
+                        {% endif %}
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-heart"></i> Add to Wishlist
+                        </button>
+                    </div>
+                </div>
+
+
+                <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="cta-row">
+                        <button type="submit" class="btn btn-primary">Add Reviews</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if related_products %}
+        {% else %}
+            <p class="related__empty">No related products found.</p>
+        {% endif %}
+        <div class="related">
+            <h2 class="related__title">Related Products</h2>
+
+            <ul class="related__grid">
+                {% for rp in related_products %}
+                <li class="card">
+                    <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
+                        <div class="card__image">
+                            {% if rp.image %}
+                            <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
+                            {% else %}
+                            <div class="card__placeholder" aria-hidden="true">No image</div>
+                            {% endif %}
+                        </div>
+                        <div class="card-details">
+                            <h3 class="card__title">{{ rp.name }}</h3>
+                            <span class="product__price">${{ rp.price|floatformat:2 }}</span>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+    </section>
+{% endblock main %}
