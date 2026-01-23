@@ -1,4 +1,5 @@
 from django import forms
+from .models import Category
 
 
 
@@ -24,6 +25,13 @@ class IndexForm(forms.Form):
         label="Category",
         required=False,
         queryset=Category.objects.all(),
+    )
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(
+        label="Search",
+        required=False,
     )
 
 
