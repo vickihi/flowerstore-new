@@ -9,7 +9,7 @@ class ProductQuerySet(models.QuerySet):
 
     def search(self, query: str) -> Self:
         return self.filter(name__icontains=query)
-    
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -48,7 +48,6 @@ class Product(models.Model):
         Avoid using this for queryset filtering.
         """
         return self.quantity > 0
-       
 
     # # ===========================
     # @classmethod
