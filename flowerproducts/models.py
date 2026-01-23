@@ -7,6 +7,9 @@ class ProductQuerySet(models.QuerySet):
     def available(self) -> Self:
         return self.filter(quantity__gt=0)
 
+    def search(self, query: str) -> Self:
+        return self.filter(name__icontains=query)
+    
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

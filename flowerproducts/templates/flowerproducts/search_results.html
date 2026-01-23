@@ -6,15 +6,12 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Our Products</h1>
-    <!-- Search form -->
-    <form method="get" action="{% url 'flowerproducts:search_results' %}" >
-        {{ search_form }}
-        <button>Search</button>
-    </form>
+    <h1>Search Results for "{{ search_term }}" </h1>
     <!-- Filter / Sort form -->
     <form>
         {{ index_form }}
+        <!-- Preserve current search query -->
+        <input type="hidden" name="search" value="{{ search_term }}">
         <button>Apply</button>
     </form>
     <ul>
