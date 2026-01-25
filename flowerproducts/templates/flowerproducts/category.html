@@ -8,11 +8,10 @@
     </div>
 {% endblock %}
 
-
 {% block main %}
     <h1>{{ category.name }}</h1>
     <p>Description:{{ category.description }}</p>
- <hr>
+    <hr>
     <form method="get">
         {{ cat_form }}
         <button type="submit">Apply</button>

@@ -64,17 +64,29 @@ def search_results(request):
     )
 
 
+def apply_sort_and_available(products, form, default_sort):
+    if form.is_valid():
+        sort_order = form.cleaned_data.get("sort_order") or default_sort
+        available = form.cleaned_data.get("available")
+
+        if sort_order:
+            products = products.order_by(sort_order)
+
+        if available:
+            products = products.available()
+
+    return products
+
+
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    cat_form = CategoryForm(request.GET)
-    sort_order = CategoryForm.SORT_ORDERS[0][0]
-
     products = Product.objects.filter(category=category)
-
-    if cat_form.is_valid():
-        sort_order = cat_form.cleaned_data.get("sort_order") or sort_order
-
-    products = products.order_by(sort_order)
+    cat_form = CategoryForm(request.GET)
+    products = apply_sort_and_available(
+        products,
+        cat_form,
+        default_sort="-created_at",
+    )
 
     return render(
         request,
@@ -90,19 +102,12 @@ def category_detail(request, category_id):
 def category_list(request):
     categories = Category.objects.all()
     products = Product.objects.all()
-
-    index_form = IndexForm(request.GET)
-
-    if index_form.is_valid():
-        products = query_products(products, index_form, None)
-
     return render(
         request,
         "flowerproducts/categories.html",
         {
             "categories": categories,
             "products": products,
-            "index_form": index_form,
         },
     )
 
