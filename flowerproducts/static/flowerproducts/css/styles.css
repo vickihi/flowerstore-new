@@ -1,0 +1,30 @@
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    list-style: none;
+}
+
+.product-card {
+    padding: 1rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.category-list {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.category-list a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb {
+    list-style: none;
+}
+
+.breadcrumb a {
+    color: black;
+}
