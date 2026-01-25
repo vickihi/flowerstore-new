@@ -34,6 +34,13 @@
     </ul>
 </nav>
 
+<header>
+    <nav id="breadcrumbs">
+        <ul>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+    </nav>
+</header>
 <main
         class="
             {{ request.resolver_match.app_name }}

@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 
-from .forms import IndexForm, SearchForm
+from .forms import IndexForm, SearchForm, CategoryForm
 from .models import Product, Category
 
 
 def query_products(products, index_form, search_form):
     if index_form.is_valid():
         sort_order = (
-            index_form.cleaned_data["sort_order"] or IndexForm.SORT_ORDERS[0][0]
+                index_form.cleaned_data["sort_order"] or IndexForm.SORT_ORDERS[0][0]
         )
         available = index_form.cleaned_data["available"]
         filter_category = index_form.cleaned_data["filter_category"]
@@ -66,13 +66,13 @@ def search_results(request):
 
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    form = IndexForm(request.GET)
-    sort_order = IndexForm.SORT_ORDERS[0][0]
+    cat_form = CategoryForm(request.GET)
+    sort_order = CategoryForm.SORT_ORDERS[0][0]
 
     products = Product.objects.filter(category=category)
 
-    if form.is_valid():
-        sort_order = form.cleaned_data.get("sort_order") or sort_order
+    if cat_form.is_valid():
+        sort_order = cat_form.cleaned_data.get("sort_order") or sort_order
 
     products = products.order_by(sort_order)
 
@@ -82,17 +82,28 @@ def category_detail(request, category_id):
         {
             "category": category,
             "products": products,
-            "form": form,
+            "cat_form": cat_form,
         },
     )
 
 
 def category_list(request):
     categories = Category.objects.all()
+    products = Product.objects.all()
+
+    index_form = IndexForm(request.GET)
+
+    if index_form.is_valid():
+        products = query_products(products, index_form, None)
+
     return render(
         request,
         "flowerproducts/categories.html",
-        {"categories": categories},
+        {
+            "categories": categories,
+            "products": products,
+            "index_form": index_form,
+        },
     )
 
 

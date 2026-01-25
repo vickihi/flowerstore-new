@@ -1,26 +1,36 @@
 {% extends "base.html" %}
 
-{% block main %}
-    <h1> {{ category.name }}</h1>
-        {% block breadcrumbs %}
-            <div class="breadcrumb">
-            <a href="{% url 'flowerproducts:index' %}">Home /</a>
-            <a href="{% url 'flowerproducts:categories' %}">Categories /</a>
-            {{ category.name }}
-            </div>
-        {% endblock %}
+{% block breadcrumbs %}
+    <div class="breadcrumb">
+        <a href="{% url 'flowerproducts:index' %}">Home</a> /
+        <a href="{% url 'flowerproducts:categories' %}">Categories</a> /
+        {{ category.name }}
+    </div>
+{% endblock %}
 
-     <ul class="product-list">
+
+{% block main %}
+    <h1>{{ category.name }}</h1>
+    <p>Description:{{ category.description }}</p>
+ <hr>
+    <form method="get">
+        {{ cat_form }}
+        <button type="submit">Apply</button>
+    </form>
+
+    <hr>
+
+    <ul class="product-list">
         {% for product in products %}
             <li class="product-card">
-                <strong>{{ product.name }}</strong> <br>
-                ${{ product.price }} <br>
-                {{ product.description }} <br>
-                Quantity: {{ product.quantity }} <br>
-                Category: {{ product.category.name }} <br>
+                <strong>{{ product.name }}</strong><br>
+                ${{ product.price }}<br>
+                {{ product.description }}<br>
+                Quantity: {{ product.quantity }}<br>
                 Created at: {{ product.created_at|date:"Y-m-d" }}
             </li>
-
+        {% empty %}
+            <li>No products</li>
         {% endfor %}
     </ul>
 {% endblock %}
