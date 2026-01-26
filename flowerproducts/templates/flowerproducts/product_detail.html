@@ -1,10 +1,13 @@
 {% extends "base.html" %}
-{% block title %}{{ product.name }} - Flower Store{% endblock %}
-{% block breadcrumbs %}
-    <li><a href="{% url 'home' %}">Home</a></li>
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
 {% endblock %}
+
+
 {% block main %}
-    <h1>{{ product.name }}</h1>
+    
     
     <section class="product">
         <div class="product__grid">
@@ -18,11 +21,12 @@
 
             <div class="product__info">
                 <div>
-                    <h1 class="product__title">{{ product.name }}</h1>
+                    <h1>{{ product.name }}</h1>
                     <p class="product__desc">{{ product.description }}</p>
 
                     <div class="product__priceblock">
-                        <h3 class="text-primary">${{ product.price|floatformat:2 }}</h3>
+                        <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
+                        <p class="product__stock">Quantity: {{ product.quantity }}</p>
                         {% if product.is_available %}
                         <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
                             {% csrf_token %}
@@ -60,25 +64,25 @@
         <div class="related">
             <h2 class="related__title">Related Products</h2>
 
-            <ul class="related__grid">
+            <div class="related__grid">
                 {% for rp in related_products %}
-                <li class="card">
+                <div class="product-card">
                     <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
-                        <div class="card__image">
+                        <div class="product-card__image">
                             {% if rp.image %}
                             <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
                             {% else %}
-                            <div class="card__placeholder" aria-hidden="true">No image</div>
+                            <div class="product-card__placeholder" aria-hidden="true">No image</div>
                             {% endif %}
                         </div>
-                        <div class="card-details">
-                            <h3 class="card__title">{{ rp.name }}</h3>
+                        <div class="product-card-details">
+                            <h3 class="product-card__title">{{ rp.name }}</h3>
                             <span class="product__price">${{ rp.price|floatformat:2 }}</span>
                         </div>
                     </a>
-                </li>
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
         
     </section>

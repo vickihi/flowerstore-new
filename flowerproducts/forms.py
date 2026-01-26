@@ -51,6 +51,7 @@ class ProductDetailForm(forms.Form):
         widget=forms.Textarea(attrs={"rows": 3}),
     )
 
+
 class CategoryForm(forms.Form):
     SORT_ORDERS = [
         ("name", "Name (A to Z)"),
