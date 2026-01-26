@@ -17,7 +17,7 @@
     <ul>
         {% for product in products %}
             <li>
-                <strong>{{ product.name }}</strong> - ${{ product.price }} <br>
+                <strong><a href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a></strong> - ${{ product.price }} <br>
                 {{ product.description }} <br>
                 Quantity: {{ product.quantity }} <br>
                 Category: {{ product.category.name }} <br>

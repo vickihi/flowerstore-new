@@ -7,7 +7,7 @@ from .models import Product, Category
 def query_products(products, index_form, search_form):
     if index_form.is_valid():
         sort_order = (
-                index_form.cleaned_data["sort_order"] or IndexForm.SORT_ORDERS[0][0]
+            index_form.cleaned_data["sort_order"] or IndexForm.SORT_ORDERS[0][0]
         )
         available = index_form.cleaned_data["available"]
         filter_category = index_form.cleaned_data["filter_category"]

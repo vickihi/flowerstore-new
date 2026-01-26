@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <title>{% block title %}Flower Store{% endblock %}</title>
+
+     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
@@ -23,9 +25,7 @@
         <li>
             <a href="{% url 'flowerproducts:index' %}">Home</a>
         </li>
-        <li>
-            <a href="">Products</a>
-        </li>
+        
         <li>
             <a href="{% url 'flowerproducts:categories' %}">
                 Categories

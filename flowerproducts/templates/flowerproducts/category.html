@@ -22,7 +22,7 @@
     <ul class="product-list">
         {% for product in products %}
             <li class="product-card">
-                <strong>{{ product.name }}</strong><br>
+                <strong><a href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a></strong><br>
                 ${{ product.price }}<br>
                 {{ product.description }}<br>
                 Quantity: {{ product.quantity }}<br>
