@@ -9,14 +9,14 @@
 
     <title>{% block title %}Flower Store{% endblock %}</title>
 
-     {% block extra_css %}{% endblock %}
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
 <header id="site-header">
     <a href="{% url 'flowerproducts:index' %}">
-        <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo" >
+        <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
         <!-- 🌸Flower Store🌸 -->
     </a>
 </header>
@@ -26,7 +26,7 @@
         <li>
             <a href="{% url 'flowerproducts:index' %}">Home</a>
         </li>
-        
+
         <li>
             <a href="{% url 'flowerproducts:categories' %}">
                 Categories
@@ -35,13 +35,13 @@
     </ul>
 </nav>
 
-<!-- <header>
+<header>
     <nav id="breadcrumbs">
         <ul>
             {% block breadcrumbs %}{% endblock %}
         </ul>
     </nav>
-</header> -->
+</header>
 <main
         class="
             {{ request.resolver_match.app_name }}
