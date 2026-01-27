@@ -1,9 +1,4 @@
 {% extends "base.html" %}
-{% block title %}🌸Flower Store🌸{% endblock %}
-
-{% block breadcrumbs %}
-    <li><a href="{% url 'home' %}">Home</a></li>
-{% endblock %}
 
 {% block main %}
     <h1>Search Results for "{{ search_term }}" </h1>
@@ -14,9 +9,9 @@
         <input type="hidden" name="search" value="{{ search_term }}">
         <button>Apply</button>
     </form>
-    <ul>
+    <ul class="product-list">
         {% for product in products %}
-            <li>
+            <li class="product-card">
                 <strong><a href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a></strong> - ${{ product.price }} <br>
                 {{ product.description }} <br>
                 Quantity: {{ product.quantity }} <br>

@@ -16,3 +16,9 @@ ul > li > a {
     text-decoration: none;
     color: inherit;
 }
+
+#main-nav {
+    border-bottom: 2px solid #ccc; 
+    padding-bottom: 0.5rem;        
+    margin-bottom: 1rem;          
+}
