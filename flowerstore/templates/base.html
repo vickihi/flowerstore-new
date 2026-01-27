@@ -15,8 +15,9 @@
 <body>
 
 <header id="site-header">
-    <a id="logo" href="{% url 'flowerproducts:index' %}">
-        🌸Flower Store🌸
+    <a href="{% url 'flowerproducts:index' %}">
+        <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo" >
+        <!-- 🌸Flower Store🌸 -->
     </a>
 </header>
 
@@ -34,13 +35,13 @@
     </ul>
 </nav>
 
-<header>
+<!-- <header>
     <nav id="breadcrumbs">
         <ul>
             {% block breadcrumbs %}{% endblock %}
         </ul>
     </nav>
-</header>
+</header> -->
 <main
         class="
             {{ request.resolver_match.app_name }}
