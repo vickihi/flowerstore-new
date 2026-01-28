@@ -38,17 +38,18 @@ class SearchForm(forms.Form):
     )
 
 
-class ProductDetailForm(forms.Form):
+class AddToCartForm(forms.Form):
     quantity = forms.IntegerField(
-        label="Quantity",
         min_value=1,
-        required=False,
+        initial=1,
+        label="Quantity",
     )
 
-    note = forms.CharField(
-        label="Note",
-        required=False,
-        widget=forms.Textarea(attrs={"rows": 3}),
+
+class ReviewForm(forms.Form):
+    content = forms.CharField(
+        label="Review",
+        widget=forms.Textarea(attrs={"rows": 4}),
     )
 
 
