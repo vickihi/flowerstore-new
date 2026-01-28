@@ -1,5 +1,6 @@
 @import "/static/css/nav.css";
 @import "/static/flowerproducts/css/styles.css";
+@import "/static/flowerproducts/css/product_detail.css";
 
 body {
     font-family: system-ui, sans-serif;

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block breadcrumbs %}
     <div class="breadcrumb">
         <a href="{% url 'flowerproducts:index' %}">Home</a> /
@@ -22,7 +22,13 @@
     <ul class="product-list">
         {% for product in products %}
             <li class="product-card">
-                <strong><a href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a></strong><br>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image">
+                {% endif %} <br>
+                <strong><a
+                        href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a></strong><br>
                 ${{ product.price }}<br>
                 {{ product.description }}<br>
                 Quantity: {{ product.quantity }}<br>
