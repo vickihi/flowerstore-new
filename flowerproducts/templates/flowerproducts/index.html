@@ -7,6 +7,10 @@
     <!-- Search form -->
     <form method="get" action="{% url 'flowerproducts:search_results' %}" >
         {{ search_form }}
+        <!-- Preserve current filter/sort values -->
+        <input type="hidden" name="sort_order" value="{{ index_form.sort_order.value }}">
+        <input type="hidden" name="available" value="{{ index_form.available.value }}">
+        <input type="hidden" name="filter_category" value="{{ index_form.filter_category.value }}">
         <button>Search</button>
     </form>
 
