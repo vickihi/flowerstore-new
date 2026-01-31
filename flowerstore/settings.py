@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "flowerproducts.apps.FlowerproductsConfig",  # register flowerproducts app
+    "reviews.apps.ReviewsConfig",
 ]
 
 MIDDLEWARE = [
