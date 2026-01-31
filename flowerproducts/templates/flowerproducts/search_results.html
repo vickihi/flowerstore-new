@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load static %}
 {% block title %}🌸Flower Store🌸{% endblock %}
 
 {% block main %}
@@ -11,23 +10,11 @@
         <input type="hidden" name="search" value="{{ search_term }}">
         <button>Apply</button>
     </form>
-    <ul class="product-list">
-        {% for product in products %}
-            <li class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-                {% else %}
-                    <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image">
-                {% endif %} <br>
-                <strong>
-                    <a href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a>
-                </strong> 
-                - ${{ product.price }} <br>
-                {{ product.description }} <br>
-                Quantity: {{ product.quantity }} <br>
-                Category: {{ product.category.name }} <br>
-                Created at: {{ product.created_at|date:"Y-m-d" }}
-            </li>
-        {% endfor %}
-    </ul>
+
+    {% if products %}
+        {% include "flowerproducts/snippets/product_list.html" %}
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
+
 {% endblock main %}

@@ -1,27 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-
 from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm, ReviewForm
 from .models import Product, Category
-
-
-def query_products(products, index_form):
-    if index_form.is_valid():
-        sort_order = (
-            index_form.cleaned_data["sort_order"] or IndexForm.SORT_ORDERS[0][0]
-        )
-        available = index_form.cleaned_data["available"]
-        filter_category = index_form.cleaned_data["filter_category"]
-
-        if sort_order:
-            products = products.order_by(sort_order)
-
-        if available:
-            products = products.available()
-
-        if filter_category:
-            products = products.filter(category=filter_category)
-
-    return products
 
 
 def index(request):
@@ -29,7 +8,9 @@ def index(request):
     search_form = SearchForm()
     products = Product.objects.all()
 
-    products = query_products(products, index_form)
+    if index_form.is_valid():
+        index_form_cleaned = index_form.cleaned_data
+        products = Product.query_with_form(products, index_form_cleaned) 
 
     return render(
         request,
@@ -46,10 +27,15 @@ def search_results(request):
     search_form = SearchForm(request.GET)
     index_form = IndexForm(request.GET)
     products = Product.objects.all()
+    search_term = ""
+
+    if index_form.is_valid():
+        index_form_cleaned = index_form.cleaned_data
+        products = Product.query_with_form(products, index_form_cleaned)
 
     if search_form.is_valid():
-        search_term = search_form.cleaned_data["search"]
-        products = query_products(products, index_form)
+        search_form_cleaned = search_form.cleaned_data
+        search_term = search_form_cleaned["search"]
         products = products.search(search_term)
 
     return render(
@@ -57,9 +43,9 @@ def search_results(request):
         "flowerproducts/search_results.html",
         {
             "products": products,
-            "search_form": search_form,
             "index_form": index_form,
             "search_term": search_term,
+            "search_form": search_form,
         },
     )
 
