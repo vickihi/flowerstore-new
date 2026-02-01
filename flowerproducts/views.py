@@ -1,27 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-
 from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm, ReviewForm
 from .models import Product, Category
-
-
-def query_products(products, index_form):
-    if index_form.is_valid():
-        sort_order = (
-            index_form.cleaned_data["sort_order"] or IndexForm.SORT_ORDERS[0][0]
-        )
-        available = index_form.cleaned_data["available"]
-        filter_category = index_form.cleaned_data["filter_category"]
-
-        if sort_order:
-            products = products.order_by(sort_order)
-
-        if available:
-            products = products.available()
-
-        if filter_category:
-            products = products.filter(category=filter_category)
-
-    return products
 
 
 def index(request):
@@ -29,8 +8,14 @@ def index(request):
     search_form = SearchForm()
     products = Product.objects.all()
 
-    products = query_products(products, index_form)
+    if not index_form.is_valid():
+        return _render_index(request, products, index_form, search_form)
+    
+    products = Product.query_with_form(products, index_form.cleaned_data)
+    return _render_index(request, products, index_form, search_form)
 
+
+def _render_index(request, products, index_form, search_form):
     return render(
         request,
         "flowerproducts/index.html",
@@ -44,22 +29,31 @@ def index(request):
 
 def search_results(request):
     search_form = SearchForm(request.GET)
-    index_form = IndexForm(request.GET)
+    index_form = IndexForm(request.GET)  
     products = Product.objects.all()
+    search_term = ""
 
-    if search_form.is_valid():
-        search_term = search_form.cleaned_data["search"]
-        products = query_products(products, index_form)
-        products = products.search(search_term)
+    if not search_form.is_valid():
+        return _render_search(request, products, index_form, search_form, search_term)
+    
+    search_term = search_form.cleaned_data["search"]
+    products = products.search(search_term)
 
+    if index_form.is_valid():
+        products = Product.query_with_form(products, index_form.cleaned_data) 
+
+    return _render_search(request, products, index_form, search_form, search_term)
+
+
+def _render_search(request, products, index_form, search_form, search_term):
     return render(
         request,
         "flowerproducts/search_results.html",
         {
             "products": products,
-            "search_form": search_form,
             "index_form": index_form,
             "search_term": search_term,
+            "search_form": search_form,
         },
     )
 

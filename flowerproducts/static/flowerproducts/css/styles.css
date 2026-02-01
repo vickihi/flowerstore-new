@@ -35,6 +35,30 @@ h1 {
     margin-bottom: 8px;
 }
 
+
+.product-name {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.product-info {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.product-info dt {
+    float: left; 
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.product-info dd {
+    margin-left: 110px; 
+    margin-bottom: 8px;
+}
+
 .category-list {
     list-style: none;
     display: flex;
