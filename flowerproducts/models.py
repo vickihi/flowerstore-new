@@ -47,10 +47,10 @@ class Product(models.Model):
         Avoid using this for queryset filtering.
         """
         return self.quantity > 0
-    
+
     @classmethod
     def query_with_form(cls, products, cleaned_data):
-        sort_order = cleaned_data["sort_order"] or "-created_at"  
+        sort_order = cleaned_data["sort_order"] or "-created_at"
         available = cleaned_data["available"]
         filter_category = cleaned_data["filter_category"]
 
@@ -59,10 +59,8 @@ class Product(models.Model):
 
         if filter_category:
             products = products.filter(category=filter_category)
-        
+
         if sort_order:
             products = products.order_by(sort_order)
 
         return products
-
- 

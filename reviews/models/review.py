@@ -24,7 +24,7 @@ class Review(models.Model):
             MinValueValidator(1),
             MaxValueValidator(5),
         ],
-        help_text="Rating score given by the user (1–5)."
+        help_text="Rating score given by the user (1–5).",
     )
 
     created_at = models.DateTimeField(

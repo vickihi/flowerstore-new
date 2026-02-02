@@ -10,7 +10,7 @@ def index(request):
 
     if not index_form.is_valid():
         return _render_index(request, products, index_form, search_form)
-    
+
     products = Product.query_with_form(products, index_form.cleaned_data)
     return _render_index(request, products, index_form, search_form)
 
@@ -29,18 +29,18 @@ def _render_index(request, products, index_form, search_form):
 
 def search_results(request):
     search_form = SearchForm(request.GET)
-    index_form = IndexForm(request.GET)  
+    index_form = IndexForm(request.GET)
     products = Product.objects.all()
     search_term = ""
 
     if not search_form.is_valid():
         return _render_search(request, products, index_form, search_form, search_term)
-    
+
     search_term = search_form.cleaned_data["search"]
     products = products.search(search_term)
 
     if index_form.is_valid():
-        products = Product.query_with_form(products, index_form.cleaned_data) 
+        products = Product.query_with_form(products, index_form.cleaned_data)
 
     return _render_search(request, products, index_form, search_form, search_term)
 
