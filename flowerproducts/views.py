@@ -134,16 +134,3 @@ def add_to_cart(request, product_id):
         pass
 
     return redirect("flowerproducts:product_detail", product_id)
-
-
-def add_review(request, product_id):
-    if request.method != "POST":
-        return redirect("flowerproducts:product_detail", product_id)
-
-    form = ReviewForm(request.POST)
-    if form.is_valid():
-        # content = form.cleaned_data["content"]
-        # TODO: add review
-        pass
-
-    return redirect("flowerproducts:product_detail", product_id)
