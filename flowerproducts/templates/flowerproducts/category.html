@@ -1,41 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumbs %}
-    <div class="breadcrumb">
-        <a href="{% url 'flowerproducts:index' %}">Home</a> /
-        <a href="{% url 'flowerproducts:categories' %}">Categories</a> /
-        {{ category.name }}
-    </div>
+    <a href="{% url 'flowerproducts:index' %}">Home</a> /
+    <a href="{% url 'flowerproducts:categories' %}">Categories</a> /
+    {{ category.name }}
 {% endblock %}
 
 {% block main %}
     <h1>{{ category.name }}</h1>
     <p>Description:{{ category.description }}</p>
-    <hr>
+
     <form method="get">
         {{ cat_form }}
         <button type="submit">Apply</button>
     </form>
 
-    <hr>
-
-    <ul class="product-list">
-        {% for product in products %}
-            <li class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-                {% else %}
-                    <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image">
-                {% endif %} <br>
-                <strong><a
-                        href="{% url 'flowerproducts:product_detail' product.id %}">{{ product.name }}</a></strong><br>
-                ${{ product.price }}<br>
-                {{ product.description }}<br>
-                Quantity: {{ product.quantity }}<br>
-                Created at: {{ product.created_at|date:"Y-m-d" }}
-            </li>
-        {% empty %}
-            <li>No products</li>
-        {% endfor %}
-    </ul>
+    {% include "flowerproducts/snippets/product_list.html" %}
 {% endblock %}
