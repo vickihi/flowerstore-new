@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm, ReviewForm
+from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
+from reviews.forms import ReviewForm
 from .models import Product, Category
 
 
