@@ -24,6 +24,7 @@ import flowerproducts.views
 urlpatterns = [
     path("", flowerproducts.views.index, name="home"),
     path("flowerproducts/", include("flowerproducts.urls")),
+    path("reviews/", include("reviews.urls")),
     path("admin/", admin.site.urls),
 ]
 

@@ -2,83 +2,120 @@
 {% load static %}
 
 {% block main %}
-    
-    
-    <section class="product">
-        <div class="product__grid">
-            <div class="product__image">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                <div class="product__image--placeholder" aria-hidden="true">No image</div>
-                {% endif %}
+
+
+<section class="product">
+    <div class="product__grid">
+        <div class="product__image">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+            <div class="product__image--placeholder" aria-hidden="true">No image</div>
+            {% endif %}
+        </div>
+
+        <div class="product__info">
+            <div>
+                <h1>{{ product.name }}</h1>
+                <p class="product__desc">{{ product.description }}</p>
+
+                <div class="product__priceblock">
+                    <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
+                    <p class="product__stock">Stock: {{ product.quantity }}</p>
+                    {% if product.is_available %}
+                    <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
+                        {% csrf_token %}
+                        {{ cart_form.as_p }}
+                        <div class="cta-row">
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-secondary btn-lg" disabled>
+                        <i class="bi bi-cart-x"></i> Out of Stock
+                    </button>
+                    {% endif %}
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-heart"></i> Add to Wishlist
+                    </button>
+                </div>
             </div>
 
-            <div class="product__info">
-                <div>
-                    <h1>{{ product.name }}</h1>
-                    <p class="product__desc">{{ product.description }}</p>
 
-                    <div class="product__priceblock">
-                        <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
-                        <p class="product__stock">Stock: {{ product.quantity }}</p>
-                        {% if product.is_available %}
-                        <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
-                            {% csrf_token %}
-                            {{ cart_form.as_p }}
-                            <div class="cta-row">
-                                <button type="submit" class="btn btn-primary">Add to Cart</button>
-                            </div>
-                        </form>
-                        {% else %}
-                        <button class="btn btn-secondary btn-lg" disabled>
-                            <i class="bi bi-cart-x"></i> Out of Stock
-                        </button>
-                        {% endif %}
-                        <button class="btn btn-outline-secondary">
-                            <i class="bi bi-heart"></i> Add to Wishlist
-                        </button>
-                    </div>
-                </div>
+            <!-- ================= Reviews List ================= -->
+            <section class="reviews">
+                <h2>Reviews</h2>
 
+                {% if reviews %}
+                <ul class="review-list">
+                    {% for review in reviews %}
+                    <li class="review-item">
+                        <p class="review-body">
+                            {{ review.body }}
+                        </p>
 
-                <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
+                        <small class="review-meta">
+                            Rating: {{ review.rating }} / 5 ·
+                            {{ review.created_at|date:"Y-m-d" }}
+                        </small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="empty-state">
+                    No reviews yet. Be the first one!
+                </p>
+                {% endif %}
+            </section>
+
+            <hr>
+
+            <!-- ================= Add Review Form ================= -->
+            <section class="add-review">
+                <h2>Add a Review</h2>
+
+                <form method="post" action="{% url 'reviews:add_review' product.id %}">
                     {% csrf_token %}
+
                     {{ review_form.as_p }}
+
                     <div class="cta-row">
-                        <button type="submit" class="btn btn-primary">Add Review</button>
+                        <button type="submit" class="btn btn-primary">
+                            Add Review
+                        </button>
                     </div>
                 </form>
-            </div>
+            </section>
         </div>
+    </div>
 
-        {% if related_products %}
-        {% else %}
-            <p class="related__empty">No related products found.</p>
-        {% endif %}
-        <div class="related">
-            <h2 class="related__title">Related Products</h2>
+    {% if related_products %}
+    {% else %}
+    <p class="related__empty">No related products found.</p>
+    {% endif %}
+    <div class="related">
+        <h2 class="related__title">Related Products</h2>
 
-            <div class="related__grid">
-                {% for rp in related_products %}
-                <div class="product-card">
-                    <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
-                        <div class="product-card__image">
-                            {% if rp.image %}
-                            <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
-                            {% else %}
-                            <div class="product-card__placeholder" aria-hidden="true">No image</div>
-                            {% endif %}
-                        </div>
-                        <div class="product-card-details">
-                            <h3 class="product-card__title">{{ rp.name }}</h3>
-                            <span class="product__price">${{ rp.price|floatformat:2 }}</span>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
+        <div class="related__grid">
+            {% for rp in related_products %}
+            <div class="product-card">
+                <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
+                    <div class="product-card__image">
+                        {% if rp.image %}
+                        <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
+                        {% else %}
+                        <div class="product-card__placeholder" aria-hidden="true">No image</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-card-details">
+                        <h3 class="product-card__title">{{ rp.name }}</h3>
+                        <span class="product__price">${{ rp.price|floatformat:2 }}</span>
+                    </div>
+                </a>
             </div>
+            {% endfor %}
         </div>
-        
-    </section>
+    </div>
+
+</section>
 {% endblock main %}

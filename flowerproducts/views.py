@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm, ReviewForm
+from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
+from reviews.forms import ReviewForm
 from .models import Product, Category
 
 
@@ -131,19 +132,6 @@ def add_to_cart(request, product_id):
     if form.is_valid():
         # quantity = form.cleaned_data["quantity"]
         # TODO: add to cart
-        pass
-
-    return redirect("flowerproducts:product_detail", product_id)
-
-
-def add_review(request, product_id):
-    if request.method != "POST":
-        return redirect("flowerproducts:product_detail", product_id)
-
-    form = ReviewForm(request.POST)
-    if form.is_valid():
-        # content = form.cleaned_data["content"]
-        # TODO: add review
         pass
 
     return redirect("flowerproducts:product_detail", product_id)

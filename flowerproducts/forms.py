@@ -46,13 +46,6 @@ class AddToCartForm(forms.Form):
     )
 
 
-class ReviewForm(forms.Form):
-    content = forms.CharField(
-        label="Review",
-        widget=forms.Textarea(attrs={"rows": 4}),
-    )
-
-
 class CategoryForm(forms.Form):
     SORT_ORDERS = [
         ("name", "Name (A to Z)"),
