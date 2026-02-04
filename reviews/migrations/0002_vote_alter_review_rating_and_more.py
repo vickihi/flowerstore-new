@@ -6,32 +6,49 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('flowerproducts', '0002_product_views_count'),
-        ('reviews', '0001_initial'),
+        ("flowerproducts", "0002_product_views_count"),
+        ("reviews", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Vote',
+            name="Vote",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("email", models.EmailField(max_length=254)),
             ],
         ),
         migrations.AlterField(
-            model_name='review',
-            name='rating',
-            field=models.PositiveSmallIntegerField(help_text='Rating score given by the user (1–5).', validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)]),
+            model_name="review",
+            name="rating",
+            field=models.PositiveSmallIntegerField(
+                help_text="Rating score given by the user (1–5).",
+                validators=[
+                    django.core.validators.MinValueValidator(1),
+                    django.core.validators.MaxValueValidator(5),
+                ],
+            ),
         ),
         migrations.AddConstraint(
-            model_name='review',
-            constraint=models.UniqueConstraint(fields=('product', 'email'), name='unique_review_per_product_per_email'),
+            model_name="review",
+            constraint=models.UniqueConstraint(
+                fields=("product", "email"), name="unique_review_per_product_per_email"
+            ),
         ),
         migrations.AddField(
-            model_name='vote',
-            name='review',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.review'),
+            model_name="vote",
+            name="review",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="reviews.review"
+            ),
         ),
     ]

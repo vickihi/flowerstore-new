@@ -18,6 +18,5 @@ urlpatterns = [
         "<int:review_id>/vote/submit/",
         views.create_vote_submit,
         name="create_vote_submit",
-    )
-
+    ),
 ]

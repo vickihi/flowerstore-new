@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
 from reviews.forms import ReviewForm
+from reviews.models.review import Review
 from .models import Product, Category
 
 
@@ -112,12 +113,14 @@ def product_detail(request, product_id: int):
     related_products = Product.objects.filter(category=product.category).exclude(
         pk=product_id
     )[:4]
+    reviews = Review.objects.filter(product=product, is_hidden=False)
     return render(
         request,
         "flowerproducts/product_detail.html",
         {
             "product": product,
             "related_products": related_products,
+            "reviews": reviews,
             "cart_form": AddToCartForm(),
             "review_form": ReviewForm(),
         },
