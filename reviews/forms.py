@@ -2,6 +2,7 @@ from django import forms
 from .models import Review
 from reviews.models.vote import Vote
 
+
 class BaseEmailForm(forms.Form):
     email = forms.EmailField(label="Email")
 
@@ -11,6 +12,7 @@ class ReviewForm(BaseEmailForm, forms.ModelForm):
         model = Review
         fields = ["email", "body", "rating"]
 
+
 # Vote ========================================
 class VoteForm(forms.ModelForm):
     class Meta:
@@ -19,4 +21,3 @@ class VoteForm(forms.ModelForm):
         widgets = {
             "review": forms.HiddenInput(),
         }
-
