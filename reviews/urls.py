@@ -19,4 +19,11 @@ urlpatterns = [
         views.create_vote_submit,
         name="create_vote_submit",
     ),
+
+    path(
+        "<int:review_id>/comment/",
+        views.add_comment,
+        name="add_comment",
+    )
+
 ]
