@@ -12,9 +12,9 @@
         <!-- <p><strong>Total votes:</strong> {{ review.total_votes }}</p> -->
     </div>
 
-    <form 
-        method="post"
-        action="{% url 'reviews:create_vote_submit' review.id %}"
+    <form
+            method="post"
+            action="{% url 'reviews:create_vote_submit' review.id %}"
     >
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -25,8 +25,8 @@
             </div>
         {% endif %}
 
-        {{ form }}  
+        {{ form }}
 
         <button type="submit" class="btn-vote">Vote as Helpful</button>
-
+    </form>
 {% endblock %}

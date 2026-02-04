@@ -1,11 +1,11 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.db import IntegrityError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.shortcuts import get_object_or_404, redirect, render
 
 from flowerproducts.models import Product
 from reviews.models.review import Review
-from .forms import ReviewForm, VoteForm
+from .forms import ReviewForm, VoteForm, CommentForm
 
 
 def add_review(request, product_id):
@@ -33,7 +33,7 @@ def create_vote(request, review_id):
     """Show form to create a vote."""
     review = get_object_or_404(Review, pk=review_id)
     review_list = Review.objects.filter(product=review.product)
-    
+
     form = VoteForm()
     context = {"form": form, "review": review}
     return render(request, "reviews/create_vote.html", context)
@@ -47,7 +47,7 @@ def create_vote_submit(request, review_id):
     if not form.is_valid():
         context = {"form": form, "review": review}
         return render(request, "reviews/create_vote.html", context)
-    
+
     vote = form.save(commit=False)
     vote.review = review
 
@@ -61,6 +61,20 @@ def create_vote_submit(request, review_id):
     vote.save()
     return redirect("flowerproducts:product_detail", review.product.id)
 
-    
 
+# Comment
+def add_comment(request, review_id):
+    """Add comment to review."""
+    if request.method != "POST":
+        return redirect("flowerproducts:index")
 
+    review = get_object_or_404(Review, pk=review_id)
+    form = CommentForm(request.POST)
+
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.review = review
+        comment.save()
+    else:
+        messages.error(request, "There was an error with your comment.")
+    return redirect("flowerproducts:product_detail", review.product.id)
