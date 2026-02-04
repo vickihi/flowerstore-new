@@ -43,59 +43,46 @@
 
 
             <!-- ================= Reviews List ================= -->
-            <section class="reviews">
-                <h2>Reviews</h2>
+            <section class="section section--divider reviews">
+                <h2 class="section__title">Reviews</h2>
 
                 {% if reviews %}
                 <ul class="review-list">
                     {% for review in reviews %}
                     <li class="review-item">
-                        <p class="review-body">
-                            {{ review.body }}
-                        </p>
-
+                        <p class="review-body">{{ review.body }}</p>
                         <small class="review-meta">
-                            Rating: {{ review.rating }} / 5 ·
-                            {{ review.created_at|date:"Y-m-d" }}
+                            Rating: {{ review.rating }} / 5 · {{ review.created_at|date:"Y-m-d" }}
                         </small>
                     </li>
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p class="empty-state">
-                    No reviews yet. Be the first one!
-                </p>
+                <p class="empty-state">No reviews yet. Be the first one!</p>
                 {% endif %}
             </section>
 
-            <hr>
-
             <!-- ================= Add Review Form ================= -->
-            <section class="add-review">
-                <h2>Add a Review</h2>
+            <section class="section add-review">
+                <h2 class="section__title">Add a Review</h2>
 
                 <form method="post" action="{% url 'reviews:add_review' product.id %}">
                     {% csrf_token %}
-
                     {{ review_form.as_p }}
-
                     <div class="cta-row">
-                        <button type="submit" class="btn btn-primary">
-                            Add Review
-                        </button>
+                        <button type="submit" class="btn btn-primary">Add Review</button>
                     </div>
                 </form>
             </section>
+
         </div>
     </div>
 
-    {% if related_products %}
-    {% else %}
-    <p class="related__empty">No related products found.</p>
-    {% endif %}
-    <div class="related">
-        <h2 class="related__title">Related Products</h2>
 
+
+    <section class="section related">
+        <h2 class="section__title related__title">Related Products</h2>
+        {% if related_products %}
         <div class="related__grid">
             {% for rp in related_products %}
             <div class="product-card">
@@ -115,7 +102,10 @@
             </div>
             {% endfor %}
         </div>
-    </div>
+        {% else %}
+        <p class="related__empty">No related products found.</p>
+        {% endif %}
+    </section>
 
 </section>
 {% endblock main %}

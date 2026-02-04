@@ -3,6 +3,7 @@ from .models import Review
 from reviews.models.vote import Vote
 from reviews.models.comment import Comment
 
+
 class BaseEmailForm(forms.Form):
     email = forms.EmailField(label="Email")
 
@@ -11,6 +12,7 @@ class ReviewForm(BaseEmailForm, forms.ModelForm):
     class Meta:
         model = Review
         fields = ["email", "body", "rating"]
+
 
 # Vote ========================================
 class VoteForm(forms.ModelForm):

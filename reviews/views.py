@@ -9,8 +9,9 @@ from .forms import ReviewForm, VoteForm, CommentForm
 
 
 def add_review(request, product_id):
+    """Handle form to add review to a product."""
     if request.method != "POST":
-        return redirect("flowerproducts:product_detail", product_id)
+        return redirect("flowerproducts:product_detail", product_id=product_id)
 
     product = get_object_or_404(Product, pk=product_id)
     form = ReviewForm(request.POST)
@@ -24,15 +25,17 @@ def add_review(request, product_id):
             messages.error(
                 request, "You have already reviewed this product with this email."
             )
+    else:
+        messages.error(request, "Review form is invalid. Please check your input.")
 
-    return redirect("flowerproducts:product_detail", product_id)
+    return redirect("flowerproducts:product_detail", product_id=product_id)
 
 
 # Vote ========================================
 def create_vote(request, review_id):
     """Show form to create a vote."""
     review = get_object_or_404(Review, pk=review_id)
-    review_list = Review.objects.filter(product=review.product)
+    # review_list = Review.objects.filter(product=review.product)
 
     form = VoteForm()
     context = {"form": form, "review": review}
