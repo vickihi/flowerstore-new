@@ -9,4 +9,15 @@ urlpatterns = [
         views.add_review,
         name="add_review",
     ),
+    path(
+        "<int:review_id>/vote/",
+        views.create_vote,
+        name="create_vote",
+    ),
+    path(
+        "<int:review_id>/vote/submit/",
+        views.create_vote_submit,
+        name="create_vote_submit",
+    )
+
 ]
