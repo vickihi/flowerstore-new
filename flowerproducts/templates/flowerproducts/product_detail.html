@@ -59,13 +59,8 @@
                     </button>
                 </div>
             </div>
-
-
-
         </div>
     </div>
-
-
 
     <section class="section related">
         <h2 class="section__title related__title">Related Products</h2>
@@ -110,8 +105,7 @@
                     {% endif %}
                     {{ review.created_at|date:"Y-m-d" }}
                 </small>
-                <a class="btn btn-outline-secondary btn-sm" href="{% url 'reviews:create_vote' review.id %}">Vote
-                    helpful</a>
+                
                 <details class="comment-details">
                     <summary class="comment-summary">Add Comment</summary>
                     <form class="comment-form" method="post" action="{% url 'reviews:add_comment' review.id %}">
@@ -122,8 +116,18 @@
                         </div>
                     </form>
                 </details>
-
             </li>
+            <!-- vote -->
+
+            <div class="review-vote">
+                <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
+                    Vote as helpful
+                </a>
+                <span>
+
+                    Helpful: {{ review.vote_count }}
+                </span>
+            </div>
             {% endfor %}
         </ul>
         {% else %}

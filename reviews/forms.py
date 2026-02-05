@@ -18,10 +18,7 @@ class ReviewForm(BaseEmailForm, forms.ModelForm):
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
-        fields = ["email", "review"]
-        widgets = {
-            "review": forms.HiddenInput(),
-        }
+        fields = ["email"]
 
 
 # Comment
