@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 app_name = "reviews"
@@ -24,4 +25,7 @@ urlpatterns = [
         views.add_comment,
         name="add_comment",
     ),
+    path("<int:review_id>/flag/",
+         views.flag_review,
+         name="flag_review")
 ]

@@ -1,6 +1,7 @@
-from django.db import models
-from flowerproducts.models import Product
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models
+
+from flowerproducts.models import Product
 
 
 class Review(models.Model):
@@ -34,6 +35,16 @@ class Review(models.Model):
     is_hidden = models.BooleanField(
         default=False, help_text="Whether this review is hidden due to moderation."
     )
+
+    def flag_count(self):
+        """Returns the number of flags for this review."""
+        return self.flags.count()
+
+    def update_hidden_status(self):
+        """Updates the hidden status of the review based on flag count."""
+        if self.flag_count() > 5:
+            self.is_hidden = True
+            self.save(update_fields=["is_hidden"])
 
     class Meta:
         ordering = ["-created_at"]
