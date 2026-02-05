@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'flowerproducts/css/product_detail.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
 {% block main %}
 
 
@@ -17,6 +22,20 @@
         <div class="product__info">
             <div>
                 <h1>{{ product.name }}</h1>
+                <div class="product__rating">
+                    <span class="rating-stars"
+                        aria-label="Average rating {{ average_rating|default:0|floatformat:1 }} out of 5">
+                        {% for i in star_range %}
+                        {% if i <= average_rating_full %} <i class="bi bi-star-fill"></i>
+                            {% elif average_rating_half and i == average_rating_full|add:1 %}
+                            <i class="bi bi-star-half"></i>
+                            {% else %}
+                            <i class="bi bi-star"></i>
+                            {% endif %}
+                            {% endfor %}
+                    </span>
+                    <a class="rating-count" href="#reviews">({{ review_count }})</a>
+                </div>
                 <p class="product__desc">{{ product.description }}</p>
 
                 <div class="product__priceblock">
@@ -42,38 +61,6 @@
             </div>
 
 
-            <!-- ================= Reviews List ================= -->
-            <section class="section section--divider reviews">
-                <h2 class="section__title">Reviews</h2>
-
-                {% if reviews %}
-                <ul class="review-list">
-                    {% for review in reviews %}
-                    <li class="review-item">
-                        <p class="review-body">{{ review.body }}</p>
-                        <small class="review-meta">
-                            Rating: {{ review.rating }} / 5 · {{ review.created_at|date:"Y-m-d" }}
-                        </small>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p class="empty-state">No reviews yet. Be the first one!</p>
-                {% endif %}
-            </section>
-
-            <!-- ================= Add Review Form ================= -->
-            <section class="section add-review">
-                <h2 class="section__title">Add a Review</h2>
-
-                <form method="post" action="{% url 'reviews:add_review' product.id %}">
-                    {% csrf_token %}
-                    {{ review_form.as_p }}
-                    <div class="cta-row">
-                        <button type="submit" class="btn btn-primary">Add Review</button>
-                    </div>
-                </form>
-            </section>
 
         </div>
     </div>
@@ -106,6 +93,57 @@
         <p class="related__empty">No related products found.</p>
         {% endif %}
     </section>
+
+    <!-- ================= Reviews List ================= -->
+    <section class="section section--divider reviews" id="reviews">
+        <h2 class="section__title">Reviews</h2>
+
+        {% if reviews %}
+        <ul class="review-list">
+            {% for review in reviews %}
+            <li class="review-item">
+                <p class="review-body">{{ review.body }}</p>
+                <small class="review-meta">
+                    Rating: {{ review.rating }} / 5
+                    {% if review.vote_count %}
+                    Votes: {{ review.vote_count }}
+                    {% endif %}
+                    {{ review.created_at|date:"Y-m-d" }}
+                </small>
+                <a class="btn btn-outline-secondary btn-sm" href="{% url 'reviews:create_vote' review.id %}">Vote
+                    helpful</a>
+                <details class="comment-details">
+                    <summary class="comment-summary">Add Comment</summary>
+                    <form class="comment-form" method="post" action="{% url 'reviews:add_comment' review.id %}">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <div class="cta-row">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Submit</button>
+                        </div>
+                    </form>
+                </details>
+
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-state">No reviews yet. Be the first one!</p>
+        {% endif %}
+    </section>
+
+    <!-- ================= Add Review Form ================= -->
+    <section class="section add-review">
+        <h2 class="section__title">Add a Review</h2>
+
+        <form method="post" action="{% url 'reviews:add_review' product.id %}">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <div class="cta-row">
+                <button type="submit" class="btn btn-primary">Add Review</button>
+            </div>
+        </form>
+    </section>
+
 
 </section>
 {% endblock main %}

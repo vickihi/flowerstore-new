@@ -35,6 +35,55 @@ body {
     color: #555;
 }
 
+.product__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.25rem 0 0.75rem 0;
+}
+
+.rating-stars {
+    display: inline-flex;
+    gap: 0.15rem;
+    color: #ff8c00;
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.rating-count {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.rating-count:hover {
+    color: #2e7d32;
+    text-decoration: underline;
+}
+
+.comment-details {
+    margin-top: 0.6rem;
+}
+
+.comment-summary {
+    cursor: pointer;
+    color: #555;
+    font-size: 0.95rem;
+    list-style: none;
+}
+
+.comment-summary::marker {
+    display: none;
+}
+
+.comment-details[open] .comment-summary {
+    color: #2e7d32;
+}
+
+.comment-form {
+    margin-top: 0.5rem;
+}
+
 .product__priceblock {
     margin-top: 2rem;
 }

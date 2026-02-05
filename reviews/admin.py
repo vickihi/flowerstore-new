@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models.review import Review
+from reviews.models.review import Review
 from reviews.models.vote import Vote
 from reviews.models.comment import Comment
 

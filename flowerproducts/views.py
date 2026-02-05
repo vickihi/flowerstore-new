@@ -1,6 +1,7 @@
+from django.db.models import Avg, Count
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
-from reviews.forms import ReviewForm
+from reviews.forms import ReviewForm, CommentForm
 from reviews.models.review import Review
 from .models import Product, Category
 
@@ -112,8 +113,18 @@ def product_detail(request, product_id: int):
     product = get_object_or_404(Product, pk=product_id)
     related_products = Product.objects.filter(category=product.category).exclude(
         pk=product_id
-    )[:4]
-    reviews = Review.objects.filter(product=product, is_hidden=False)
+    )[:3]
+    base_reviews = Review.objects.filter(product=product, is_hidden=False)
+    average_rating = base_reviews.aggregate(avg=Avg("rating"))["avg"]
+    reviews = base_reviews.annotate(vote_count=Count("vote")).order_by(
+        "-vote_count",
+        "-created_at",
+    )
+    review_count = reviews.count()
+    average_rating_value = float(average_rating or 0)
+    average_rating_rounded = round(average_rating_value * 2) / 2
+    average_rating_full = int(average_rating_rounded)
+    average_rating_half = (average_rating_rounded - average_rating_full) == 0.5
     return render(
         request,
         "flowerproducts/product_detail.html",
@@ -121,8 +132,14 @@ def product_detail(request, product_id: int):
             "product": product,
             "related_products": related_products,
             "reviews": reviews,
+            "average_rating": average_rating,
+            "average_rating_full": average_rating_full,
+            "average_rating_half": average_rating_half,
+            "review_count": review_count,
+            "star_range": range(1, 6),
             "cart_form": AddToCartForm(),
             "review_form": ReviewForm(),
+            "comment_form": CommentForm(),
         },
     )
 

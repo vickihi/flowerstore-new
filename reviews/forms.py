@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review
+from reviews.models.review import Review
 from reviews.models.vote import Vote
 from reviews.models.comment import Comment
 
@@ -24,7 +24,7 @@ class VoteForm(forms.ModelForm):
         }
 
 
-#Comment
+# Comment
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment

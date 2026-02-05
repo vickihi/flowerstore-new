@@ -1,2 +1,2 @@
 from .review import Review as Review
-from .comment import Comment
+from .comment import Comment as Comment
