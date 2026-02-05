@@ -43,10 +43,10 @@ class Review(models.Model):
                 name="unique_review_per_product_per_email",
             )
         ]
- 
+
     @property
     def vote_count(self) -> int:
         return self.vote_set.count()
-    
+
     def __str__(self):
         return f"Review({self.product}, {self.email}, rating={self.rating})"

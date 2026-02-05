@@ -20,8 +20,6 @@ class Vote(models.Model):
 
         if Vote.objects.filter(email=self.email, review=self.review).exists():
             raise ValidationError("You have already voted on this review.")
-        
-    
+
     def __str__(self):
         return f"Vote by {self.email} on review #{self.review.id}"
-

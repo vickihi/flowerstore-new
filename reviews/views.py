@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -45,13 +44,13 @@ def create_vote_submit(request, review_id):
     """Handle form to create a vote."""
     review = get_object_or_404(Review, pk=review_id)
 
-    vote = Vote(review=review)       
+    vote = Vote(review=review)
     form = VoteForm(request.POST, instance=vote)
 
     if not form.is_valid():
         context = {"form": form, "review": review}
         return render(request, "reviews/create_vote.html", context)
-    
+
     form.save()
     return redirect("flowerproducts:product_detail", review.product.id)
 
