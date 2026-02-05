@@ -4,8 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from flowerproducts.models import Product
 from reviews.models.review import Review
-from reviews.models.vote import Vote
-from .forms import ReviewForm, VoteForm, CommentForm
+from .forms import ReviewForm, VoteForm, CommentForm, FlagForm
 
 
 def add_review(request, product_id):
@@ -55,7 +54,6 @@ def create_vote_submit(request, review_id):
     return redirect("flowerproducts:product_detail", review.product.id)
 
 
-# Comment
 def add_comment(request, review_id):
     """Add comment to review."""
     if request.method != "POST":
@@ -71,3 +69,38 @@ def add_comment(request, review_id):
     else:
         messages.error(request, "There was an error with your comment.")
     return redirect("flowerproducts:product_detail", review.product.id)
+
+
+def flag_review(request, review_id):
+    """Flag review."""
+    review = get_object_or_404(Review, pk=review_id)
+    if request.method == "POST":
+        form = FlagForm(request.POST)
+
+        if form.is_valid():
+            flag = form.save(commit=False)
+            flag.review = review
+
+            try:
+                flag.full_clean()
+                flag.save()
+                messages.success(request, "Review flagged successfully.")
+                return redirect("flowerproducts:product_detail", review.product.id)
+
+            except ValidationError as e:
+                if 'email' in e.message_dict:
+                    form.add_error('email', e.message_dict['email'])
+                else:
+                    form.add_error(None, e)
+
+            except IntegrityError:
+                form.add_error('email', "You have already flagged this review.")
+
+    else:
+        form = FlagForm()
+
+    return render(
+        request,
+        "reviews/flag.html",
+        {"form": form, "review": review},
+    )

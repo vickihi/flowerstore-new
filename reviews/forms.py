@@ -1,7 +1,9 @@
 from django import forms
+
+from reviews.models.comment import Comment
+from reviews.models.flag import Flag
 from reviews.models.review import Review
 from reviews.models.vote import Vote
-from reviews.models.comment import Comment
 
 
 class BaseEmailForm(forms.Form):
@@ -26,3 +28,13 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["email", "body"]
+
+
+# Flag
+class FlagForm(forms.ModelForm):
+    class Meta:
+        model = Flag
+        fields = ["email", "flag"]
+        widgets = {
+            "flag": forms.RadioSelect(),
+        }
