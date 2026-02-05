@@ -116,8 +116,8 @@ def product_detail(request, product_id: int):
     )[:3]
     base_reviews = Review.objects.filter(product=product, is_hidden=False)
     average_rating = base_reviews.aggregate(avg=Avg("rating"))["avg"]
-    reviews = base_reviews.annotate(vote_count=Count("vote")).order_by(
-        "-vote_count",
+    reviews = base_reviews.annotate(vote_total=Count("vote")).order_by(
+        "-vote_total",
         "-created_at",
     )
     review_count = reviews.count()

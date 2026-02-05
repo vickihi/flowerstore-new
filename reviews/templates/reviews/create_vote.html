@@ -7,26 +7,14 @@
 
     <div class="review">
         <p>Product: {{ review.product.name }}</p>
-        <p>Review: {{ review.body }}</p> <!-- TODO: make this as a list -->
+        <p>Review: {{ review.body }}</p>
         <p>By: {{ review.email }}</p>
-        <!-- <p><strong>Total votes:</strong> {{ review.total_votes }}</p> -->
     </div>
 
-    <form
-            method="post"
-            action="{% url 'reviews:create_vote_submit' review.id %}"
-    >
-        {% csrf_token %}
-        {% if form.non_field_errors %}
-            <div class="error">
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
+    <form method="post" action="{% url 'reviews:create_vote_submit' review.id %}" class="vote-form">
+        {% csrf_token %}  
+        <p>Leave your vote for this review:</p>
         {{ form }}
-
-        <button type="submit" class="btn-vote">Vote as Helpful</button>
+        <button class="btn btn-vote-submit">Vote</button>
     </form>
 {% endblock %}
