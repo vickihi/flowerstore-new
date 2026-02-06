@@ -1,4 +1,4 @@
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
 from reviews.forms import ReviewForm, CommentForm
@@ -116,10 +116,17 @@ def product_detail(request, product_id: int):
     )[:3]
     base_reviews = Review.objects.filter(product=product, is_hidden=False)
     average_rating = base_reviews.aggregate(avg=Avg("rating"))["avg"]
-    reviews = base_reviews.annotate(vote_total=Count("vote")).order_by(
+
+    reviews = base_reviews.annotate(
+        vote_total=Count("vote", distinct=True),
+        flag_off_topic=Count("flags", filter=Q(flags__flag='off-topic'), distinct=True),
+        flag_inappropriate=Count("flags", filter=Q(flags__flag='inappropriate'), distinct=True),
+        flag_fake=Count("flags", filter=Q(flags__flag='fake'), distinct=True),
+    ).order_by(
         "-vote_total",
         "-created_at",
     )
+
     review_count = reviews.count()
     average_rating_value = float(average_rating or 0)
     average_rating_rounded = round(average_rating_value * 2) / 2

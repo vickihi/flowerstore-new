@@ -3,13 +3,9 @@
 {% block title %} Vote on Review {% endblock %}
 
 {% block main %}
-    <h1>Vote on Review of <span>{{ review.product.name }}</span></h1>
+    <h1>Vote Review</h1>
 
-    <div class="review">
-        <p>Product: {{ review.product.name }}</p>
-        <p>Review: {{ review.body }}</p>
-        <p>By: {{ review.email }}</p>
-    </div>
+    {% include "flowerproducts/snippets/single_review.html" %}
 
     <form method="post" action="{% url 'reviews:create_vote_submit' review.id %}" class="vote-form">
         {% csrf_token %}  

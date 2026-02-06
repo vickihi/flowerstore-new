@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from flowerproducts.models import Product
 from reviews.models.review import Review
+from reviews.models.vote import Vote
+from reviews.models.flag import Flag
 from .forms import ReviewForm, VoteForm, CommentForm, FlagForm
 
 
@@ -40,7 +42,7 @@ def create_vote(request, review_id):
 
 
 def create_vote_submit(request, review_id):
-    """Handle form to create a vote."""
+    """Handle form to submit a vote."""
     review = get_object_or_404(Review, pk=review_id)
 
     vote = Vote(review=review)
@@ -71,36 +73,29 @@ def add_comment(request, review_id):
     return redirect("flowerproducts:product_detail", review.product.id)
 
 
-def flag_review(request, review_id):
-    """Flag review."""
+# Flag ========================================
+def create_flag(request, review_id):
+    """Show form to create a flag."""
     review = get_object_or_404(Review, pk=review_id)
-    if request.method == "POST":
-        form = FlagForm(request.POST)
+    form = FlagForm()
+    context = {"form": form, "review": review}
+    return render(request, "reviews/create_flag.html", context)
 
-        if form.is_valid():
-            flag = form.save(commit=False)
-            flag.review = review
 
-            try:
-                flag.full_clean()
-                flag.save()
-                messages.success(request, "Review flagged successfully.")
-                return redirect("flowerproducts:product_detail", review.product.id)
+def create_flag_submit(request, review_id):
+    """Handle form to submit a flag."""
+    review = get_object_or_404(Review, pk=review_id)
+    flag = Flag(review=review)
+    form = FlagForm(request.POST, instance=flag)
 
-            except ValidationError as e:
-                if 'email' in e.message_dict:
-                    form.add_error('email', e.message_dict['email'])
-                else:
-                    form.add_error(None, e)
+    if not form.is_valid():
+        context = {"form": form, "review": review}
+        return render(request, "reviews/create_flag.html", context)
 
-            except IntegrityError:
-                form.add_error('email', "You have already flagged this review.")
+    form.save()
+    review.update_hidden_status()
+    return redirect("flowerproducts:product_detail", review.product.id)
 
-    else:
-        form = FlagForm()
 
-    return render(
-        request,
-        "reviews/flag.html",
-        {"form": form, "review": review},
-    )
+
+

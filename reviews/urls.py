@@ -26,6 +26,12 @@ urlpatterns = [
         name="add_comment",
     ),
     path("<int:review_id>/flag/",
-         views.flag_review,
-         name="flag_review")
+         views.create_flag,
+         name="create_flag"
+    ),
+    path(
+        "<int:review_id>/flag/submit/",
+        views.create_flag_submit,
+        name="create_flag_submit",
+    ),
 ]
