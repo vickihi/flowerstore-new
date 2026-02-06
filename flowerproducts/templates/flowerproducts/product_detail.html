@@ -8,7 +8,6 @@
 
 {% block main %}
 
-
     <section class="product">
         <div class="product__grid">
             <div class="product__image">
@@ -59,11 +58,8 @@
                         </button>
                     </div>
                 </div>
-
-
             </div>
         </div>
-
 
         <section class="section related">
             <h2 class="section__title related__title">Related Products</h2>
@@ -108,12 +104,28 @@
                                 {% endif %}
                                 {{ review.created_at|date:"Y-m-d" }}
                             </small>
-                            <a class="btn btn-outline-secondary btn-sm"
-                               href="{% url 'reviews:create_vote' review.id %}">Vote
-                                helpful</a>
-                            <a href="{% url 'reviews:flag_review' review.id %}">
-                                Flag this review
-                            </a>
+
+                             <!-- Vote -->
+                            <div class="review-vote">
+                                <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
+                                    Vote this review
+                                </a>
+                                <span>
+                                    Helpful: {{ review.vote_count }}
+                                </span>
+                            </div>
+                            
+                            <!-- Flag -->
+                            <div class="review-flag">
+                                <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
+                                    Flag this review
+                                </a>
+                                <span>Off-topic: {{ review.flag_off_topic }}</span>
+                                <span>Inappropriate: {{ review.flag_inappropriate }}</span>
+                                <span>Fake: {{ review.flag_fake }}</span>
+                            </div>
+
+                            <!-- Comment -->
                             <details class="comment-details">
                                 <summary class="comment-summary">Add Comment</summary>
                                 <form class="comment-form" method="post"

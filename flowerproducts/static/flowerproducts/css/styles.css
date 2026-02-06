@@ -2,6 +2,18 @@ h1 {
     color: #532a2a;
 }
 
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #532a2a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
 .product-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -76,4 +88,12 @@ h1 {
 .breadcrumb a {
     color: black;
 }
+
+.review-vote a, .review-flag a {
+    text-decoration: none;
+}
+
+
+
+
 

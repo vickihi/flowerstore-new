@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 class Vote(models.Model):
     """
-    Vote model for a review by a user
+    Vote model for vote a review.
     """
 
     email = models.EmailField()
