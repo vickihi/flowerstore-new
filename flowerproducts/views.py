@@ -1,10 +1,10 @@
 from django.db.models import Avg, Count, Q
 from django.db.models.functions import Coalesce
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 
 from reviews.forms import ReviewForm, CommentForm
 from reviews.models.review import Review
-from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
+from .forms import IndexForm, SearchForm, CategoryForm
 from .models import Product, Category
 
 
@@ -158,21 +158,7 @@ def product_detail(request, product_id: int):
             "average_rating_half": average_rating_half,
             "review_count": review_count,
             "star_range": range(1, 6),
-            "cart_form": AddToCartForm(),
             "review_form": ReviewForm(),
             "comment_form": CommentForm(),
         },
     )
-
-
-def add_to_cart(request, product_id):
-    if request.method != "POST":
-        return redirect("flowerproducts:product_detail", product_id)
-
-    form = AddToCartForm(request.POST)
-    if form.is_valid():
-        # quantity = form.cleaned_data["quantity"]
-        # TODO: add to cart
-        pass
-
-    return redirect("flowerproducts:product_detail", product_id)

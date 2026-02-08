@@ -40,22 +40,6 @@
                 <div class="product__priceblock">
                     <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
                     <p class="product__stock">Stock: {{ product.quantity }}</p>
-                    <!-- {% if product.is_available %}
-                    <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
-                        {% csrf_token %}
-                        {{ cart_form.as_p }}
-                        <div class="cta-row">
-                            <button type="submit" class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </form>
-                    {% else %}
-                    <button class="btn btn-secondary btn-lg" disabled>
-                        <i class="bi bi-cart-x"></i> Out of Stock
-                    </button>
-                    {% endif %}
-                    <button class="btn btn-outline-secondary">
-                        <i class="bi bi-heart"></i> Add to Wishlist
-                    </button> -->
                 </div>
             </div>
         </div>
