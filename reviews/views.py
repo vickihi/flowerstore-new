@@ -95,7 +95,3 @@ def create_flag_submit(request, review_id):
     form.save()
     review.update_hidden_status()
     return redirect("flowerproducts:product_detail", review.product.id)
-
-
-
-

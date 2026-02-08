@@ -13,9 +13,9 @@ class Flag(models.Model):
     FAKE = "fake"
 
     FLAG_CHOICES = (
-        (OFF_TOPIC, 'Off-topic'),
-        (INAPPROPRIATE, 'Inappropriate'),
-        (FAKE, 'Fake'),
+        (OFF_TOPIC, "Off-topic"),
+        (INAPPROPRIATE, "Inappropriate"),
+        (FAKE, "Fake"),
     )
 
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="flags")
@@ -33,9 +33,9 @@ class Flag(models.Model):
     def clean(self):
         """Ensure that the user cannot flag their own review."""
         if not self.review_id:
-            return    
+            return
         if self.email == self.review.email:
-            raise ValidationError ("You cannot flag your own review.")
+            raise ValidationError("You cannot flag your own review.")
         if Flag.objects.filter(review=self.review, email=self.email).exists():
             raise ValidationError("You have already voted on this review.")
 

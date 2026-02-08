@@ -160,3 +160,42 @@ body {
 .section form:last-child {
     margin-bottom: 0;
 }
+
+.review-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.review-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.review-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.review-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.review-actions {
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (max-width: 800px) {
+    .review-row {
+        flex-direction: column;
+    }
+
+    .review-actions {
+        width: 100%;
+    }
+}

@@ -2,163 +2,180 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'flowerproducts/css/product_detail.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{% static 'flowerproducts/css/product_detail.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 {% endblock %}
 
 {% block main %}
 
-    <section class="product">
-        <div class="product__grid">
-            <div class="product__image">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <div class="product__image--placeholder" aria-hidden="true">No image</div>
-                {% endif %}
-            </div>
+<section class="product">
+    <div class="product__grid">
+        <div class="product__image">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+            <div class="product__image--placeholder" aria-hidden="true">No image</div>
+            {% endif %}
+        </div>
 
-            <div class="product__info">
-                <div>
-                    <h1>{{ product.name }}</h1>
-                    <div class="product__rating">
+        <div class="product__info">
+            <div>
+                <h1>{{ product.name }}</h1>
+                <div class="product__rating">
                     <span class="rating-stars"
-                          aria-label="Average rating {{ average_rating|default:0|floatformat:1 }} out of 5">
+                        aria-label="Average rating {{ average_rating|default:0|floatformat:1 }} out of 5">
                         {% for i in star_range %}
-                            {% if i <= average_rating_full %} <i class="bi bi-star-fill"></i>
+                        {% if i <= average_rating_full %} <i class="bi bi-star-fill"></i>
                             {% elif average_rating_half and i == average_rating_full|add:1 %}
-                                <i class="bi bi-star-half"></i>
+                            <i class="bi bi-star-half"></i>
                             {% else %}
-                                <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
                             {% endif %}
-                        {% endfor %}
+                            {% endfor %}
                     </span>
-                        <a class="rating-count" href="#reviews">({{ review_count }})</a>
-                    </div>
-                    <p class="product__desc">{{ product.description }}</p>
+                    <a class="rating-count" href="#reviews">({{ review_count }})</a>
+                </div>
+                <p class="product__desc">{{ product.description }}</p>
 
-                    <div class="product__priceblock">
-                        <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
-                        <p class="product__stock">Stock: {{ product.quantity }}</p>
-                        {% if product.is_available %}
-                            <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
-                                {% csrf_token %}
-                                {{ cart_form.as_p }}
-                                <div class="cta-row">
-                                    <button type="submit" class="btn btn-primary">Add to Cart</button>
-                                </div>
-                            </form>
-                        {% else %}
-                            <button class="btn btn-secondary btn-lg" disabled>
-                                <i class="bi bi-cart-x"></i> Out of Stock
-                            </button>
-                        {% endif %}
-                        <button class="btn btn-outline-secondary">
-                            <i class="bi bi-heart"></i> Add to Wishlist
-                        </button>
-                    </div>
+                <div class="product__priceblock">
+                    <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
+                    <p class="product__stock">Stock: {{ product.quantity }}</p>
+                    <!-- {% if product.is_available %}
+                    <form method="post" action="{% url 'flowerproducts:product_detail' product.id %}">
+                        {% csrf_token %}
+                        {{ cart_form.as_p }}
+                        <div class="cta-row">
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-secondary btn-lg" disabled>
+                        <i class="bi bi-cart-x"></i> Out of Stock
+                    </button>
+                    {% endif %}
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-heart"></i> Add to Wishlist
+                    </button> -->
                 </div>
             </div>
         </div>
+    </div>
 
-        <section class="section related">
-            <h2 class="section__title related__title">Related Products</h2>
-            {% if related_products %}
-                <div class="related__grid">
-                    {% for rp in related_products %}
-                        <div class="product-card">
-                            <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
-                                <div class="product-card__image">
-                                    {% if rp.image %}
-                                        <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
-                                    {% else %}
-                                        <div class="product-card__placeholder" aria-hidden="true">No image</div>
-                                    {% endif %}
-                                </div>
-                                <div class="product-card-details">
-                                    <h3 class="product-card__title">{{ rp.name }}</h3>
-                                    <span class="product__price">${{ rp.price|floatformat:2 }}</span>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="related__empty">No related products found.</p>
-            {% endif %}
-        </section>
-
-        <!-- ================= Reviews List ================= -->
-        <section class="section section--divider reviews" id="reviews">
-            <h2 class="section__title">Reviews</h2>
-
-            {% if reviews %}
-                <ul class="review-list">
-                    {% for review in reviews %}
-                        <li class="review-item">
-                            <p class="review-body">{{ review.body }}</p>
-                            <small class="review-meta">
-                                Rating: {{ review.rating }} / 5
-                                {% if review.vote_count %}
-                                    Votes: {{ review.vote_count }}
-                                {% endif %}
-                                {{ review.created_at|date:"Y-m-d" }}
-                            </small>
-
-                             <!-- Vote -->
-                            <div class="review-vote">
-                                <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
-                                    Vote this review
-                                </a>
-                                <span>
-                                    Helpful: {{ review.vote_count }}
-                                </span>
-                            </div>
-                            
-                            <!-- Flag -->
-                            <div class="review-flag">
-                                <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
-                                    Flag this review
-                                </a>
-                                <span>Off-topic: {{ review.flag_off_topic }}</span>
-                                <span>Inappropriate: {{ review.flag_inappropriate }}</span>
-                                <span>Fake: {{ review.flag_fake }}</span>
-                            </div>
-
-                            <!-- Comment -->
-                            <details class="comment-details">
-                                <summary class="comment-summary">Add Comment</summary>
-                                <form class="comment-form" method="post"
-                                      action="{% url 'reviews:add_comment' review.id %}">
-                                    {% csrf_token %}
-                                    {{ comment_form.as_p }}
-                                    <div class="cta-row">
-                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Submit</button>
-                                    </div>
-                                </form>
-                            </details>
-
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="empty-state">No reviews yet. Be the first one!</p>
-            {% endif %}
-        </section>
-
-        <!-- ================= Add Review Form ================= -->
-        <section class="section add-review">
-            <h2 class="section__title">Add a Review</h2>
-
-            <form method="post" action="{% url 'reviews:add_review' product.id %}">
-                {% csrf_token %}
-                {{ review_form.as_p }}
-                <div class="cta-row">
-                    <button type="submit" class="btn btn-primary">Add Review</button>
-                </div>
-            </form>
-        </section>
-
-
+    <section class="section related">
+        <h2 class="section__title related__title">Related Products</h2>
+        {% if related_products %}
+        <div class="related__grid">
+            {% for rp in related_products %}
+            <div class="product-card">
+                <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
+                    <div class="product-card__image">
+                        {% if rp.image %}
+                        <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
+                        {% else %}
+                        <div class="product-card__placeholder" aria-hidden="true">No image</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-card-details">
+                        <h3 class="product-card__title">{{ rp.name }}</h3>
+                        <span class="product__price">${{ rp.price|floatformat:2 }}</span>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="related__empty">No related products found.</p>
+        {% endif %}
     </section>
+
+    <!-- ================= Reviews List ================= -->
+    <section class="section section--divider reviews" id="reviews">
+        <h2 class="section__title">Reviews</h2>
+
+        {% if reviews %}
+        <ul class="review-list">
+            {% for review in reviews %}
+            <li class="review-item">
+                <div class="review-row">
+                    <div class="review-content">
+                        <p class="review-body">{{ review.body }}</p>
+                        <small class="review-meta">
+                            By: {{ review.email }} - Rating: {{ review.rating }} / 5 - {{ review.created_at|date:"Y-m-d" }}
+                        </small>
+
+                        <!-- Comment -->
+                        {% if review.comments.all %}
+                        <details class="comment-drawer">
+                            <summary class="comment-drawer__summary">
+                                Comments ({{ review.comments.count }})
+                            </summary>
+                            <ul class="comment-list">
+                                {% for comment in review.comments.all %}
+                                <li class="comment-item">
+                                    <p class="comment-body">{{ comment.body }}</p>
+                                    <small class="comment-meta">
+                                        By: {{ comment.email }} - {{ comment.created_at|date:"Y-m-d" }}
+                                    </small>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </details>
+                        {% endif %}
+                        <details class="comment-details">
+                            <summary class="btn btn-primary">Add Comment</summary>
+                            <form method="post" action="{% url 'reviews:add_comment' review.id %}">
+                                {% csrf_token %}
+                                {{ comment_form.as_p }}
+                                <div class="cta-row">
+                                    <button type="submit" class="btn btn-primary">Add Comment</button>
+                                </div>
+                            </form>
+                        </details>
+                    </div>
+
+                    <div class="review-actions">
+                        <!-- Vote -->
+                        <div class="review-vote">
+                            <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
+                                Vote this review
+                            </a>
+                            <span>
+                                Helpful: {{ review.vote_count }}
+                            </span>
+                        </div>
+
+                        <!-- Flag -->
+                        <div class="review-flag">
+                            <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
+                                Flag this review
+                            </a>
+                            <span>Off-topic: {{ review.flag_off_topic }}</span>
+                            <span>Inappropriate: {{ review.flag_inappropriate }}</span>
+                            <span>Fake: {{ review.flag_fake }}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-state">No reviews yet. Be the first one!</p>
+        {% endif %}
+    </section>
+
+    <!-- ================= Add Review Form ================= -->
+    <section class="section add-review">
+        <h2 class="section__title">Add a Review</h2>
+
+        <form method="post" action="{% url 'reviews:add_review' product.id %}">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <div class="cta-row">
+                <button type="submit" class="btn btn-primary">Add Review</button>
+            </div>
+        </form>
+    </section>
+
+
+</section>
 {% endblock main %}

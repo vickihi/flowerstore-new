@@ -119,9 +119,11 @@ def product_detail(request, product_id: int):
 
     reviews = base_reviews.annotate(
         vote_total=Count("vote", distinct=True),
-        flag_off_topic=Count("flags", filter=Q(flags__flag='off-topic'), distinct=True),
-        flag_inappropriate=Count("flags", filter=Q(flags__flag='inappropriate'), distinct=True),
-        flag_fake=Count("flags", filter=Q(flags__flag='fake'), distinct=True),
+        flag_off_topic=Count("flags", filter=Q(flags__flag="off-topic"), distinct=True),
+        flag_inappropriate=Count(
+            "flags", filter=Q(flags__flag="inappropriate"), distinct=True
+        ),
+        flag_fake=Count("flags", filter=Q(flags__flag="fake"), distinct=True),
     ).order_by(
         "-vote_total",
         "-created_at",

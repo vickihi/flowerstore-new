@@ -4,19 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reviews', '0004_flag'),
+        ("reviews", "0004_flag"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='flag',
-            name='created_at',
+            model_name="flag",
+            name="created_at",
         ),
         migrations.AlterField(
-            model_name='flag',
-            name='flag',
-            field=models.CharField(choices=[('off-topic', 'Off-topic'), ('inappropriate', 'Inappropriate'), ('fake', 'Fake')], max_length=20),
+            model_name="flag",
+            name="flag",
+            field=models.CharField(
+                choices=[
+                    ("off-topic", "Off-topic"),
+                    ("inappropriate", "Inappropriate"),
+                    ("fake", "Fake"),
+                ],
+                max_length=20,
+            ),
         ),
     ]
