@@ -1,8 +1,10 @@
 from django.db.models import Avg, Count, Q
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
+
 from reviews.forms import ReviewForm, CommentForm
 from reviews.models.review import Review
+from .forms import IndexForm, SearchForm, CategoryForm, AddToCartForm
 from .models import Product, Category
 
 
@@ -62,17 +64,27 @@ def _render_search(request, products, index_form, search_form, search_term):
 
 
 def apply_sort_and_available(products, form, default_sort):
+    sort_order = default_sort
+
     if form.is_valid():
         sort_order = form.cleaned_data.get("sort_order") or default_sort
         available = form.cleaned_data.get("available")
 
-        if sort_order:
-            products = products.order_by(sort_order)
-
         if available:
             products = products.available()
+    if sort_order in ("rating", "-rating"):
+        products = products.annotate(
+            avg_rating=Coalesce(
+                Avg("reviews__rating", filter=Q(reviews__is_hidden=False)),
+                0.0,
+            )
+        )
+        if sort_order == "rating":
+            return products.order_by("-avg_rating", "-created_at")
+        else:
+            return products.order_by("avg_rating", "-created_at")
 
-    return products
+    return products.order_by(sort_order)
 
 
 def category_detail(request, category_id):

@@ -1,5 +1,8 @@
 from typing import Self
+
 from django.db import models
+from django.db.models import Avg, Q
+from django.db.models.functions import Coalesce
 
 
 class ProductQuerySet(models.QuerySet):
@@ -33,8 +36,6 @@ class Product(models.Model):
     created_at = models.DateTimeField("created at", auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
-    views_count = models.PositiveIntegerField(default=0)  # add this field for sorting
-
     class Meta:
         ordering = ["-created_at", "name"]
 
@@ -60,7 +61,15 @@ class Product(models.Model):
         if filter_category:
             products = products.filter(category=filter_category)
 
-        if sort_order:
-            products = products.order_by(sort_order)
+        if sort_order in ("rating", "-rating"):
+            products = products.annotate(
+                avg_rating=Coalesce(
+                    Avg("reviews__rating", filter=Q(reviews__is_hidden=False)),
+                    0.0,
+                )
+            )
+            if sort_order == "rating":
+                return products.order_by("-avg_rating", "-created_at")
+            return products.order_by("avg_rating", "-created_at")
 
-        return products
+        return products.order_by(sort_order)

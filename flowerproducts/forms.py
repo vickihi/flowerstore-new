@@ -10,7 +10,8 @@ class IndexForm(forms.Form):
         ("-price", "Price (high to low)"),
         ("-created_at", "Date (newest to oldest)"),
         ("created_at", "Date (oldest to newest)"),
-        ("views_count", "Most popular"),
+        ("rating", "Rating (high to low)"), #add rating field
+        ("-rating", "Rating (low to high)"),
     ]
 
     sort_order = forms.ChoiceField(
@@ -54,7 +55,8 @@ class CategoryForm(forms.Form):
         ("-price", "Price (high to low)"),
         ("-created_at", "Date (newest to oldest)"),
         ("created_at", "Date (oldest to newest)"),
-        ("views_count", "Most popular"),
+        ("rating", "Rating (high to low)"), # add rating field
+        ("-rating", "Rating (low to high)"),
     ]
 
     sort_order = forms.ChoiceField(
