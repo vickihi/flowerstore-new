@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'flowerproducts/css/product_detail.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 {% endblock %}
 
@@ -72,94 +71,8 @@
         {% endif %}
     </section>
 
-    <!-- ================= Reviews List ================= -->
-    <section class="section section--divider reviews" id="reviews">
-        <h2 class="section__title">Reviews</h2>
-
-        {% if reviews %}
-        <ul class="review-list">
-            {% for review in reviews %}
-            <li class="review-item">
-                <div class="review-row">
-                    <div class="review-content">
-                        <p class="review-body">{{ review.body }}</p>
-                        <small class="review-meta">
-                            By: {{ review.email }} - Rating: {{ review.rating }} / 5 - {{ review.created_at|date:"Y-m-d" }}
-                        </small>
-
-                        <!-- Comment -->
-                        {% if review.comments.all %}
-                        <details class="comment-drawer">
-                            <summary class="comment-drawer__summary">
-                                Comments ({{ review.comments.count }})
-                            </summary>
-                            <ul class="comment-list">
-                                {% for comment in review.comments.all %}
-                                <li class="comment-item">
-                                    <p class="comment-body">{{ comment.body }}</p>
-                                    <small class="comment-meta">
-                                        By: {{ comment.email }} - {{ comment.created_at|date:"Y-m-d" }}
-                                    </small>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </details>
-                        {% endif %}
-                        <details class="comment-details">
-                            <summary class="btn btn-primary">Add Comment</summary>
-                            <form method="post" action="{% url 'reviews:add_comment' review.id %}">
-                                {% csrf_token %}
-                                {{ comment_form.as_p }}
-                                <div class="cta-row">
-                                    <button type="submit" class="btn btn-primary">Add Comment</button>
-                                </div>
-                            </form>
-                        </details>
-                    </div>
-
-                    <div class="review-actions">
-                        <!-- Vote -->
-                        <div class="review-vote">
-                            <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
-                                Vote this review
-                            </a>
-                            <span>
-                                Helpful: {{ review.vote_count }}
-                            </span>
-                        </div>
-
-                        <!-- Flag -->
-                        <div class="review-flag">
-                            <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
-                                Flag this review
-                            </a>
-                            <span>Off-topic: {{ review.flag_off_topic }}</span>
-                            <span>Inappropriate: {{ review.flag_inappropriate }}</span>
-                            <span>Fake: {{ review.flag_fake }}</span>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="empty-state">No reviews yet. Be the first one!</p>
-        {% endif %}
-    </section>
-
-    <!-- ================= Add Review Form ================= -->
-    <section class="section add-review">
-        <h2 class="section__title">Add a Review</h2>
-
-        <form method="post" action="{% url 'reviews:add_review' product.id %}">
-            {% csrf_token %}
-            {{ review_form.as_p }}
-            <div class="cta-row">
-                <button type="submit" class="btn btn-primary">Add Review</button>
-            </div>
-        </form>
-    </section>
-
+    <!-- ================= Reviews  ================= -->
+    {% include "reviews/flowerproduct_reviews.html" %}
 
 </section>
 {% endblock main %}
