@@ -10,7 +10,7 @@ class IndexForm(forms.Form):
         ("-price", "Price (high to low)"),
         ("-created_at", "Date (newest to oldest)"),
         ("created_at", "Date (oldest to newest)"),
-        ("rating", "Rating (high to low)"), #add rating field
+        ("rating", "Rating (high to low)"),  # add rating field
         ("-rating", "Rating (low to high)"),
     ]
 
@@ -39,14 +39,6 @@ class SearchForm(forms.Form):
     )
 
 
-class AddToCartForm(forms.Form):
-    quantity = forms.IntegerField(
-        min_value=1,
-        initial=1,
-        label="Quantity",
-    )
-
-
 class CategoryForm(forms.Form):
     SORT_ORDERS = [
         ("name", "Name (A to Z)"),
@@ -55,7 +47,7 @@ class CategoryForm(forms.Form):
         ("-price", "Price (high to low)"),
         ("-created_at", "Date (newest to oldest)"),
         ("created_at", "Date (oldest to newest)"),
-        ("rating", "Rating (high to low)"), # add rating field
+        ("rating", "Rating (high to low)"),  # add rating field
         ("-rating", "Rating (low to high)"),
     ]
 
