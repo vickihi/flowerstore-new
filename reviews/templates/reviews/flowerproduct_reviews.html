@@ -73,10 +73,10 @@
 </section>
 
 <!-- ================= Add Review Form ================= -->
-<section class="section add-review">
+<section class="section add-review" id="add-review">
     <h2 class="section__title">Add a Review</h2>
 
-    <form method="post" action="{% url 'reviews:add_review' product.id %}">
+    <form method="post" action="{% url 'reviews:add_review' product.id %}#add-review">
         {% csrf_token %}
         {{ review_form.as_p }}
         <div class="cta-row">

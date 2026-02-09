@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 
 from flowerproducts.models import Product
+from flowerproducts.view_helpers import build_product_detail_context
 from reviews.models.review import Review
 from reviews.models.vote import Vote
 from reviews.models.flag import Flag
@@ -22,14 +23,21 @@ def add_review(request, product_id):
         review.product = product
         try:
             review.save()
+            return redirect("flowerproducts:product_detail", product_id=product_id)
         except IntegrityError:
-            messages.error(
-                request, "You have already reviewed this product with this email."
+            form.add_error(
+                None, "You have already reviewed this product with this email."
             )
-    else:
-        messages.error(request, "Review form is invalid. Please check your input.")
 
-    return redirect("flowerproducts:product_detail", product_id=product_id)
+    return render(
+        request,
+        "flowerproducts/product_detail.html",
+        build_product_detail_context(
+            product=product,
+            review_form=form,
+            comment_form=CommentForm(),
+        ),
+    )
 
 
 # Vote ========================================
