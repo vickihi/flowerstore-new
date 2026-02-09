@@ -179,15 +179,19 @@ body {
 }
 
 .review-content {
-    flex: 1;
+    width: 100%;
     min-width: 0;
 }
 
 .review-actions {
-    width: 240px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.btn-vote, .btn-flag, .btn-primary {
+    background-color: #b9b9b9;
 }
 
 @media (max-width: 800px) {
