@@ -88,14 +88,6 @@ body {
     margin-top: 2rem;
 }
 
-.btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
 
 .related__grid {
     display: grid;
@@ -192,6 +184,30 @@ body {
 
 .btn-vote, .btn-flag, .btn-primary {
     background-color: #b9b9b9;
+}
+
+.messages {
+    margin: 1rem 0;
+}
+
+.message {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background: #f2f2f2;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 0.5rem;
+}
+
+.message.error {
+    background: #fdecea;
+    border-color: #f5c2c7;
+    color: #c00;
+}
+
+.errorlist,
+.errorlist li {
+    color: #c00;
 }
 
 @media (max-width: 800px) {

@@ -42,6 +42,13 @@
         </div>
     </nav>
 </header>
+{% if messages %}
+<section class="messages" aria-live="polite">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</section>
+{% endif %}
 <main
         class="
             {{ request.resolver_match.app_name }}

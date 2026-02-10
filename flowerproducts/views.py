@@ -1,11 +1,11 @@
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Q
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 
 from reviews.forms import ReviewForm, CommentForm
-from reviews.models.review import Review
 from .forms import IndexForm, SearchForm, CategoryForm
 from .models import Product, Category
+from .view_helpers import build_product_detail_context
 
 
 def index(request):
@@ -123,42 +123,12 @@ def category_list(request):
 
 def product_detail(request, product_id: int):
     product = get_object_or_404(Product, pk=product_id)
-    related_products = Product.objects.filter(category=product.category).exclude(
-        pk=product_id
-    )[:3]
-    base_reviews = Review.objects.filter(product=product, is_hidden=False)
-    average_rating = base_reviews.aggregate(avg=Avg("rating"))["avg"]
-
-    reviews = base_reviews.annotate(
-        vote_total=Count("vote", distinct=True),
-        flag_off_topic=Count("flags", filter=Q(flags__flag="off-topic"), distinct=True),
-        flag_inappropriate=Count(
-            "flags", filter=Q(flags__flag="inappropriate"), distinct=True
-        ),
-        flag_fake=Count("flags", filter=Q(flags__flag="fake"), distinct=True),
-    ).order_by(
-        "-vote_total",
-        "-created_at",
-    )
-
-    review_count = reviews.count()
-    average_rating_value = float(average_rating or 0)
-    average_rating_rounded = round(average_rating_value * 2) / 2
-    average_rating_full = int(average_rating_rounded)
-    average_rating_half = (average_rating_rounded - average_rating_full) == 0.5
     return render(
         request,
         "flowerproducts/product_detail.html",
-        {
-            "product": product,
-            "related_products": related_products,
-            "reviews": reviews,
-            "average_rating": average_rating,
-            "average_rating_full": average_rating_full,
-            "average_rating_half": average_rating_half,
-            "review_count": review_count,
-            "star_range": range(1, 6),
-            "review_form": ReviewForm(),
-            "comment_form": CommentForm(),
-        },
+        build_product_detail_context(
+            product=product,
+            review_form=ReviewForm(),
+            comment_form=CommentForm(),
+        ),
     )
