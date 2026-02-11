@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from reviews.models.review import Review
+from django.utils import timezone
 
 
 class Flag(models.Model):
@@ -21,6 +22,7 @@ class Flag(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="flags")
     email = models.EmailField()
     flag = models.CharField(max_length=20, choices=FLAG_CHOICES)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
 
     class Meta:
         constraints = [
@@ -32,12 +34,8 @@ class Flag(models.Model):
 
     def clean(self):
         """Ensure that the user cannot flag their own review."""
-        if not self.review_id:
-            return
-        if self.email == self.review.email:
+        if self.review_id and self.email == self.review.email:
             raise ValidationError("You cannot flag your own review.")
-        if Flag.objects.filter(review=self.review, email=self.email).exists():
-            raise ValidationError("You have already voted on this review.")
 
     def __str__(self):
         return f"Flag({self.review_id}, {self.email}, {self.flag})"
