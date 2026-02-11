@@ -41,7 +41,8 @@
                         <ul class="comment-list">
                             {% for comment in review.comments.all %}
                             <li class="comment-item">
-                                <p class="comment-body">{{ comment.body }}</p>
+                                <p class="comment-body">{{ comment.body }} </p>
+                                <p>by: {{ comment.email }}</p>
                                 <small class="comment-meta">
                                     {{ comment.created_at|date:"Y-m-d" }}
                                 </small>
