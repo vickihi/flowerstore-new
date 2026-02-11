@@ -8,4 +8,4 @@ from reviews.models.flag import Flag
 admin.site.register(Review)
 admin.site.register(Vote)
 admin.site.register(Comment)
-admin.register(Flag)
+admin.site.register(Flag)
