@@ -9,14 +9,10 @@ class Flag(models.Model):
     Flag model for flag a review.
     """
 
-    OFF_TOPIC = "off-topic"
-    INAPPROPRIATE = "inappropriate"
-    FAKE = "fake"
-
     FLAG_CHOICES = (
-        (OFF_TOPIC, "Off-topic"),
-        (INAPPROPRIATE, "Inappropriate"),
-        (FAKE, "Fake"),
+        ("off-topic", "Off-topic"),
+        ("inappropriate", "Inappropriate"),
+        ("fake", "Fake"),
     )
 
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="flags")

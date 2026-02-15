@@ -16,21 +16,18 @@ class ReviewForm(BaseEmailForm, forms.ModelForm):
         fields = ["email", "body", "rating"]
 
 
-# Vote ========================================
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
         fields = ["email"]
 
 
-# Comment
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["email", "body"]
 
 
-# Flag
 class FlagForm(forms.ModelForm):
     class Meta:
         model = Flag

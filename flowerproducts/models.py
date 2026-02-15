@@ -12,6 +12,14 @@ class ProductQuerySet(models.QuerySet):
     def search(self, query: str) -> Self:
         return self.filter(name__icontains=query)
 
+    def with_avg_rating(self):
+        return self.annotate(
+            avg_rating=Coalesce(
+                Avg("reviews__rating", filter=Q(reviews__is_hidden=False)),
+                0.0,
+            )
+        )
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -61,15 +69,8 @@ class Product(models.Model):
         if filter_category:
             products = products.filter(category=filter_category)
 
-        if sort_order in ("rating", "-rating"):
-            products = products.annotate(
-                avg_rating=Coalesce(
-                    Avg("reviews__rating", filter=Q(reviews__is_hidden=False)),
-                    0.0,
-                )
-            )
-            if sort_order == "rating":
-                return products.order_by("-avg_rating", "-created_at")
-            return products.order_by("avg_rating", "-created_at")
+        if "avg_rating" in sort_order:
+            products = products.with_avg_rating()
+            return products.order_by(sort_order, "-created_at")
 
         return products.order_by(sort_order)

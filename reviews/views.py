@@ -39,8 +39,6 @@ def add_review(request, product_id):
         ),
     )
 
-
-# Vote ========================================
 def create_vote(request, review_id):
     """Show form to create a vote."""
     review = get_object_or_404(Review, pk=review_id)
@@ -81,7 +79,6 @@ def add_comment(request, review_id):
     return redirect("flowerproducts:product_detail", review.product.id)
 
 
-# Flag ========================================
 def create_flag(request, review_id):
     """Show form to create a flag."""
     review = get_object_or_404(Review, pk=review_id)

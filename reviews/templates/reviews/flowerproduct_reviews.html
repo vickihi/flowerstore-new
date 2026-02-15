@@ -1,4 +1,3 @@
-<!-- ================= Reviews List ================= -->
 <section class="section section--divider reviews" id="reviews">
     <h2 class="section__title">Reviews</h2>
 
@@ -70,12 +69,11 @@
                 </li>
             {% endfor %}
         </ul>
-    {% else %}
+    {% else %} by: {{ review.email }}
         <p class="empty-state">No reviews yet. Be the first one!</p>
     {% endif %}
 </section>
 
-<!-- ================= Add Review Form ================= -->
 <section class="section add-review" id="add-review">
     <h2 class="section__title">Add a Review</h2>
 
