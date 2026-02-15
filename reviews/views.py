@@ -39,6 +39,7 @@ def add_review(request, product_id):
         ),
     )
 
+
 def create_vote(request, review_id):
     """Show form to create a vote."""
     review = get_object_or_404(Review, pk=review_id)
