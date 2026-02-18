@@ -25,6 +25,7 @@ urlpatterns = [
     path("", flowerproducts.views.index, name="home"),
     path("flowerproducts/", include("flowerproducts.urls")),
     path("reviews/", include("reviews.urls")),
+    path("orders/", include("orders.urls")),
     path("admin/", admin.site.urls),
 ]
 
