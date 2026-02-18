@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from decimal import Decimal
 
 
@@ -9,74 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 
 from flowerproducts.models import Product
-from orders.constants import CART_KEY, LEGACY_CART_KEY
-
-
-@dataclass
-class Cart:
-    product_id: int
-    quantity: int
-
-
-class CartStore:
-    def __init__(self, session) -> None:
-        self.session = session
-        self.cart: dict[str, int] = session.get(
-            CART_KEY, session.get(LEGACY_CART_KEY, {})
-        )
-
-    def add(self, product_id: int, quantity: int) -> None:
-        p_id = str(product_id)
-        quantity = int(quantity)
-        if quantity <= 0:
-            return
-        current_quantity = int(self.cart.get(p_id, 0))
-        self.cart[p_id] = current_quantity + quantity
-        self._commit()
-
-    def set_quantity(self, product_id: int, quantity: int) -> None:
-        p_id = str(product_id)
-        quantity = int(quantity)
-        if quantity <= 0:
-            self.remove_product(product_id)
-            return
-        self.cart[p_id] = quantity
-        self._commit()
-
-    def remove_product(self, product_id: int) -> None:
-        p_id = str(product_id)
-        if p_id in self.cart:
-            del self.cart[p_id]
-            self._commit()
-
-    def items(self) -> list[Cart]:
-        return [
-            Cart(product_id=int(p_id), quantity=int(qty))
-            for p_id, qty in self.cart.items()
-        ]
-
-    def count_items(self) -> int:
-        return sum(int(quantity) for quantity in self.cart.values())
-
-    def as_dict(self) -> dict[str, int]:
-        return self.cart
-
-    def _commit(self) -> None:
-        self.session[CART_KEY] = self.cart
-        self.session.pop(LEGACY_CART_KEY, None)
-        self.session.modified = True
-
-
-def _cart_products(cart: dict[str, int]) -> list[tuple[Product, int, Decimal]]:
-    if not cart:
-        return []
-    products = Product.objects.filter(id__in=cart.keys())
-    rows: list[tuple[Product, int, Decimal]] = []
-    for product in products:
-        quantity = int(cart[str(product.id)])
-        line_total = product.price * quantity
-        rows.append((product, quantity, line_total))
-    return rows
+from orders.cart import CartStore
 
 
 def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
@@ -146,8 +78,8 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 
 
 def cart_detail(request: HttpRequest) -> HttpResponse:
-    cart = CartStore(request.session).as_dict()
-    rows = _cart_products(cart)
+    cart_store = CartStore(request.session)
+    rows = cart_store.detailed_items()
     order_total = sum((line_total for _, _, line_total in rows), Decimal("0.00"))
     return render(
         request,
