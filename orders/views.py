@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 
 from flowerproducts.models import Product
-from orders.cart import CartStore
+from orders.session import CartStore
 
 
 def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
