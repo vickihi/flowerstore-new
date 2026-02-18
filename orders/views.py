@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 
 from decimal import Decimal
 
@@ -9,25 +10,62 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 
 from flowerproducts.models import Product
-
-from .forms import CheckoutForm
-
-
-CART_SESSION_KEY = "shopping_cart"
+from orders.constants import CART_KEY, LEGACY_CART_KEY
 
 
-def _get_cart(request: HttpRequest) -> dict[str, int]:
-    return request.session.get(CART_SESSION_KEY, {})
+@dataclass
+class Cart:
+    product_id: int
+    quantity: int
 
 
-def _save_cart(request: HttpRequest, cart: dict[str, int]) -> None:
-    request.session[CART_SESSION_KEY] = cart
-    request.session.modified = True
+class CartStore:
+    def __init__(self, session) -> None:
+        self.session = session
+        self.cart: dict[str, int] = session.get(
+            CART_KEY, session.get(LEGACY_CART_KEY, {})
+        )
 
+    def add(self, product_id: int, quantity: int) -> None:
+        p_id = str(product_id)
+        quantity = int(quantity)
+        if quantity <= 0:
+            return
+        current_quantity = int(self.cart.get(p_id, 0))
+        self.cart[p_id] = current_quantity + quantity
+        self._commit()
 
-def _empty_cart(request: HttpRequest) -> None:
-    request.session.pop(CART_SESSION_KEY, None)
-    request.session.modified = True
+    def set_quantity(self, product_id: int, quantity: int) -> None:
+        p_id = str(product_id)
+        quantity = int(quantity)
+        if quantity <= 0:
+            self.remove_product(product_id)
+            return
+        self.cart[p_id] = quantity
+        self._commit()
+
+    def remove_product(self, product_id: int) -> None:
+        p_id = str(product_id)
+        if p_id in self.cart:
+            del self.cart[p_id]
+            self._commit()
+
+    def items(self) -> list[Cart]:
+        return [
+            Cart(product_id=int(p_id), quantity=int(qty))
+            for p_id, qty in self.cart.items()
+        ]
+
+    def count_items(self) -> int:
+        return sum(int(quantity) for quantity in self.cart.values())
+
+    def as_dict(self) -> dict[str, int]:
+        return self.cart
+
+    def _commit(self) -> None:
+        self.session[CART_KEY] = self.cart
+        self.session.pop(LEGACY_CART_KEY, None)
+        self.session.modified = True
 
 
 def _cart_products(cart: dict[str, int]) -> list[tuple[Product, int, Decimal]]:
@@ -49,10 +87,8 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
     quantity = max(int(request.POST.get("quantity", 1)), 1)
 
-    cart = _get_cart(request)
-    current_quantity = int(cart.get(str(product.id), 0))
-    cart[str(product.id)] = current_quantity + quantity
-    _save_cart(request, cart)
+    cart_store = CartStore(request.session)
+    cart_store.add(product.id, quantity)
 
     messages.success(
         request,
@@ -65,7 +101,8 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method != "POST":
         return redirect("orders:cart_detail")
 
-    cart = _get_cart(request)
+    cart_store = CartStore(request.session)
+    cart = cart_store.as_dict()
     product = get_object_or_404(Product, id=product_id)
     key = str(product.id)
     previous_quantity = int(cart.get(key, 0))
@@ -77,16 +114,14 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     new_quantity = int(request.POST.get("quantity", 0))
 
     if new_quantity <= 0:
-        cart.pop(key, None)
-        _save_cart(request, cart)
+        cart_store.remove_product(product.id)
         messages.success(
             request,
             f"{product.name} was removed from your shopping cart.",
         )
         return redirect("orders:cart_detail")
 
-    cart[key] = new_quantity
-    _save_cart(request, cart)
+    cart_store.set_quantity(product.id, new_quantity)
     messages.success(
         request,
         f"The quantity of {product.name} was changed from {previous_quantity} to {new_quantity}.",
@@ -98,12 +133,12 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method != "POST":
         return redirect("orders:cart_detail")
 
-    cart = _get_cart(request)
+    cart_store = CartStore(request.session)
+    cart = cart_store.as_dict()
     key = str(product_id)
     if key in cart:
         product = get_object_or_404(Product, id=product_id)
-        cart.pop(key, None)
-        _save_cart(request, cart)
+        cart_store.remove_product(product.id)
         messages.success(
             request,
             f"{product.name} was removed from your shopping cart.",
@@ -112,7 +147,7 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 
 
 def cart_detail(request: HttpRequest) -> HttpResponse:
-    cart = _get_cart(request)
+    cart = CartStore(request.session).as_dict()
     rows = _cart_products(cart)
     order_total = sum((line_total for _, _, line_total in rows), Decimal("0.00"))
     return render(
@@ -121,7 +156,6 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
         {
             "rows": rows,
             "order_total": order_total,
-            "checkout_form": CheckoutForm(),
         },
     )
   
