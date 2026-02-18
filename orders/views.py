@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from decimal import Decimal
 
 
@@ -157,3 +158,10 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
             "order_total": order_total,
         },
     )
+  
+def add_to_cart(request): ...
+def checkout_start(request): ...
+def checkout_success(request): ...
+def checkout_cancel(request): ...
+def order_strip_webhook(request): ...
+
