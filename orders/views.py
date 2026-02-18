@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from flowerproducts.models import Product
 
-from .forms import CheckoutForm
+
 
 
 CART_SESSION_KEY = "shopping_cart"
@@ -120,6 +120,6 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
         {
             "rows": rows,
             "order_total": order_total,
-            "checkout_form": CheckoutForm(),
+            
         },
     )
