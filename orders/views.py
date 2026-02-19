@@ -1,12 +1,6 @@
-from decimal import Decimal
-
-
 from django.contrib import messages
-
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-
-
 from flowerproducts.models import Product
 from orders.session import CartStore
 
@@ -19,18 +13,14 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     requested_quantity = max(int(request.POST.get("quantity", 1)), 1)
 
     cart_store = CartStore(request.session)
-    cart = cart_store.as_dict()
-    current_in_cart = int(cart.get(str(product.id), 0))
-    final_quantity = current_in_cart + requested_quantity
-
-    if final_quantity > product.quantity:
+    if not cart_store.add_with_stock_limit(
+        product.id, requested_quantity, product.quantity
+    ):
         messages.error(
             request,
             f"Only {product.quantity} item(s) of {product.name} are in stock.",
         )
         return redirect("flowerproducts:product_detail", product_id=product_id)
-
-    cart_store.add(product.id, requested_quantity)
 
     messages.success(
         request,
@@ -44,10 +34,8 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         return redirect("orders:cart_detail")
 
     cart_store = CartStore(request.session)
-    cart = cart_store.as_dict()
     product = get_object_or_404(Product, id=product_id)
-    key = str(product.id)
-    previous_quantity = int(cart.get(key, 0))
+    previous_quantity = cart_store.get_quantity(product.id)
 
     if previous_quantity == 0:
         messages.error(request, f"{product.name} is not in your shopping cart.")
@@ -63,14 +51,15 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         )
         return redirect("orders:cart_detail")
 
-    if new_quantity > product.quantity:
+    if not cart_store.set_quantity_with_stock_limit(
+        product.id, new_quantity, product.quantity
+    ):
         messages.error(
             request,
             f"Only {product.quantity} item(s) of {product.name} are in stock.",
         )
         return redirect("orders:cart_detail")
 
-    cart_store.set_quantity(product.id, new_quantity)
     messages.success(
         request,
         f"The quantity of {product.name} was changed from {previous_quantity} to {new_quantity}.",
@@ -83,9 +72,7 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         return redirect("orders:cart_detail")
 
     cart_store = CartStore(request.session)
-    cart = cart_store.as_dict()
-    key = str(product_id)
-    if key in cart:
+    if cart_store.get_quantity(product_id) > 0:
         product = get_object_or_404(Product, id=product_id)
         cart_store.remove_product(product.id)
         messages.success(
@@ -98,7 +85,7 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 def cart_detail(request: HttpRequest) -> HttpResponse:
     cart_store = CartStore(request.session)
     rows = cart_store.detailed_items()
-    order_total = sum((line_total for _, _, line_total in rows), Decimal("0.00"))
+    order_total = cart_store.order_total(rows)
     return render(
         request,
         "orders/cart.html",
