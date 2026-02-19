@@ -20,12 +20,6 @@ urlpatterns = [
         views.remove_cart_item,
         name="remove_cart_item",
     ),
-   path(
-        "orders/checkout", 
-        views.checkout_start, 
-        name="checkout_start"),
-   path(
-      "success/", 
-      views.checkout_success, 
-      name="checkout_success"),
+    path("orders/checkout", views.checkout_start, name="checkout_start"),
+    path("success/", views.checkout_success, name="checkout_success"),
 ]
