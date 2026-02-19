@@ -5,46 +5,46 @@
 {% block main %}
     <h1>Shopping Cart</h1>
 
-    {% if rows %}
-        <table>
-            <thead>
-            <tr>
-                <th>Image</th>
-                <th>Product</th>
-                <th>Unit price</th>
-                <th>Quantity</th>
-                <th>Total price</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for product, quantity, line_total in rows %}
-                <tr>
-                    <td>
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="80">
-                        {% endif %}
-                    </td>
-                    <td>{{ product.name }}</td>
-                    <td>${{ product.price|floatformat:2 }}</td>
-                    <td>
-                        <form method="post" action="{% url 'orders:update_cart_item' product.id %}">
-                            {% csrf_token %}
-                            <input type="number" name="quantity" min="0" value="{{ quantity }}" required>
-                            <button type="submit">Update</button>
-                        </form>
-                    </td>
-                    <td>${{ line_total|floatformat:2 }}</td>
-                    <td>
-                        <form method="post" action="{% url 'orders:remove_cart_item' product.id %}">
-                            {% csrf_token %}
-                            <button type="submit">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+{% if rows %}
+<table>
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Unit price</th>
+            <th>Quantity</th>
+            <th>Total price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product, quantity, line_total in rows %}
+        <tr>
+            <td>
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="80">
+                {% endif %}
+            </td>
+            <td>{{ product.name }}</td>
+            <td>${{ product.price|floatformat:2 }}</td>
+            <td>
+                <form method="post" action="{% url 'orders:update_cart_item' product.id %}">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" min="0" max="{{ product.quantity }}" value="{{ quantity }}" required>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+            <td>${{ line_total|floatformat:2 }}</td>
+            <td>
+                <form method="post" action="{% url 'orders:remove_cart_item' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
         <p><strong>Order total:</strong> ${{ order_total|floatformat:2 }}</p>
 

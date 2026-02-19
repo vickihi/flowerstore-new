@@ -17,6 +17,7 @@ class CartStore:
         self.cart: dict[str, int] = session.get(CART_KEY, {})
 
     def add(self, product_id: int, quantity: int) -> None:
+        """Add a product to the cart."""
         p_id = str(product_id)
         quantity = int(quantity)
         if quantity <= 0:
@@ -26,6 +27,7 @@ class CartStore:
         self._commit()
 
     def set_quantity(self, product_id: int, quantity: int) -> None:
+        """Set product quantity in the cart."""
         p_id = str(product_id)
         quantity = int(quantity)
         if quantity <= 0:
@@ -35,24 +37,29 @@ class CartStore:
         self._commit()
 
     def remove_product(self, product_id: int) -> None:
+        """Remove a product from the cart."""
         p_id = str(product_id)
         if p_id in self.cart:
             del self.cart[p_id]
             self._commit()
 
     def items(self) -> list[Cart]:
+        """Return all products in the cart."""
         return [
             Cart(product_id=int(p_id), quantity=int(qty))
             for p_id, qty in self.cart.items()
         ]
 
     def count_items(self) -> int:
+        """Return total quantity of products in the cart."""
         return sum(int(quantity) for quantity in self.cart.values())
 
     def as_dict(self) -> dict[str, int]:
+        """Expose the raw cart mapping (product_id -> quantity)."""
         return self.cart
 
     def detailed_items(self) -> list[tuple[Product, int, Decimal]]:
+        """Return cart rows as (product, quantity, line_total)."""
         if not self.cart:
             return []
         products = Product.objects.filter(id__in=self.cart.keys())
@@ -64,5 +71,6 @@ class CartStore:
         return rows
 
     def _commit(self) -> None:
+        """Persist in-memory cart changes back to the session."""
         self.session[CART_KEY] = self.cart
         self.session.modified = True

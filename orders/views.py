@@ -17,14 +17,25 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         return redirect("flowerproducts:product_detail", product_id=product_id)
 
     product = get_object_or_404(Product, id=product_id)
-    quantity = max(int(request.POST.get("quantity", 1)), 1)
+    requested_quantity = max(int(request.POST.get("quantity", 1)), 1)
 
     cart_store = CartStore(request.session)
-    cart_store.add(product.id, quantity)
+    cart = cart_store.as_dict()
+    current_in_cart = int(cart.get(str(product.id), 0))
+    final_quantity = current_in_cart + requested_quantity
+
+    if final_quantity > product.quantity:
+        messages.error(
+            request,
+            f"Only {product.quantity} item(s) of {product.name} are in stock.",
+        )
+        return redirect("flowerproducts:product_detail", product_id=product_id)
+
+    cart_store.add(product.id, requested_quantity)
 
     messages.success(
         request,
-        f"{quantity} item(s) of {product.name} were added to your shopping cart.",
+        f"{requested_quantity} item(s) of {product.name} were added to your shopping cart.",
     )
     return redirect("orders:cart_detail")
 
@@ -50,6 +61,13 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         messages.success(
             request,
             f"{product.name} was removed from your shopping cart.",
+        )
+        return redirect("orders:cart_detail")
+
+    if new_quantity > product.quantity:
+        messages.error(
+            request,
+            f"Only {product.quantity} item(s) of {product.name} are in stock.",
         )
         return redirect("orders:cart_detail")
 
@@ -152,10 +170,7 @@ def checkout_start(request) -> HttpResponse:
     return redirect(checkout_session.url, code=303)
 
 
+def checkout_start(request): ...
 def checkout_success(request): ...
 
 
-def checkout_cancel(request): ...
-
-
-def order_strip_webhook(request): ...

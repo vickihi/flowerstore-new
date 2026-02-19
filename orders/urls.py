@@ -21,8 +21,6 @@ urlpatterns = [
         views.remove_cart_item,
         name="remove_cart_item",
     ),
-    path("checkout", views.checkout_start, name="checkout_start"),
-    path("success", views.checkout_success, name="checkout_success"),
-    path("checkout_cancel", views.checkout_cancel, name="checkout_cancel"),
-    path("order_stripe_webhook", views.order_strip_webhook, name="order_strip_webhook"),
+    path("orders/checkout", views.checkout_start, name="checkout_start"),
+    path("success/", views.checkout_success, name="checkout_success"),
 ]
