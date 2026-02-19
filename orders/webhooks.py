@@ -5,21 +5,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from .models import Order
 
+
 @csrf_exempt
 def stripe_webhook(request):
     """Handle Stripe events."""
     payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     event = None
-    endpoint_secret = os.environ['STRIPE_WEBHOOK_SECRET']
+    endpoint_secret = os.environ["STRIPE_WEBHOOK_SECRET"]
 
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
-        )
-    except Exception as e:
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except ValueError as _:
         return HttpResponse(status=400)
-    
+    except stripe.error.SignatureVerificationError as _:
+        return HttpResponse(status=400)
+
     is_payment_fullfilled = (
         event["type"] == "checkout.session.completed"
         or event["type"] == "checkout.session.async_payment_succeeded"
@@ -34,12 +35,7 @@ def stripe_webhook(request):
         order.fullfill(
             name=customer_details["name"],
             email=customer_details["email"],
-            payment_id = stripe_checkout_session["payment_intent"],
+            payment_id=stripe_checkout_session["payment_intent"],
         )
 
     return HttpResponse(status=200)
-
-
-
-
-

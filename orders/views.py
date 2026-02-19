@@ -163,7 +163,5 @@ def checkout_start(request) -> HttpResponse:
     return redirect(checkout_session.url, code=303)
 
 
-def checkout_start(request): ...
+# def checkout_start(request): ...     # commnet this line for passing test
 def checkout_success(request): ...
-
-

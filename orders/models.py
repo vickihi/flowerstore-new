@@ -24,6 +24,7 @@ class Order(models.Model):
         self.payment_id = payment_id
         self.save()
 
+
 class OrderItem(models.Model):
     """OrderItem model for order items."""
 
