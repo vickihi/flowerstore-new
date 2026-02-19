@@ -120,3 +120,4 @@ class CartStore:
         """Persist in-memory cart changes back to the session."""
         self.session[CART_KEY] = self.cart
         self.session.modified = True
+

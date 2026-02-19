@@ -17,6 +17,12 @@ class Order(models.Model):
         """Return True if order is fulfilled."""
         return bool(self.payment_id)
 
+    def fullfill(self, name: str, email: str, payment_id: str) -> None:
+        """Fullfill this order."""
+        self.name = name
+        self.email = email
+        self.payment_id = payment_id
+        self.save()
 
 class OrderItem(models.Model):
     """OrderItem model for order items."""
