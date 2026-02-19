@@ -25,3 +25,14 @@ class OrderItem(models.Model):
     product = models.ForeignKey("flowerproducts.Product", on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["order", "product"],
+                name="unique_order_item",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"

@@ -1,7 +1,14 @@
+import os
+from decimal import Decimal, ROUND_HALF_UP
+
+import stripe
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+
 from flowerproducts.models import Product
+from orders.models import Order, OrderItem
 from orders.session import CartStore
 
 
@@ -96,7 +103,67 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
     )
 
 
+def checkout_start(request) -> HttpResponse:
+    """Checkout start page"""
+    if request.method != "POST":
+        return redirect("orders:cart_detail")
+    cart_store = CartStore(request.session)
+    rows = cart_store.detailed_items()
+
+    if not rows:
+        messages.error(request, "No items were added to your shopping cart.")
+        return redirect("orders:cart_detail")
+
+    order = Order()
+    order.save()
+    order_total = Decimal("0.00")
+
+    for product, qty, line_total in rows:
+        OrderItem.objects.create(
+            order=order,
+            product=product,
+            quantity=qty,
+            unit_price=product.price,
+        )
+        order_total += line_total
+
+    order.total_price = order_total
+    order.save(update_fields=["total_price"])
+
+    stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+
+    line_items = []
+    for product, qty, _line_total in rows:
+        unit_amount = int(
+            (product.price * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+        )
+
+        line_items.append(
+            {
+                "price_data": {
+                    "currency": "cad",
+                    "unit_amount": unit_amount,
+                    "product_data": {
+                        "name": product.name,
+                        # "images": [ urls... ]
+                    },
+                },
+                "quantity": qty,
+            }
+        )
+
+    checkout_session = stripe.checkout.Session.create(
+        client_reference_id=str(order.id),
+        line_items=line_items,
+        mode="payment",
+        success_url=request.build_absolute_uri(reverse("orders:checkout_success")),
+        cancel_url=request.build_absolute_uri(reverse("orders:checkout_cancel")),
+    )
+
+    return redirect(checkout_session.url, code=303)
+
+
 def checkout_start(request): ...
 def checkout_success(request): ...
-def checkout_cancel(request): ...
-def order_strip_webhook(request): ...
+
+
