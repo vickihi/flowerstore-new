@@ -3,7 +3,7 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block main %}
-<h1>Shopping Cart</h1>
+    <h1>Shopping Cart</h1>
 
 {% if rows %}
 <table>
@@ -46,9 +46,13 @@
     </tbody>
 </table>
 
-<p><strong>Order total:</strong> ${{ order_total|floatformat:2 }}</p>
+        <p><strong>Order total:</strong> ${{ order_total|floatformat:2 }}</p>
 
-{% else %}
-<p>Your shopping cart is empty.</p>
-{% endif %}
+        <form method="post" action="{% url 'orders:checkout_start' %}">
+            {% csrf_token %}
+            <button type="submit">Checkout</button>
+        </form>
+    {% else %}
+        <p>Your shopping cart is empty.</p>
+    {% endif %}
 {% endblock main %}
