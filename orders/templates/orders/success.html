@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Shopping Cart{% endblock %}
+
+{% block main %}
+    <div>
+        <h1>Thank you for your order!</h1>
+        <p>Your shopping cart is now empty.</p>
+        <a href="{% url 'home' %}" class="btn-continue">
+            Continue Shopping
+        </a>
+    </div>
+{% endblock main %}

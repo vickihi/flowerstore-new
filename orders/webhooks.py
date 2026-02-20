@@ -30,11 +30,10 @@ def stripe_webhook(request):
         stripe_checkout_session = event["data"]["object"]
         order_id = stripe_checkout_session["client_reference_id"]
         order = Order.objects.get(pk=order_id)
-        customer_details = stripe_checkout_session["customer_details"]
 
         order.fulfill(
-            name=customer_details["name"],
-            email=customer_details["email"],
+            name=stripe_checkout_session["customer_details"]["name"],
+            email=stripe_checkout_session["customer_details"]["email"],
             payment_id=stripe_checkout_session["payment_intent"],
         )
 
