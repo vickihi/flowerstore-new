@@ -3,48 +3,53 @@
 {% block title %}Checkout{% endblock %}
 
 {% block main %}
-<h1>Checkout</h1>
+    <diV class="checkout-container">
+        <section class="checkout-detail">
+            {% if rows %}
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Unit price</th>
+                        <th>Quantity</th>
+                        <th>Line total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product, quantity, line_total in rows %}
+                        <tr>
+                            <td>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% endif %}</td>
+                            <td>     {{ product.name }}</td>
 
-{% if rows %}
-<table>
-    <thead>
-        <tr>
-          <th>Product</th>
-          <th>Unit price</th>
-          <th>Qty</th>
-          <th>Line total</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product, quantity, line_total in rows %}
-        <tr>
-            <td>
-              {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-              {% endif %}
-              {{ product.name }}
-            </td>
-            <td>${{ product.price }}</td>
-            <td>{{ qty }}</td>
-            <td>${{ line_total }}</td>
-          </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
-<p><strong>Order total:</strong> ${{ order_total }}</p>
+                            <td>${{ product.price }}</td>
+                            <td>{{ quantity }}</td>
+                            <td>${{ line_total }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </section>
+                <section class="checkout-info">
+                <p>Order total: ${{ order_total }}</p>
 
-    <form method="post" action="{% url 'orders:checkout_start' %}">
-      {% csrf_token %}
-      <button type="submit">Pay with Stripe</button>
-    </form>
+                <form method="post" action="{% url 'orders:checkout_start' %}">
+                    {% csrf_token %}
+                    <button class="checkout-btn" type="submit">Pay with Stripe</button>
+                </form>
 
-    <p>
-      <a href="{% url 'orders:cart_detail' %}">Back to cart</a>
-    </p>
+                <p>
+                    <a class="back-to-cart" href="{% url 'orders:cart_detail' %}">Back to cart</a>
+                </p>
 
-  {% else %}
-    <p>Your cart is empty.</p>
-    <p><a href="{% url 'flowerproducts:index' %}">Continue shopping</a></p>
-{% endif %}
+            {% else %}
+                <p>Your cart is empty.</p>
+                <p><a href="{% url 'flowerproducts:index' %}">Continue shopping</a></p>
+            {% endif %}
+            </section>
+    </diV>
 {% endblock main %}
