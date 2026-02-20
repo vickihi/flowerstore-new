@@ -1,0 +1,36 @@
+h1{
+    color: #313030;
+}
+
+.checkout-container{
+    display: flex;
+    flex-direction: row;
+    padding: 50px;
+    gap: 20px;
+}
+
+ .checkout-detail{
+     width: 60%;
+ }
+ .checkout-info{
+     border: 2px solid gray;
+     padding: 20px;
+ }
+
+ .checkout-detail td {
+     padding: 0 20px;
+     border-bottom: 1px solid gray;
+
+ }
+ .checkout-detail img{
+     width: 120px;
+     height: 100px;
+ }
+
+ .checkout-btn{
+     padding: 10px;
+ }
+.back-to-cart{
+    padding: 10px 0;
+    color: gray;
+}

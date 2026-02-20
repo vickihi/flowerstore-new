@@ -48,7 +48,7 @@
 
         <p><strong>Order total:</strong> ${{ order_total|floatformat:2 }}</p>
 
-        <form method="post" action="{% url 'orders:checkout_start' %}">
+        <form method="post" action="{% url 'orders:checkout_page' %}">
             {% csrf_token %}
             <button type="submit">Checkout</button>
         </form>

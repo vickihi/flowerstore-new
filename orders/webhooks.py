@@ -21,18 +21,18 @@ def stripe_webhook(request):
     except stripe.error.SignatureVerificationError as _:
         return HttpResponse(status=400)
 
-    is_payment_fullfilled = (
+    is_payment_fulfilled = (
         event["type"] == "checkout.session.completed"
         or event["type"] == "checkout.session.async_payment_succeeded"
     )
 
-    if is_payment_fullfilled:
+    if is_payment_fulfilled:
         stripe_checkout_session = event["data"]["object"]
         order_id = stripe_checkout_session["client_reference_id"]
         order = Order.objects.get(pk=order_id)
         customer_details = stripe_checkout_session["customer_details"]
 
-        order.fullfill(
+        order.fulfill(
             name=customer_details["name"],
             email=customer_details["email"],
             payment_id=stripe_checkout_session["payment_intent"],
