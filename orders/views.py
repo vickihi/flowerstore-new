@@ -21,7 +21,7 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 
     cart_store = CartStore(request.session)
     if not cart_store.add_with_stock_limit(
-            product.id, requested_quantity, product.quantity
+        product.id, requested_quantity, product.quantity
     ):
         messages.error(
             request,
@@ -59,7 +59,7 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         return redirect("orders:cart_detail")
 
     if not cart_store.set_quantity_with_stock_limit(
-            product.id, new_quantity, product.quantity
+        product.id, new_quantity, product.quantity
     ):
         messages.error(
             request,
@@ -107,7 +107,9 @@ def checkout_page(request):
     cart_store = CartStore(request.session)
     rows = cart_store.detailed_items()
     order_total = cart_store.order_total(rows)
-    return render(request, "orders/checkout.html", {"rows": rows, "order_total": order_total})
+    return render(
+        request, "orders/checkout.html", {"rows": rows, "order_total": order_total}
+    )
 
 
 def checkout_start(request) -> HttpResponse:
@@ -169,7 +171,7 @@ def checkout_start(request) -> HttpResponse:
     return redirect(checkout_session.url, code=303)
 
 
-def checkout_success(request: HttpRequest) -> HttpResponse: 
-    if 'cart' in request.session:
-        del request.session['cart']
+def checkout_success(request: HttpRequest) -> HttpResponse:
+    if "cart" in request.session:
+        del request.session["cart"]
     return render(request, "orders/success.html")

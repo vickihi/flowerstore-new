@@ -30,4 +30,3 @@ urlpatterns = [
         name="fulfill_stripe_checkout_webhook",
     ),
 ]
-
