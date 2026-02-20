@@ -32,8 +32,8 @@ def stripe_webhook(request):
         order = Order.objects.get(pk=order_id)
 
         order.fulfill(
-            name=customer_details["name"],
-            email=customer_details["email"],
+            name=stripe_checkout_session["customer_details"]["name"],
+            email=stripe_checkout_session["customer_details"]["email"],
             payment_id=stripe_checkout_session["payment_intent"],
         )
 

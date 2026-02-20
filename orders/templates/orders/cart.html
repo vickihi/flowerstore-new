@@ -48,6 +48,7 @@
 
         <p><strong>Order total:</strong> ${{ order_total|floatformat:2 }}</p>
 
+        <a href="{% url 'flowerproducts:index' %}" class="btn-continue">Continue shopping</a>
         <form method="post" action="{% url 'orders:checkout_page' %}">
             {% csrf_token %}
             <button type="submit">Checkout</button>

@@ -32,6 +32,11 @@
                 Categories
             </a>
         </li>
+        <li>
+           <a href="{% url 'orders:cart_detail' %}">
+                Cart ({{ cart_total_quantity }})
+            </a> 
+        </li>
     </ul>
 </nav>
 

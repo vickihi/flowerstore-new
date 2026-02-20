@@ -169,4 +169,7 @@ def checkout_start(request) -> HttpResponse:
     return redirect(checkout_session.url, code=303)
 
 
-def checkout_success(request: HttpRequest) -> HttpResponse: ...
+def checkout_success(request: HttpRequest) -> HttpResponse: 
+    if 'cart' in request.session:
+        del request.session['cart']
+    return render(request, "orders/success.html")
