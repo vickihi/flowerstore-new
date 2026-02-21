@@ -15,13 +15,22 @@ class Order(models.Model):
     @property
     def is_fulfilled(self) -> bool:
         """Return True if order is fulfilled."""
-        return self.payment_id is not None
+        return bool(self.payment_id)  # fix
 
-    def fulfill(self, name: str, email: str, payment_id: str) -> None:
+    def fulfill(
+        self,
+        name: str,
+        email: str,
+        payment_id: str,
+        billing_address: str = "",
+        shipping_address: str = "",
+    ) -> None:
         """Fulfill this order."""
         self.customer_name = name
         self.customer_email = email
         self.payment_id = payment_id
+        self.bill_address = billing_address
+        self.ship_address = shipping_address
         self.save()
 
 

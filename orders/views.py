@@ -170,6 +170,8 @@ def checkout_start(request) -> HttpResponse:
         client_reference_id=str(order.id),
         line_items=line_items,
         mode="payment",
+        billing_address_collection="required",
+        shipping_address_collection={"allowed_countries": ["CA", "US"]},
         success_url=request.build_absolute_uri(reverse("orders:checkout_success")),
     )
     request.session["last_order_id"] = order.id
