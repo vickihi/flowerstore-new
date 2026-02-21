@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("flowerproducts", "0003_remove_product_views_count"),
         ("orders", "0001_initial"),
