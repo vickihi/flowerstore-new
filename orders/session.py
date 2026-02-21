@@ -26,23 +26,6 @@ class CartStore:
         self.cart[p_id] = current_quantity + quantity
         self._commit()
 
-    def add_with_stock_limit(
-        self, product_id: int, quantity: int, max_quantity: int
-    ) -> bool:
-        """Add quantity only if final cart quantity does not exceed stock."""
-        p_id = str(product_id)
-        quantity = int(quantity)
-        max_quantity = max(int(max_quantity), 0)
-        if quantity <= 0:
-            return False
-        current_quantity = int(self.cart.get(p_id, 0))
-        final_quantity = current_quantity + quantity
-        if final_quantity > max_quantity:
-            return False
-        self.cart[p_id] = final_quantity
-        self._commit()
-        return True
-
     def set_quantity(self, product_id: int, quantity: int) -> None:
         """Set product quantity in the cart."""
         p_id = str(product_id)
@@ -52,20 +35,6 @@ class CartStore:
             return
         self.cart[p_id] = quantity
         self._commit()
-
-    def set_quantity_with_stock_limit(
-        self, product_id: int, quantity: int, max_quantity: int
-    ) -> bool:
-        """Set quantity only if requested quantity does not exceed stock."""
-        quantity = int(quantity)
-        max_quantity = max(int(max_quantity), 0)
-        if quantity <= 0:
-            self.remove_product(product_id)
-            return True
-        if quantity > max_quantity:
-            return False
-        self.set_quantity(product_id, quantity)
-        return True
 
     def remove_product(self, product_id: int) -> None:
         """Remove a product from the cart."""
@@ -88,10 +57,6 @@ class CartStore:
     def count_items(self) -> int:
         """Return total quantity of products in the cart."""
         return sum(int(quantity) for quantity in self.cart.values())
-
-    def as_dict(self) -> dict[str, int]:
-        """Expose the raw cart mapping (product_id -> quantity)."""
-        return self.cart
 
     def detailed_items(self) -> list[tuple[Product, int, Decimal]]:
         """Return cart rows as (product, quantity, line_total)."""

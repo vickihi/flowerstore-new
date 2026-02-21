@@ -27,6 +27,6 @@ urlpatterns = [
     path(
         "webhook/",
         webhooks.stripe_webhook,
-        name="fullfill_stripe_checkout_webhook",
+        name="fulfill_stripe_checkout_webhook",
     ),
 ]

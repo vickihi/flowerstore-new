@@ -3,56 +3,75 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block main %}
-    <h1>Shopping Cart</h1>
+<section class="cart-page">
+    <header class="cart-page__header">
+        <h1>Shopping Cart</h1>
+    </header>
 
-{% if rows %}
-<table>
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Unit price</th>
-            <th>Quantity</th>
-            <th>Total price</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product, quantity, line_total in rows %}
-        <tr>
-            <td>
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="80">
-                {% endif %}
-            </td>
-            <td>{{ product.name }}</td>
-            <td>${{ product.price|floatformat:2 }}</td>
-            <td>
-                <form method="post" action="{% url 'orders:update_cart_item' product.id %}">
-                    {% csrf_token %}
-                    <input type="number" name="quantity" min="0" max="{{ product.quantity }}" value="{{ quantity }}" required>
-                    <button type="submit">Update</button>
-                </form>
-            </td>
-            <td>${{ line_total|floatformat:2 }}</td>
-            <td>
-                <form method="post" action="{% url 'orders:remove_cart_item' product.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Remove</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    {% if rows %}
+    <div class="cart-layout">
+        <section class="cart-table-wrap">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product, quantity, line_total in rows %}
+                    <tr>
+                        <td>
+                            <div class="cart-product">
+                                {% if product.image %}
+                                <img class="cart-product__image" src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% else %}
+                                <div class="cart-product__placeholder" aria-hidden="true">No image</div>
+                                {% endif %}
+                                <div class="cart-product__meta">
+                                    <p class="cart-product__name">{{ product.name }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${{ product.price|floatformat:2 }}</td>
+                        <td>
+                            <form class="cart-qty-form" method="post" action="{% url 'orders:update_cart_item' product.id %}">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" min="0" max="{{ product.quantity }}" value="{{ quantity }}" required>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td class="cart-line-total">${{ line_total|floatformat:2 }}</td>
+                        <td>
+                            <form method="post" action="{% url 'orders:remove_cart_item' product.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="cart-remove-btn">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
 
-        <p><strong>Order total:</strong> ${{ order_total|floatformat:2 }}</p>
-
-        <form method="post" action="{% url 'orders:checkout_page' %}">
-            {% csrf_token %}
-            <button type="submit">Checkout</button>
-        </form>
+        <aside class="cart-summary">
+            <h2>Order Summary</h2>
+            <p class="cart-summary__total">
+                <span>Total</span>
+                <strong>${{ order_total|floatformat:2 }}</strong>
+            </p>
+            <a href="{% url 'orders:checkout_page' %}" class="btn cart-summary__checkout">Checkout</a>
+            <a href="{% url 'flowerproducts:index' %}" class="btn-continue">Continue shopping</a>
+        </aside>
+    </div>
     {% else %}
+    <section class="cart-empty">
         <p>Your shopping cart is empty.</p>
+        <a href="{% url 'flowerproducts:index' %}" class="btn-continue">Continue shopping</a>
+    </section>
     {% endif %}
+ </section>
 {% endblock main %}

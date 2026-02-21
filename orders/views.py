@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from flowerproducts.models import Product
+from orders.forms import AddCartItemForm, UpdateCartItemForm
 from orders.models import Order, OrderItem
 from orders.session import CartStore
 
@@ -17,17 +18,21 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         return redirect("flowerproducts:product_detail", product_id=product_id)
 
     product = get_object_or_404(Product, id=product_id)
-    requested_quantity = max(int(request.POST.get("quantity", 1)), 1)
-
     cart_store = CartStore(request.session)
-    if not cart_store.add_with_stock_limit(
-            product.id, requested_quantity, product.quantity
-    ):
-        messages.error(
-            request,
-            f"Only {product.quantity} item(s) of {product.name} are in stock.",
+    form = AddCartItemForm(
+        request.POST,
+        product=product,
+        current_quantity=cart_store.get_quantity(product.id),
+    )
+    if not form.is_valid():
+        error = (
+            form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
         )
+        messages.error(request, str(error[0]))
         return redirect("flowerproducts:product_detail", product_id=product_id)
+
+    requested_quantity = form.cleaned_data["quantity"]
+    cart_store.add(product.id, requested_quantity)
 
     messages.success(
         request,
@@ -48,8 +53,15 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         messages.error(request, f"{product.name} is not in your shopping cart.")
         return redirect("orders:cart_detail")
 
-    new_quantity = int(request.POST.get("quantity", 0))
+    form = UpdateCartItemForm(request.POST, product=product)
+    if not form.is_valid():
+        error = (
+            form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
+        )
+        messages.error(request, str(error[0]))
+        return redirect("orders:cart_detail")
 
+    new_quantity = form.cleaned_data["quantity"]
     if new_quantity <= 0:
         cart_store.remove_product(product.id)
         messages.success(
@@ -58,14 +70,7 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
         )
         return redirect("orders:cart_detail")
 
-    if not cart_store.set_quantity_with_stock_limit(
-            product.id, new_quantity, product.quantity
-    ):
-        messages.error(
-            request,
-            f"Only {product.quantity} item(s) of {product.name} are in stock.",
-        )
-        return redirect("orders:cart_detail")
+    cart_store.set_quantity(product.id, new_quantity)
 
     messages.success(
         request,
@@ -107,7 +112,9 @@ def checkout_page(request):
     cart_store = CartStore(request.session)
     rows = cart_store.detailed_items()
     order_total = cart_store.order_total(rows)
-    return render(request, "orders/checkout.html", {"rows": rows, "order_total": order_total})
+    return render(
+        request, "orders/checkout.html", {"rows": rows, "order_total": order_total}
+    )
 
 
 def checkout_start(request) -> HttpResponse:
@@ -169,4 +176,7 @@ def checkout_start(request) -> HttpResponse:
     return redirect(checkout_session.url, code=303)
 
 
-def checkout_success(request: HttpRequest) -> HttpResponse: ...
+def checkout_success(request: HttpRequest) -> HttpResponse:
+    if "cart" in request.session:
+        del request.session["cart"]
+    return render(request, "orders/success.html")
