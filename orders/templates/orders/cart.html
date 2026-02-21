@@ -63,7 +63,11 @@
                 <span>Total</span>
                 <strong>${{ order_total|floatformat:2 }}</strong>
             </p>
-            <a href="{% url 'orders:checkout_page' %}" class="btn cart-summary__checkout">Checkout</a>
+             <form method="post" action="{% url 'orders:checkout_start' %}">
+                    {% csrf_token %}
+                    <button class="btn cart-summary__checkout" type="submit">Checkout</button>
+                </form>
+
             <a href="{% url 'flowerproducts:index' %}" class="btn-continue">Continue shopping</a>
         </aside>
     </div>
