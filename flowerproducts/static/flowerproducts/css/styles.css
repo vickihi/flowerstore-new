@@ -43,10 +43,18 @@ h1 {
 }
 
 .product-card {
+    position: relative;
     padding: 1rem;
     min-height: 350px; 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     text-align: center;
+}
+
+.product-card__stretched-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: pointer;
 }
 
 .product-card:hover {
@@ -67,6 +75,7 @@ h1 {
 .product-name {
     font-weight: bold;
     margin-bottom: 8px;
+    color: #684611;
 }
 
 .product-info {

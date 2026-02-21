@@ -97,6 +97,7 @@
     border-radius: 10px;
     padding: 1.2rem;
     background: #fff;
+    overflow: hidden;
 }
 
 .cart-summary h2 {
@@ -113,7 +114,9 @@
 }
 
 .cart-summary__checkout {
+    display: block;
     width: 100%;
+    box-sizing: border-box;
     margin-bottom: 0.65rem;
     text-align: center;
 }
