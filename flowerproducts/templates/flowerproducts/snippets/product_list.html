@@ -3,18 +3,17 @@
 <ul class="product-list">
     {% for product in products %}
         <li class="product-card">
+            <a class="product-card__stretched-link" href="{% url 'flowerproducts:product_detail' product.id %}" aria-label="View {{ product.name }}"></a>
             <div class="product-image-wrapper">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
                 {% else %}
                     <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image">
-                {% endif %} <br>
+                {% endif %}
             </div>
 
             <h3 class="product-name">
-                <a href="{% url 'flowerproducts:product_detail' product.id %}">
-                    {{ product.name }}
-                </a>
+                {{ product.name }}
             </h3>
 
             <dl class="product-info">
