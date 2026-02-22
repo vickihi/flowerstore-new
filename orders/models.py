@@ -22,7 +22,7 @@ class Order(models.Model):
         """Parse Stripe address to string."""
         if not address:
             return ""
- 
+
         raw_parts = [
             address.get("line1"),
             address.get("line2"),
@@ -32,8 +32,7 @@ class Order(models.Model):
             address.get("country"),
         ]
 
-        return ", ".join(filter(None, raw_parts))   
-     
+        return ", ".join(filter(None, raw_parts))
 
     def fulfill(
         self,
@@ -48,7 +47,9 @@ class Order(models.Model):
         self.customer_email = email
         self.payment_id = payment_id
         self.bill_address = self._parse_stripe_address(billing_address)
-        self.ship_address = self._parse_stripe_address(shipping_address) or self.bill_address
+        self.ship_address = (
+            self._parse_stripe_address(shipping_address) or self.bill_address
+        )
         self.save()
 
 

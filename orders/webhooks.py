@@ -33,19 +33,17 @@ def stripe_webhook(request):
 
         customer_details = stripe_checkout_session.get("customer_details") or {}
         shipping_details = (
-            stripe_checkout_session.get("shipping_details") 
-            or stripe_checkout_session.get("collected_information", {}).get("shipping_details")
+            stripe_checkout_session.get("shipping_details")
+            or stripe_checkout_session.get("collected_information", {}).get(
+                "shipping_details"
+            )
             or {}
         )
 
         order.fulfill(
-            name=(
-                shipping_details.get("name")
-                or customer_details.get("name")
-                or ""
-            ),
+            name=(shipping_details.get("name") or customer_details.get("name") or ""),
             email=customer_details.get("email", ""),
-            payment_id=stripe_checkout_session["payment_intent"], 
+            payment_id=stripe_checkout_session["payment_intent"],
             billing_address=customer_details.get("address"),
             shipping_address=shipping_details.get("address"),
         )
