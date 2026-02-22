@@ -15,7 +15,7 @@ class Order(models.Model):
     @property
     def is_fulfilled(self) -> bool:
         """Return True if order is fulfilled."""
-        return bool(self.payment_id)  # fix
+        return bool(self.payment_id)
 
     def fulfill(
         self,

@@ -108,15 +108,6 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
     )
 
 
-def checkout_page(request):
-    cart_store = CartStore(request.session)
-    rows = cart_store.detailed_items()
-    order_total = cart_store.order_total(rows)
-    return render(
-        request, "orders/checkout.html", {"rows": rows, "order_total": order_total}
-    )
-
-
 def checkout_start(request) -> HttpResponse:
     """Checkout start page"""
     if request.method != "POST":
@@ -130,8 +121,6 @@ def checkout_start(request) -> HttpResponse:
 
     order = Order()
     order.save()
-    order_total = Decimal("0.00")
-
     for product, qty, line_total in rows:
         OrderItem.objects.create(
             order=order,
@@ -139,7 +128,8 @@ def checkout_start(request) -> HttpResponse:
             quantity=qty,
             unit_price=product.price,
         )
-        order_total += line_total
+
+    order_total = cart_store.order_total(rows)
 
     order.total_price = order_total
     order.save(update_fields=["total_price"])
@@ -159,7 +149,6 @@ def checkout_start(request) -> HttpResponse:
                     "unit_amount": unit_amount,
                     "product_data": {
                         "name": product.name,
-                        # "images": [ urls... ]
                     },
                 },
                 "quantity": qty,
