@@ -35,7 +35,8 @@ class Review(models.Model):
         default=False, help_text="Whether this review is hidden due to moderation."
     )
 
-    def flag_count(self):
+    @property
+    def flag_count(self)-> int:
         """Returns the number of flags for this review."""
         return self.flags.count()
 
