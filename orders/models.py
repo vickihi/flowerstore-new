@@ -17,20 +17,39 @@ class Order(models.Model):
         """Return True if order is fulfilled."""
         return bool(self.payment_id)
 
+    @staticmethod
+    def _parse_stripe_address(address: dict) -> str:
+        """Parse Stripe address to string."""
+        if not address:
+            return ""
+
+        raw_parts = [
+            address.get("line1"),
+            address.get("line2"),
+            address.get("city"),
+            address.get("state"),
+            address.get("postal_code"),
+            address.get("country"),
+        ]
+
+        return ", ".join(filter(None, raw_parts))
+
     def fulfill(
         self,
         name: str,
         email: str,
         payment_id: str,
-        billing_address: str = "",
-        shipping_address: str = "",
+        billing_address: dict = None,
+        shipping_address: dict = None,
     ) -> None:
         """Fulfill this order."""
         self.customer_name = name
         self.customer_email = email
         self.payment_id = payment_id
-        self.bill_address = billing_address
-        self.ship_address = shipping_address
+        self.bill_address = self._parse_stripe_address(billing_address)
+        self.ship_address = (
+            self._parse_stripe_address(shipping_address) or self.bill_address
+        )
         self.save()
 
 

@@ -31,10 +31,21 @@ def stripe_webhook(request):
         order_id = stripe_checkout_session["client_reference_id"]
         order = Order.objects.get(pk=order_id)
 
+        customer_details = stripe_checkout_session.get("customer_details") or {}
+        shipping_details = (
+            stripe_checkout_session.get("shipping_details")
+            or stripe_checkout_session.get("collected_information", {}).get(
+                "shipping_details"
+            )
+            or {}
+        )
+
         order.fulfill(
-            name=stripe_checkout_session["customer_details"]["name"],
-            email=stripe_checkout_session["customer_details"]["email"],
+            name=(shipping_details.get("name") or customer_details.get("name") or ""),
+            email=customer_details.get("email", ""),
             payment_id=stripe_checkout_session["payment_intent"],
+            billing_address=customer_details.get("address"),
+            shipping_address=shipping_details.get("address"),
         )
 
     return HttpResponse(status=200)
