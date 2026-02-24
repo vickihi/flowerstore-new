@@ -35,13 +35,14 @@ class Review(models.Model):
         default=False, help_text="Whether this review is hidden due to moderation."
     )
 
-    def flag_count(self):
+    @property
+    def flag_count(self) -> int:
         """Returns the number of flags for this review."""
         return self.flags.count()
 
     def update_hidden_status(self):
         """Updates the hidden status of the review based on flag count."""
-        if self.flag_count() > 5:
+        if self.flag_count > 5:
             self.is_hidden = True
             self.save(update_fields=["is_hidden"])
 
