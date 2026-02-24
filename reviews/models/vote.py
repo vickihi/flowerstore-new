@@ -11,7 +11,14 @@ class Vote(models.Model):
     email = models.EmailField()
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ("email", "review")
+
     def clean(self):
+        """
+        Ensure a user cannot vote on their own review
+        and cannot vote more than once per review.
+        """
         if self.review_id is None:
             return
 

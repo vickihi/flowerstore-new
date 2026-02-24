@@ -29,9 +29,15 @@ class Flag(models.Model):
         ]
 
     def clean(self):
-        """Ensure that the user cannot flag their own review."""
+        """
+        Ensure that the user cannot flag their own review
+        and cannot flag more than once per review.
+        """
         if self.review_id and self.email == self.review.email:
             raise ValidationError("You cannot flag your own review.")
+
+        if Flag.objects.filter(email=self.email, review=self.review).exists():
+            raise ValidationError("You have already flagged this review.")
 
     def __str__(self):
         return f"Flag({self.review_id}, {self.email}, {self.flag})"
