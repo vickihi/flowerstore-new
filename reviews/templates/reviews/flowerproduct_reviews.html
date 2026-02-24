@@ -15,15 +15,14 @@
                         - {{ review.created_at|date:"Y-m-d" }}
                     </small>
                     <div class="review-actions">
-                        <!-- Vote -->
+           
                         <div class="review-vote">
                             <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
                                 Vote this review
                             </a>
-                            <span>Helpful: {{ review.vote_count }}</span>
+                            <span>Helpful: {{ review.vote_total }}</span>
                         </div>
 
-                        <!-- Flag -->
                         <div class="review-flag">
                             <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
                                 Flag this review
@@ -33,7 +32,7 @@
                             <span>Fake: {{ review.flag_fake }}</span>
                         </div>
                     </div>
-                    <!-- Comment -->
+              
                     {% if review.comments.all %}
                     <details class="comment-drawer">
                         <summary class="comment-drawer__summary">

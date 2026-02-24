@@ -27,7 +27,7 @@ def _render_index(request, products, index_form, search_form):
         {
             "products": products,
             "index_form": index_form,
-            "search_form": search_form,  # empty search
+            "search_form": search_form,
         },
     )
 
