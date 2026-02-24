@@ -36,7 +36,7 @@ class Review(models.Model):
     )
 
     @property
-    def flag_count(self)-> int:
+    def flag_count(self) -> int:
         """Returns the number of flags for this review."""
         return self.flags.count()
 
