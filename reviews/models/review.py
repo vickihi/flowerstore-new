@@ -42,7 +42,7 @@ class Review(models.Model):
 
     def update_hidden_status(self):
         """Updates the hidden status of the review based on flag count."""
-        if self.flag_count() > 5:
+        if self.flag_count > 5:
             self.is_hidden = True
             self.save(update_fields=["is_hidden"])
 
