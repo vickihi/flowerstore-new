@@ -2,85 +2,107 @@
     <h2 class="section__title">Reviews</h2>
 
     {% if reviews %}
-    <ul class="review-list">
-        {% for review in reviews %}
-        <li class="review-item">
-            <div class="review-row">
-                <div class="review-content">
-                    <p class="review-body">{{ review.body }}</p>
-                    <small class="review-meta">
+        <ul class="review-list">
+            {% for review in reviews %}
+                <li class="review-item">
+                    <div class="review-row">
+                        <div class="review-content">
+                            <p class="review-body">{{ review.body }}</p>
+                            <small class="review-meta">
+                                Rating: {{ review.rating }} / 5
+                                - by: {{ review.email }}
+                                - {{ review.created_at|date:"Y-m-d" }}
+                            </small>
+                            <div class="review-actions">
 
-                        Rating: {{ review.rating }} / 5
-                        - by: {{ review.email }}
-                        - {{ review.created_at|date:"Y-m-d" }}
-                    </small>
-                    <div class="review-actions">
-           
-                        <div class="review-vote">
-                            <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
-                                Vote this review
-                            </a>
-                            <span>Helpful: {{ review.vote_total }}</span>
-                        </div>
+                                <div class="review-vote">
+                                    {% if request.user.is_authenticated %}
+                                        <a href="{% url 'reviews:create_vote' review.id %}" class="btn btn-vote">
+                                            Vote this review
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'accounts:login' %}?next={{ request.path }}"
+                                           class="btn btn-vote">
+                                            Log in to vote </a>
+                                    {% endif %}
+                                    <span>Helpful: {{ review.vote_total }}</span>
+                                </div>
 
-                        <div class="review-flag">
-                            <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
-                                Flag this review
-                            </a>
-                            <span>Off-topic: {{ review.flag_off_topic }}</span>
-                            <span>Inappropriate: {{ review.flag_inappropriate }}</span>
-                            <span>Fake: {{ review.flag_fake }}</span>
-                        </div>
-                    </div>
-              
-                    {% if review.comments.all %}
-                    <details class="comment-drawer">
-                        <summary class="comment-drawer__summary">
-                            Comments ({{ review.comments.count }})
-                        </summary>
-                        <ul class="comment-list">
-                            {% for comment in review.comments.all %}
-                            <li class="comment-item">
-                                <p class="comment-body">{{ comment.body }} </p>
-                                <small class="comment-meta">
-                                    <span>by: {{ comment.email }}</span>
-                                    - {{ comment.created_at|date:"Y-m-d" }}
-                                </small>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </details>
-                    {% endif %}
-                    <details class="comment-details">
-                        <summary class="btn btn-primary">Add Comment</summary>
-                        <form method="post" action="{% url 'reviews:add_comment' review.id %}">
-                            {% csrf_token %}
-                            {{ comment_form.as_p }}
-                            <div class="cta-row">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <div class="review-flag">
+                                    {% if request.user.is_authenticated %}
+                                        <a href="{% url 'reviews:create_flag' review.id %}" class="btn btn-flag">
+                                            Flag this review
+                                        </a>
+                                    {% else %}<a href="{% url 'accounts:login' %}?next={{ request.path }}"
+                                                 class="btn btn-flag"> Log in to flag </a>
+                                    {% endif %}
+                                    <span>Off-topic: {{ review.flag_off_topic }}</span>
+                                    <span>Inappropriate: {{ review.flag_inappropriate }}</span>
+                                    <span>Fake: {{ review.flag_fake }}</span>
+                                </div>
                             </div>
-                        </form>
-                    </details>
-                </div>
+
+                            {% if review.comments.all %}
+                                <details class="comment-drawer">
+                                    <summary class="comment-drawer__summary">
+                                        Comments ({{ review.comments.count }})
+                                    </summary>
+                                    <ul class="comment-list">
+                                        {% for comment in review.comments.all %}
+                                            <li class="comment-item">
+                                                <p class="comment-body">{{ comment.body }} </p>
+                                                <small class="comment-meta">
+                                                    <span>by: {{ comment.email }}</span>
+                                                    - {{ comment.created_at|date:"Y-m-d" }}
+                                                </small>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            {% endif %}
+                            {% if request.user.is_authenticated %}
+                                <details class="comment-details">
+                                    <summary class="btn btn-primary">Add Comment</summary>
+                                    <form method="post" action="{% url 'reviews:add_comment' review.id %}">
+                                        {% csrf_token %}
+                                        {{ comment_form.as_p }}
+                                        <div class="cta-row">
+
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+
+                                        </div>
+                                    </form>
+                                </details>
+                            {% else %}
+                                <p><a href="{% url 'accounts:login' %}?next={{ request.path }}"> Log in to
+                                    comment. </a></p>
+                            {% endif %}
+                        </div>
 
 
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-    <p class="empty-state">No reviews yet. Be the first one!</p>
+        <p class="empty-state">No reviews yet. Be the first one!</p>
     {% endif %}
 </section>
 
 <section class="section add-review" id="add-review">
     <h2 class="section__title">Add a Review</h2>
-
-    <form method="post" action="{% url 'reviews:add_review' product.id %}#add-review">
-        {% csrf_token %}
-        {{ review_form.as_p }}
-        <div class="cta-row">
-            <button type="submit" class="btn btn-primary">Add Review</button>
-        </div>
-    </form>
+    {% if request.user.is_authenticated %}
+        <form method="post" action="{% url 'reviews:add_review' product.id %}#add-review">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <div class="cta-row">
+                <button type="submit" class="btn btn-primary">Add Review</button>
+            </div>
+        </form>
+    {% else %}
+        <p>
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}">
+                Log in to add a review. </a>
+        </p>
+    {% endif %}
 </section>

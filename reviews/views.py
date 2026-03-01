@@ -8,8 +8,10 @@ from reviews.models.review import Review
 from reviews.models.vote import Vote
 from reviews.models.flag import Flag
 from .forms import ReviewForm, VoteForm, CommentForm, FlagForm
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def add_review(request, product_id):
     """Handle form to add review to a product."""
     if request.method != "POST":
@@ -40,6 +42,7 @@ def add_review(request, product_id):
     )
 
 
+@login_required
 def create_vote(request, review_id):
     """Show form to create a vote."""
     review = get_object_or_404(Review, pk=review_id)
@@ -48,6 +51,7 @@ def create_vote(request, review_id):
     return render(request, "reviews/create_vote.html", context)
 
 
+@login_required
 def create_vote_submit(request, review_id):
     """Handle form to submit a vote."""
     review = get_object_or_404(Review, pk=review_id)
@@ -63,6 +67,7 @@ def create_vote_submit(request, review_id):
     return redirect("flowerproducts:product_detail", review.product.id)
 
 
+@login_required
 def add_comment(request, review_id):
     """Add comment to review."""
     if request.method != "POST":
@@ -80,6 +85,7 @@ def add_comment(request, review_id):
     return redirect("flowerproducts:product_detail", review.product.id)
 
 
+@login_required
 def create_flag(request, review_id):
     """Show form to create a flag."""
     review = get_object_or_404(Review, pk=review_id)
@@ -88,6 +94,7 @@ def create_flag(request, review_id):
     return render(request, "reviews/create_flag.html", context)
 
 
+@login_required
 def create_flag_submit(request, review_id):
     """Handle form to submit a flag."""
     review = get_object_or_404(Review, pk=review_id)
