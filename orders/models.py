@@ -32,7 +32,7 @@ class Order(models.Model):
             address.get("country"),
         ]
 
-        return ", ".join(filter(None, raw_parts))
+        return "/n ".join(filter(None, raw_parts))
 
     def fulfill(
         self,

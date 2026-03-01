@@ -1,21 +1,17 @@
 [
   {
-    "model": "auth.user",
-    "pk": 1,
-    "fields": {
-      "password": "pbkdf2_sha256$1000000$ZTQKzDLAVDJpVrWFfzHYuE$mhNXBpzOlk8YoeN3Epo8sONycAk4hoVR0RWDhFOjHbo=",
-      "last_login": null,
-      "is_superuser": true,
-      "username": "admin",
-      "first_name": "",
-      "last_name": "",
-      "email": "admin@flowershop.com",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2026-01-12T16:38:23.367Z",
-      "groups": [],
-      "user_permissions": []
-    }
+      "model": "accounts.account",
+      "pk": 1,
+      "fields": {
+          "password": "pbkdf2_sha256$1000000$ZTQKzDLAVDJpVrWFfzHYuE$mhNXBpzOlk8YoeN3Epo8sONycAk4hoVR0RWDhFOjHbo=",
+          "last_login": null,
+          "is_superuser": true,
+          "is_admin": true,
+          "is_active": true,
+          "email": "admin@admin.com",
+          "groups": [],
+          "user_permissions": []
+      }
   },
   {
     "model": "flowerproducts.category",

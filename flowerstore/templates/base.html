@@ -17,8 +17,15 @@
 <header id="site-header">
     <a href="{% url 'flowerproducts:index' %}">
         <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
-        <!-- 🌸Flower Store🌸 -->
     </a>
+    <nav>
+        {% if user.is_authenticated %}
+            <a href="{% url 'accounts:logout' %}">Log out</a>
+        {% else %}
+            <a href="{% url 'accounts:register' %}">Register</a>
+            <a href="{% url 'accounts:login' %}">Log in</a>
+        {% endif %}
+    </nav>
 </header>
 
 <nav id="main-nav">
