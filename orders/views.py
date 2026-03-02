@@ -13,12 +13,46 @@ from orders.models import Order, OrderItem
 from orders.session import CartStore
 
 
+def _build_or_update_stripe_customer(request: HttpRequest) -> str | None:
+    """Create or update Stripe customer from authenticated user profile."""
+    user = request.user
+    if not user.is_authenticated:
+        return None
+
+    payload: dict = {"email": user.email}
+    if user.full_name:
+        payload["name"] = user.full_name
+
+    if user.address_line1:
+        payload["address"] = {
+            "line1": user.address_line1,
+            "line2": user.address_line2 or None,
+            "city": user.city or None,
+            "state": user.province or None,
+            "postal_code": user.postal_code or None,
+            "country": user.country or None,
+        }
+
+    customer_id = user.stripe_customer_id
+    if customer_id:
+        try:
+            stripe.Customer.modify(customer_id, **payload)
+            return customer_id
+        except stripe.error.InvalidRequestError:
+            customer_id = ""
+
+    customer = stripe.Customer.create(**payload)
+    user.stripe_customer_id = customer["id"]
+    user.save(update_fields=["stripe_customer_id"])
+    return customer["id"]
+
+
 def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method != "POST":
         return redirect("flowerproducts:product_detail", product_id=product_id)
 
     product = get_object_or_404(Product, id=product_id)
-    cart_store = CartStore(request.session)
+    cart_store = CartStore(request)
     form = AddCartItemForm(
         request.POST,
         product=product,
@@ -45,7 +79,7 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method != "POST":
         return redirect("orders:cart_detail")
 
-    cart_store = CartStore(request.session)
+    cart_store = CartStore(request)
     product = get_object_or_404(Product, id=product_id)
     previous_quantity = cart_store.get_quantity(product.id)
 
@@ -83,7 +117,7 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method != "POST":
         return redirect("orders:cart_detail")
 
-    cart_store = CartStore(request.session)
+    cart_store = CartStore(request)
     if cart_store.get_quantity(product_id) > 0:
         product = get_object_or_404(Product, id=product_id)
         cart_store.remove_product(product.id)
@@ -95,7 +129,7 @@ def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 
 
 def cart_detail(request: HttpRequest) -> HttpResponse:
-    cart_store = CartStore(request.session)
+    cart_store = CartStore(request)
     rows = cart_store.detailed_items()
     order_total = cart_store.order_total(rows)
     return render(
@@ -112,7 +146,7 @@ def checkout_start(request) -> HttpResponse:
     """Checkout start page"""
     if request.method != "POST":
         return redirect("orders:cart_detail")
-    cart_store = CartStore(request.session)
+    cart_store = CartStore(request)
     rows = cart_store.detailed_items()
 
     if not rows:
@@ -155,19 +189,25 @@ def checkout_start(request) -> HttpResponse:
             }
         )
 
-    checkout_session = stripe.checkout.Session.create(
-        client_reference_id=str(order.id),
-        line_items=line_items,
-        mode="payment",
-        billing_address_collection="required",
-        shipping_address_collection={"allowed_countries": ["CA", "US"]},
-        success_url=request.build_absolute_uri(reverse("orders:checkout_success")),
-    )
+    checkout_kwargs = {
+        "client_reference_id": str(order.id),
+        "line_items": line_items,
+        "mode": "payment",
+        "billing_address_collection": "required",
+        "shipping_address_collection": {"allowed_countries": ["CA", "US"]},
+        "success_url": request.build_absolute_uri(reverse("orders:checkout_success")),
+    }
+    if request.user.is_authenticated:
+        customer_id = _build_or_update_stripe_customer(request)
+        if customer_id:
+            checkout_kwargs["customer"] = customer_id
+
+    checkout_session = stripe.checkout.Session.create(**checkout_kwargs)
     request.session["last_order_id"] = order.id
     return redirect(checkout_session.url, code=303)
 
 
 def checkout_success(request: HttpRequest) -> HttpResponse:
-    if "cart" in request.session:
-        del request.session["cart"]
+    cart_store = CartStore(request)
+    cart_store.clear()
     return render(request, "orders/success.html")
