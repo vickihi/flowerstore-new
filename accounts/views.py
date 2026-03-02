@@ -3,6 +3,8 @@ from django.contrib.auth import login as django_login, logout as django_logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
+from orders.session import CartStore
+
 from . import forms
 
 
@@ -35,6 +37,8 @@ def login_submit(request):
         context = {"form": form}
         return render(request, "accounts/login.html", context)
     django_login(request, form.get_user())
+    cart_store = CartStore(request)
+    cart_store.merge_session_cart()
     return redirect("accounts:profile")
 
 
