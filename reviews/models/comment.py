@@ -1,6 +1,8 @@
-from django.db import models
-from reviews.models.review import Review
 from django.conf import settings
+from django.db import models
+
+from reviews.models.review import Review
+
 
 class Comment(models.Model):
     review = models.ForeignKey(
@@ -9,7 +11,10 @@ class Comment(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="comments", null=True, blank=True)
+        related_name="comments",
+        null=True,
+        blank=True,
+    )
     body = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=255, blank=True, default="")

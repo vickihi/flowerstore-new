@@ -1,7 +1,9 @@
-from django.db import models
-from flowerproducts.models import Product
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models
+
+from flowerproducts.models import Product
+
 
 class Review(models.Model):
     """
@@ -10,14 +12,15 @@ class Review(models.Model):
     """
 
     product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name="reviews"
+        Product, on_delete=models.CASCADE, related_name="reviews"
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="reviews", null=True, blank=True)
+        related_name="reviews",
+        null=True,
+        blank=True,
+    )
     email = models.EmailField(help_text="Email address of the review author.")
 
     body = models.TextField(help_text="Review content written by the user.")

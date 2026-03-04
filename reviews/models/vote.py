@@ -9,10 +9,14 @@ class Vote(models.Model):
     """
     Vote model for vote a review.
     """
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="votes", null=True, blank=True)
+        related_name="votes",
+        null=True,
+        blank=True,
+    )
     email = models.EmailField()
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
 

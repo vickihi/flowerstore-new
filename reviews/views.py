@@ -26,12 +26,9 @@ def add_review(request, product_id):
         review.email = request.user.email
         try:
             review.save()
-            return redirect("flowerproducts:product_detail",
-                            product_id=product_id)
+            return redirect("flowerproducts:product_detail", product_id=product_id)
         except IntegrityError:
-            form.add_error(
-                None, "You have already reviewed this product."
-            )
+            form.add_error(None, "You have already reviewed this product.")
 
     return render(
         request,
@@ -116,7 +113,6 @@ def create_flag_submit(request, review_id):
     if review.user_id == request.user.id:
         messages.error(request, "You cannot flag your own review.")
         return redirect("flowerproducts:product_detail", review.product.id)
-
 
     flag = Flag(review=review)
     form = FlagForm(request.POST, instance=flag)

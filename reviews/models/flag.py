@@ -1,8 +1,9 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from reviews.models.review import Review
 from django.utils import timezone
-from django.conf import settings
+
+from reviews.models.review import Review
 
 
 class Flag(models.Model):
@@ -19,11 +20,10 @@ class Flag(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="flags",
-        null=True, blank=True)
-    review = models.ForeignKey(
-        Review,
-        on_delete=models.CASCADE,
-        related_name="flags")
+        null=True,
+        blank=True,
+    )
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="flags")
     email = models.EmailField()
     flag = models.CharField(max_length=20, choices=FLAG_CHOICES)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
