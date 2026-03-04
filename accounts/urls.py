@@ -11,4 +11,10 @@ urlpatterns = [
     path("login/submit/", views.login_submit, name="login_submit"),
     path("logout/", views.logout, name="logout"),
     path("profile/", views.profile, name="profile"),
+    path("profile/update/", views.profile_update, name="profile_update"),
+    path(
+        "profile/password/update/",
+        views.password_update,
+        name="profile_password_update",
+    ),
 ]

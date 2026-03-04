@@ -1,1 +1,37 @@
-{{ user }}
+<h2>Account</h2>
+
+<form method="post" action="{% url 'accounts:profile_update' %}">
+    {% csrf_token %}
+    {{ profile_form.full_name }}
+    {{ profile_form.email }}
+    <button type="submit">Update</button>
+</form>
+
+<form method="post" action="{% url 'accounts:profile_password_update' %}">
+    {% csrf_token %}
+    {{ password_form }}
+    <button type="submit">Update password</button>
+</form>
+
+<h2>My Orders</h2>
+{% if orders %}
+    <ul>
+    {% for order in orders %}
+        <li>
+            Order created at: {{ order.created_at }}
+            <ul>
+                {% for item in order.items.all %}
+                    <li>
+                        {{ item.product.name }} : ${{ item.unit_price }} x {{ item.quantity }}
+                    </li>
+                {% endfor %}
+            </ul>
+            Total price: ${{ order.total_price }}
+        </li>
+    {% endfor %}
+    </ul>   
+{% else %}
+    <p>You have no orders yet.</p>
+{% endif %}
+
+<a href="{% url 'home' %}" class="btn-continue">Go back home</a>

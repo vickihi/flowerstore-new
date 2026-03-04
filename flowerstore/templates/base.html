@@ -21,6 +21,7 @@
     <nav>
         {% if user.is_authenticated %}
             <a href="{% url 'accounts:logout' %}">Log out</a>
+            <a href="{% url 'accounts:profile' %}">Account</a>
         {% else %}
             <a href="{% url 'accounts:register' %}">Register</a>
             <a href="{% url 'accounts:login' %}">Log in</a>

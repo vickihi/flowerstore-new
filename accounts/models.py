@@ -7,17 +7,17 @@ from django.contrib.auth.models import (
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, email: str, password: str) -> "Account":
+    def create_user(self, email: str, full_name: str, password: str) -> "Account":
         """Create a user."""
-        account = self.model(email=self.normalize_email(email))
+        account = self.model(email=self.normalize_email(email), full_name=full_name)
         account.set_password(password)
         account.save()
         return account
 
-    def create_superuser(self, email: str, password: str) -> "Account":
+    def create_superuser(self, email: str, full_name: str, password: str) -> "Account":
         """Create a super user."""
-        account = self.create_user(email, password)
-        account.is_admin = True
+        account = self.create_user(email, full_name, password)
+        account.is_staff = True
         account.is_superuser = True
         account.save()
         return account
@@ -26,11 +26,10 @@ class AccountManager(BaseUserManager):
 class Account(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELD = []
+    REQUIRED_FIELDS = ["full_name"]
 
     email = models.EmailField(unique=True)
-    password = models.CharField()
-    full_name = models.CharField(max_length=120, blank=True, default="")
+    full_name = models.CharField(max_length=120)
     address_line1 = models.CharField(max_length=255, blank=True, default="")
     address_line2 = models.CharField(max_length=255, blank=True, default="")
     city = models.CharField(max_length=120, blank=True, default="")
@@ -40,7 +39,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     stripe_customer_id = models.CharField(max_length=100, blank=True, default="")
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = AccountManager()
 
@@ -48,6 +48,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
         """String representation for this account."""
         return self.email
 
-    @property
-    def is_staff(self):
-        return self.is_admin
+    # @property
+    # def is_staff(self):
+    #     return self.is_admin
