@@ -6,32 +6,28 @@ from reviews.models.review import Review
 from reviews.models.vote import Vote
 
 
-class BaseEmailForm(forms.Form):
-    email = forms.EmailField(label="Email")
-
-
-class ReviewForm(BaseEmailForm, forms.ModelForm):
+class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ["email", "body", "rating"]
+        fields = ["body", "rating"]
 
 
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
-        fields = ["email"]
+        fields = []
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["email", "body"]
+        fields = ["body"]
 
 
 class FlagForm(forms.ModelForm):
     class Meta:
         model = Flag
-        fields = ["email", "flag"]
+        fields = ["flag"]
         widgets = {
             "flag": forms.RadioSelect(),
         }

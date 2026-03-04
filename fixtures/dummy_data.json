@@ -1,17 +1,18 @@
 [
   {
-      "model": "accounts.account",
-      "pk": 1,
-      "fields": {
-          "password": "pbkdf2_sha256$1000000$ZTQKzDLAVDJpVrWFfzHYuE$mhNXBpzOlk8YoeN3Epo8sONycAk4hoVR0RWDhFOjHbo=",
-          "last_login": null,
-          "is_superuser": true,
-          "is_admin": true,
-          "is_active": true,
-          "email": "admin@admin.com",
-          "groups": [],
-          "user_permissions": []
-      }
+    "model": "accounts.account",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$ZTQKzDLAVDJpVrWFfzHYuE$mhNXBpzOlk8YoeN3Epo8sONycAk4hoVR0RWDhFOjHbo=",
+      "last_login": null,
+      "is_superuser": true,
+      "is_staff": true,
+      "full_name": "Admin User",
+      "is_active": true,
+      "email": "admin@admin.com",
+      "groups": [],
+      "user_permissions": []
+    }
   },
   {
     "model": "flowerproducts.category",

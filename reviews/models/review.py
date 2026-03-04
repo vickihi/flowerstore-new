@@ -1,7 +1,7 @@
 from django.db import models
 from flowerproducts.models import Product
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from django.conf import settings
 
 class Review(models.Model):
     """
@@ -12,9 +12,12 @@ class Review(models.Model):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name="reviews",
+        related_name="reviews"
     )
-
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reviews", null=True, blank=True)
     email = models.EmailField(help_text="Email address of the review author.")
 
     body = models.TextField(help_text="Review content written by the user.")
@@ -50,10 +53,10 @@ class Review(models.Model):
         ordering = ["-created_at"]
         constraints = [
             models.UniqueConstraint(
-                fields=["product", "email"],
-                name="unique_review_per_product_per_email",
+                fields=["product", "user"],
+                name="unique_review_per_product_per_user",
             )
         ]
 
     def __str__(self):
-        return f"Review({self.product}, {self.email}, rating={self.rating})"
+        return f"Review({self.product}, {self.user}, rating={self.rating})"

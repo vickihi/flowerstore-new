@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from reviews.models.review import Review
 from django.utils import timezone
+from django.conf import settings
 
 
 class Flag(models.Model):
@@ -14,8 +15,15 @@ class Flag(models.Model):
         ("inappropriate", "Inappropriate"),
         ("fake", "Fake"),
     )
-
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="flags")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="flags",
+        null=True, blank=True)
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name="flags")
     email = models.EmailField()
     flag = models.CharField(max_length=20, choices=FLAG_CHOICES)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
@@ -23,8 +31,8 @@ class Flag(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["review", "email"],
-                name="unique_flag_per_review_per_email",
+                fields=["review", "user"],
+                name="unique_flag_per_review_per_user",
             )
         ]
 
@@ -33,11 +41,11 @@ class Flag(models.Model):
         Ensure that the user cannot flag their own review
         and cannot flag more than once per review.
         """
-        if self.review_id and self.email == self.review.email:
+        if self.review_id and self.user_id == self.review.user_id:
             raise ValidationError("You cannot flag your own review.")
 
-        if Flag.objects.filter(email=self.email, review=self.review).exists():
+        if Flag.objects.filter(user=self.user, review=self.review).exists():
             raise ValidationError("You have already flagged this review.")
 
     def __str__(self):
-        return f"Flag({self.review_id}, {self.email}, {self.flag})"
+        return f"Flag({self.review_id}, {self.user}, {self.flag})"

@@ -10,7 +10,7 @@
                             <p class="review-body">{{ review.body }}</p>
                             <small class="review-meta">
                                 Rating: {{ review.rating }} / 5
-                                - by: {{ review.email }}
+                                - by: {{ review.user.full_name }}
                                 - {{ review.created_at|date:"Y-m-d" }}
                             </small>
                             <div class="review-actions">
@@ -52,7 +52,7 @@
                                             <li class="comment-item">
                                                 <p class="comment-body">{{ comment.body }} </p>
                                                 <small class="comment-meta">
-                                                    <span>by: {{ comment.email }}</span>
+                                                    <span>by: {{ comment.user.full_name }}</span>
                                                     - {{ comment.created_at|date:"Y-m-d" }}
                                                 </small>
                                             </li>
