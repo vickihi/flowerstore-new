@@ -50,6 +50,9 @@ def _build_or_update_stripe_customer(request: HttpRequest) -> str | None:
 
 @require_http_methods(["POST"])
 def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
+    if request.method != "POST":
+        return redirect("flowerproducts:product_detail", product_id=product_id)
+
     product = get_object_or_404(Product, id=product_id)
     cart_store = CartStore(request)
     form = AddCartItemForm(
@@ -76,6 +79,9 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 
 @require_http_methods(["POST"])
 def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
+    if request.method != "POST":
+        return redirect("orders:cart_detail")
+
     cart_store = CartStore(request)
     product = get_object_or_404(Product, id=product_id)
     previous_quantity = cart_store.get_quantity(product.id)
@@ -112,6 +118,9 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
 
 @require_http_methods(["POST"])
 def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
+    if request.method != "POST":
+        return redirect("orders:cart_detail")
+
     cart_store = CartStore(request)
     if cart_store.get_quantity(product_id) > 0:
         product = get_object_or_404(Product, id=product_id)
@@ -151,18 +160,13 @@ def checkout_start(request) -> HttpResponse:
     if request.user.is_authenticated:
         order.user = request.user
     order.save()
-    for product, qty, line_total in rows:
+    for product, qty, _line_total in rows:
         OrderItem.objects.create(
             order=order,
             product=product,
             quantity=qty,
             unit_price=product.price,
         )
-
-    order_total = cart_store.order_total(rows)
-
-    order.total_price = order_total
-    order.save(update_fields=["total_price"])
 
     stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
 

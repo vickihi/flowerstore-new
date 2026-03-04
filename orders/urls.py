@@ -21,7 +21,7 @@ urlpatterns = [
         views.remove_cart_item,
         name="remove_cart_item",
     ),
-    path("checkout/start", views.checkout_start, name="checkout_start"),
+    path("checkout/", views.checkout, name="checkout"),
     path("success/", views.checkout_success, name="checkout_success"),
     path(
         "webhook/",
