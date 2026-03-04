@@ -154,6 +154,8 @@ def checkout_start(request) -> HttpResponse:
         return redirect("orders:cart_detail")
 
     order = Order()
+    if request.user.is_authenticated:
+        order.user = request.user
     order.save()
     for product, qty, line_total in rows:
         OrderItem.objects.create(
