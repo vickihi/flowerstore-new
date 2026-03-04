@@ -1,5 +1,7 @@
-from django.db import models
+from decimal import Decimal
+
 from django.conf import settings
+from django.db import models
 
 
 class Order(models.Model):
@@ -19,12 +21,18 @@ class Order(models.Model):
     customer_email = models.EmailField(blank=True, default="")
     bill_address = models.TextField(blank=True, default="")
     ship_address = models.TextField(blank=True, default="")
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    @property
+    def total_price(self) -> Decimal:
+        return sum(
+            (item.unit_price * item.quantity for item in self.items.all()),
+            Decimal("0.00"),
+        )
 
     @property
     def is_fulfilled(self) -> bool:
         """Return True if order is fulfilled."""
-        return bool(self.payment_id)
+        return self.payment_id != ""
 
     def fulfill(
         self,
