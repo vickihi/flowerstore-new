@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 
 from flowerproducts.models import Product
 from orders.forms import AddCartItemForm, UpdateCartItemForm
@@ -47,10 +48,8 @@ def _build_or_update_stripe_customer(request: HttpRequest) -> str | None:
     return customer["id"]
 
 
+@require_http_methods(["POST"])
 def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
-    if request.method != "POST":
-        return redirect("flowerproducts:product_detail", product_id=product_id)
-
     product = get_object_or_404(Product, id=product_id)
     cart_store = CartStore(request)
     form = AddCartItemForm(
@@ -75,10 +74,8 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     return redirect("orders:cart_detail")
 
 
+@require_http_methods(["POST"])
 def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
-    if request.method != "POST":
-        return redirect("orders:cart_detail")
-
     cart_store = CartStore(request)
     product = get_object_or_404(Product, id=product_id)
     previous_quantity = cart_store.get_quantity(product.id)
@@ -113,10 +110,8 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     return redirect("orders:cart_detail")
 
 
+@require_http_methods(["POST"])
 def remove_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
-    if request.method != "POST":
-        return redirect("orders:cart_detail")
-
     cart_store = CartStore(request)
     if cart_store.get_quantity(product_id) > 0:
         product = get_object_or_404(Product, id=product_id)
@@ -142,10 +137,9 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
     )
 
 
+@require_http_methods(["POST"])
 def checkout_start(request) -> HttpResponse:
     """Checkout start page"""
-    if request.method != "POST":
-        return redirect("orders:cart_detail")
     cart_store = CartStore(request)
     rows = cart_store.detailed_items()
 
@@ -210,6 +204,15 @@ def checkout_start(request) -> HttpResponse:
 
 
 def checkout_success(request: HttpRequest) -> HttpResponse:
+    order_id = request.session.get("last_order_id")
+    order = Order.objects.filter(pk=order_id).first() if order_id else None
+    if not order or not order.is_fulfilled:
+        messages.info(
+            request, "Payment is still processing. Please check again shortly."
+        )
+        return redirect("orders:cart_detail")
+
     cart_store = CartStore(request)
     cart_store.clear()
+    request.session.pop("last_order_id", None)
     return render(request, "orders/success.html")

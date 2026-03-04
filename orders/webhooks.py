@@ -1,5 +1,6 @@
 import os
 import logging
+import json
 import stripe
 
 from django.core.mail import send_mail
@@ -9,6 +10,32 @@ from django.core.exceptions import ValidationError
 from .models import Order
 
 logger = logging.getLogger(__name__)
+
+
+def _format_address_one_line(address) -> str:
+    """Convert an address payload/string into a single-line display value."""
+    if not address:
+        return "N/A"
+
+    data = address
+    if isinstance(address, str):
+        try:
+            data = json.loads(address)
+        except (TypeError, json.JSONDecodeError):
+            return address.replace("\n", ", ").strip()
+
+    if isinstance(data, dict):
+        parts = [
+            data.get("line1"),
+            data.get("line2"),
+            data.get("city"),
+            data.get("state"),
+            data.get("postal_code"),
+            data.get("country"),
+        ]
+        return ", ".join(str(part).strip() for part in parts if part)
+
+    return str(data).replace("\n", ", ").strip()
 
 
 def _send_order_confirmation_email(order: Order) -> None:
@@ -30,8 +57,8 @@ def _send_order_confirmation_email(order: Order) -> None:
         "Order summary:\n"
         f"{items_text}\n\n"
         f"Total paid: ${order.total_price}\n\n"
-        "Shipping address:\n"
-        f"{order.ship_address or order.bill_address or 'N/A'}\n\n"
+        "Shipping address: "
+        f"{_format_address_one_line(order.ship_address or order.bill_address)}\n\n"
         "If you have any questions, please reply to this email: info@flowerstore.ca .\n"
     )
 
@@ -92,9 +119,19 @@ def stripe_webhook(request):
             )
             or {}
         )
+        account_name = (
+            order.user.full_name.strip()
+            if order.user and getattr(order.user, "full_name", "")
+            else ""
+        )
 
         order.fulfill(
-            name=(shipping_details.get("name") or customer_details.get("name") or ""),
+            name=(
+                account_name
+                or customer_details.get("name")
+                or shipping_details.get("name")
+                or ""
+            ),
             email=customer_details.get("email", ""),
             payment_id=stripe_checkout_session["payment_intent"],
             billing_address=customer_details.get("address"),
