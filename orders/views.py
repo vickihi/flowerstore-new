@@ -147,7 +147,7 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["POST"])
-def checkout_start(request) -> HttpResponse:
+def checkout(request) -> HttpResponse:
     """Checkout start page"""
     cart_store = CartStore(request)
     rows = cart_store.detailed_items()
