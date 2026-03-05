@@ -168,7 +168,9 @@ def checkout(request) -> HttpResponse:
             unit_price=product.price,
         )
 
-    stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+    stripe.api_key = os.environ.get("SECRET_KEY", None)
+    if stripe.api_key is None:
+        raise RuntimeError("SECRET_KEY not set.")
 
     line_items = []
     for product, qty, _line_total in rows:
