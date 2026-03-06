@@ -227,14 +227,8 @@ def checkout_success(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def wishlist_detail(request: HttpRequest) -> HttpResponse:
-    items = (WishlistItem.objects.
-             filter(user=request.user).
-             select_related("product")
-             )
-    return (render
-            (request, "orders/wishlist.html",
-             {"items": items})
-            )
+    items = WishlistItem.objects.filter(user=request.user).select_related("product")
+    return render(request, "orders/wishlist.html", {"items": items})
 
 
 @login_required

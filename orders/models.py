@@ -96,6 +96,7 @@ class CartItem(models.Model):
 
 class WishlistItem(models.Model):
     """WishlistItem model for authenticated users."""
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
