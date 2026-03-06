@@ -104,8 +104,6 @@ class WishlistItem(models.Model):
     )
 
     product = models.ForeignKey("flowerproducts.Product", on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
