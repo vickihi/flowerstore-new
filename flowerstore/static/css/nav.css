@@ -13,6 +13,7 @@ ul > li > a {
 
 #logo {
     width: 200px;
+    height: auto;
 }
 
 #main-nav {
@@ -21,4 +22,19 @@ ul > li > a {
     margin-bottom: 1rem;          
 }
 
+#site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#account-nav {
+    /*font-size: 1.2rem;*/
+}
+
+#account-nav a {
+    font-size: 1.3rem;
+    color: brown;
+    padding: 0 10px;
+}
 
