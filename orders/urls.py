@@ -28,4 +28,8 @@ urlpatterns = [
         webhooks.stripe_webhook,
         name="fulfill_stripe_checkout_webhook",
     ),
+    path("wishlist/", views.wishlist_detail, name="wishlist_detail"),
+    path("wishlist/add/<int:product_id>/", views.wishlist_add, name="wishlist_add"),
+    path("wishlist/remove/<int:product_id>/", views.wishlist_remove, name="wishlist_remove"),
+    path("wishlist/move-to-cart/<int:product_id>/", views.wishlist_move_to_cart, name="wishlist_move_to_cart"),
 ]

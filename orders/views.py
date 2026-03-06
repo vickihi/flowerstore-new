@@ -3,6 +3,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 import stripe
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -10,7 +11,7 @@ from django.views.decorators.http import require_http_methods
 
 from flowerproducts.models import Product
 from orders.forms import AddCartItemForm, UpdateCartItemForm
-from orders.models import Order, OrderItem
+from orders.models import Order, OrderItem, WishlistItem
 from orders.session import CartStore
 
 
@@ -62,7 +63,7 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     )
     if not form.is_valid():
         error = (
-            form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
+                form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
         )
         messages.error(request, str(error[0]))
         return redirect("flowerproducts:product_detail", product_id=product_id)
@@ -93,7 +94,7 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     form = UpdateCartItemForm(request.POST, product=product)
     if not form.is_valid():
         error = (
-            form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
+                form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
         )
         messages.error(request, str(error[0]))
         return redirect("orders:cart_detail")
@@ -168,9 +169,9 @@ def checkout(request) -> HttpResponse:
             unit_price=product.price,
         )
 
-    stripe.api_key = os.environ.get("SECRET_KEY", None)
+    stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", None)
     if stripe.api_key is None:
-        raise RuntimeError("SECRET_KEY not set.")
+        raise RuntimeError("STRIPE_SECRET_KEY not set.")
 
     line_items = []
     for product, qty, _line_total in rows:
@@ -222,3 +223,62 @@ def checkout_success(request: HttpRequest) -> HttpResponse:
     cart_store.clear()
     request.session.pop("last_order_id", None)
     return render(request, "orders/success.html")
+
+
+@login_required
+def wishlist_detail(request: HttpRequest) -> HttpResponse:
+    items = (WishlistItem.objects.
+             filter(user=request.user).
+             select_related("product")
+             )
+    return (render
+            (request, "orders/wishlist.html",
+             {"items": items})
+            )
+
+
+@login_required
+@require_http_methods(["POST"])
+def wishlist_add(request: HttpRequest, product_id) -> HttpResponse:
+    product = get_object_or_404(Product, id=product_id)
+    item, created = WishlistItem.objects.get_or_create(
+        user=request.user,
+        product=product,
+    )
+    if created:
+        messages.success(request, f"{product.name} was added to your wish list.")
+    else:
+        messages.info(request, f"{product.name} is already in your wish list.")
+    return redirect("flowerproducts:product_detail", product_id=product_id)
+
+
+@login_required
+@require_http_methods(["POST"])
+def wishlist_remove(request: HttpRequest, product_id) -> HttpResponse:
+    product = get_object_or_404(Product, id=product_id)
+    item = WishlistItem.objects.filter(user=request.user, product=product).first()
+
+    if item:
+        item.delete()
+        messages.success(request, f"{product.name} was removed from your wish list.")
+    else:
+        messages.info(request, f"{product.name} is not in your wish list.")
+
+    return redirect("orders:wishlist_detail")
+
+
+@login_required
+@require_http_methods(["POST"])
+def wishlist_move_to_cart(request: HttpRequest, product_id) -> HttpResponse:
+    product = get_object_or_404(Product, id=product_id)
+    item = WishlistItem.objects.filter(user=request.user, product=product).first()
+    if not item:
+        messages.info(request, f"{product.name} is not in wish list.")
+        return redirect("orders:wishlist_detail")
+
+    cart_store = CartStore(request)
+    cart_store.add(product.id, 1)
+    item.delete()
+
+    messages.success(request, f"{product.name} was moved to your Cart.")
+    return redirect("orders:cart_detail")

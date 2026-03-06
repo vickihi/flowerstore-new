@@ -35,12 +35,12 @@ class Order(models.Model):
         return self.payment_id != ""
 
     def fulfill(
-        self,
-        name: str,
-        email: str,
-        payment_id: str,
-        billing_address: dict = None,
-        shipping_address: dict = None,
+            self,
+            name: str,
+            email: str,
+            payment_id: str,
+            billing_address: dict = None,
+            shipping_address: dict = None,
     ) -> None:
         """Fulfill this order."""
         self.customer_name = name
@@ -92,3 +92,26 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.user_id}:{self.product_id} x {self.quantity}"
+
+
+class WishlistItem(models.Model):
+    """WishlistItem model for authenticated users."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="wishlist_items",
+    )
+
+    product = models.ForeignKey("flowerproducts.Product", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "product"],
+                name="unique_user_wishlist_item",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user_id}:{self.product_id}"

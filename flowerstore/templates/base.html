@@ -22,6 +22,7 @@
         {% if user.is_authenticated %}
             <a href="{% url 'accounts:logout' %}">Log out</a>
             <a href="{% url 'accounts:profile' %}">Account</a>
+            <a href="{% url 'orders:wishlist_detail' %}">Wish List</a>
         {% else %}
             <a href="{% url 'accounts:register' %}">Register</a>
             <a href="{% url 'accounts:login' %}">Log in</a>
@@ -41,9 +42,9 @@
             </a>
         </li>
         <li>
-           <a href="{% url 'orders:cart_detail' %}">
+            <a href="{% url 'orders:cart_detail' %}">
                 Cart ({{ cart_total_quantity }})
-            </a> 
+            </a>
         </li>
     </ul>
 </nav>
@@ -56,11 +57,11 @@
     </nav>
 </header>
 {% if messages %}
-<section class="messages" aria-live="polite">
-    {% for message in messages %}
-    <div class="message {{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-</section>
+    <section class="messages" aria-live="polite">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </section>
 {% endif %}
 <main
         class="

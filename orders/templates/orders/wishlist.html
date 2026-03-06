@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}My wish list{% endblock %}
+
+{% block main %}
+
+    <h2>My wish list</h2>
+    {% if items %}
+        <ul>
+            {% for item in items %}
+                <li>
+                    <h3> {{ item.product.name }}</h3>
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    {% endif %}
+                    <p>Price: ${{ item.product.price|floatformat:2 }}</p>
+                    <form method="post" action="{% url 'orders:wishlist_remove' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Remove</button>
+                    </form>
+
+                    <form method="post"
+                          action="{% url 'orders:wishlist_move_to_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Move to cart</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your wish list is empty.</p>
+
+    {% endif %}
+{% endblock main %}
