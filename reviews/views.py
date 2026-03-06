@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 
 from flowerproducts.models import Product
 from flowerproducts.view_helpers import build_product_detail_context
+from orders.models import OrderItem
 from reviews.models.flag import Flag
 from reviews.models.review import Review
 from reviews.models.vote import Vote
@@ -17,6 +18,15 @@ from .forms import ReviewForm, VoteForm, CommentForm, FlagForm
 def add_review(request, product_id):
     """Handle form to add review to a product."""
     product = get_object_or_404(Product, pk=product_id)
+    has_purchased = OrderItem.objects.filter(
+        product=product,
+        order__user=request.user,
+    ).exclude(
+        order__payment_id=""
+    ).exists()
+    if not has_purchased:
+        messages.error(request, "You can only review the product you have purchased.")
+        return redirect("flowerproducts:product_detail", product.id)
     form = ReviewForm(request.POST)
 
     if form.is_valid():
