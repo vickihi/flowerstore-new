@@ -235,7 +235,7 @@ def wishlist_detail(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["POST"])
 def wishlist_add(request: HttpRequest, product_id) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
-    item, created = WishlistItem.objects.get_or_create(
+    _item, created = WishlistItem.objects.get_or_create(
         user=request.user,
         product=product,
     )
