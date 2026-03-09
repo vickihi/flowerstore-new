@@ -1,7 +1,9 @@
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import login as django_login, logout as django_logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView
 from django.shortcuts import redirect, render
 from orders.session import CartStore
 from . import forms
@@ -21,12 +23,14 @@ def register_submit(request):
         context = {"form": form}
         return render(request, "accounts/register.html", context)
     form.save()
+    request.session["prefill_email"] = form.cleaned_data["email"]
     return redirect("accounts:login")
 
 
 def login(request):
     """Show form for log in."""
-    form = AuthenticationForm()
+    initial_email = request.session.pop("prefill_email", "")
+    form = AuthenticationForm(initial={"username": initial_email})
     context = {"form": form}
     return render(request, "accounts/login.html", context)
 
@@ -86,4 +90,13 @@ def password_update(request):
         return render(request, "accounts/profile.html", context)
     password_form.save()
     update_session_auth_hash(request, password_form.user)
+    messages.success(request, "Your password has been updated successfully.")
     return redirect("accounts:profile")
+
+
+class CustomPasswordResetView(PasswordResetView):
+    """Save the email for prefilling the form after password reset."""
+
+    def form_valid(self, form):
+        self.request.session["prefill_email"] = form.cleaned_data["email"]
+        return super().form_valid(form)

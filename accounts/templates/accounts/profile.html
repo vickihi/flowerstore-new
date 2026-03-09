@@ -1,12 +1,23 @@
-<h2>Account</h2>
+<h2>{{ user.full_name }}'s Account</h2>
 
+<h3>Profile Information</h3>
 <form method="post" action="{% url 'accounts:profile_update' %}">
     {% csrf_token %}
+    <label for="id_full_name">Full name</label>
     {{ profile_form.full_name }}
+    <label for="id_email">Email</label>
     {{ profile_form.email }}
-    <button type="submit">Update</button>
+    <button type="submit">Update profile</button>
 </form>
 
+<h3>Change Password</h3>
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 <form method="post" action="{% url 'accounts:profile_password_update' %}">
     {% csrf_token %}
     {{ password_form }}

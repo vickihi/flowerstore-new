@@ -47,7 +47,3 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """String representation for this account."""
         return self.email
-
-    # @property
-    # def is_staff(self):
-    #     return self.is_admin
