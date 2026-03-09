@@ -3,5 +3,10 @@
 <form method="post" action="{% url 'accounts:login_submit' %}">
     {% csrf_token %}
     {{ form }}
-    <button>Login</button>
+    <button type="submit">Login</button>
+    <a href="{% url 'accounts:password_reset' %}">
+        Forgot your password?
+    </a>
 </form>
+
+<a href="{% url 'home' %}" class="btn-continue">Go back home</a>

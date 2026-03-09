@@ -35,12 +35,12 @@ class Order(models.Model):
         return self.payment_id != ""
 
     def fulfill(
-            self,
-            name: str,
-            email: str,
-            payment_id: str,
-            billing_address: dict = None,
-            shipping_address: dict = None,
+        self,
+        name: str,
+        email: str,
+        payment_id: str,
+        billing_address: dict = None,
+        shipping_address: dict = None,
     ) -> None:
         """Fulfill this order."""
         self.customer_name = name

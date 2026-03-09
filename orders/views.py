@@ -63,7 +63,7 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     )
     if not form.is_valid():
         error = (
-                form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
+            form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
         )
         messages.error(request, str(error[0]))
         return redirect("flowerproducts:product_detail", product_id=product_id)
@@ -94,7 +94,7 @@ def update_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     form = UpdateCartItemForm(request.POST, product=product)
     if not form.is_valid():
         error = (
-                form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
+            form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
         )
         messages.error(request, str(error[0]))
         return redirect("orders:cart_detail")
