@@ -77,6 +77,7 @@ def profile_update(request):
         context = {"profile_form": profile_form, "password_form": password_form}
         return render(request, "accounts/profile.html", context)
     profile_form.save()
+    messages.success(request, "Your profile has been updated successfully.")
     return redirect("accounts:profile")
 
 

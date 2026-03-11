@@ -18,36 +18,30 @@
     <a href="{% url 'flowerproducts:index' %}">
         <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
     </a>
-    <nav id="account-nav">
-        {% if user.is_authenticated %}
-            <a href="{% url 'accounts:logout' %}">Log out</a>
-            <a href="{% url 'accounts:profile' %}">Account</a>
-            <a href="{% url 'orders:wishlist_detail' %}">Wish List</a>
-        {% else %}
-            <a href="{% url 'accounts:register' %}">Register</a>
-            <a href="{% url 'accounts:login' %}">Log in</a>
-        {% endif %}
-    </nav>
 </header>
 
+{% block nav %}
 <nav id="main-nav">
     <ul>
-        <li>
-            <a href="{% url 'flowerproducts:index' %}">Home</a>
-        </li>
+        <li><a href="{% url 'flowerproducts:index' %}">Home</a></li>
+        <li><a href="{% url 'flowerproducts:categories' %}">Categories</a></li>
 
-        <li>
-            <a href="{% url 'flowerproducts:categories' %}">
-                Categories
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'orders:cart_detail' %}">
-                Cart ({{ cart_total_quantity }})
-            </a>
-        </li>
+        {% if user.is_authenticated %}
+            <li class="nav-right">
+                <a href="{% url 'flowerproducts:index' %}" class="username">Hi, {{ user.full_name }}</a>
+            </li>
+            <li><a href="{% url 'orders:cart_detail' %}">Cart ({{ cart_total_quantity }})</a></li>
+            <li><a href="{% url 'orders:wishlist_detail' %}">Wish List</a></li>
+            <li><a href="{% url 'accounts:profile' %}">Account</a></li>
+            <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+        {% else %}
+            <li class="nav-right"><a href="{% url 'orders:cart_detail' %}">Cart ({{ cart_total_quantity }})</a></li>
+            <li><a href="{% url 'accounts:register' %}">Register</a></li>
+            <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+        {% endif %}
     </ul>
 </nav>
+{% endblock %}
 
 <header>
     <nav id="breadcrumbs">

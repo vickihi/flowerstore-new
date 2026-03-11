@@ -4,6 +4,7 @@
 @import "/static/flowerproducts/css/form.css";
 @import "/static/orders/css/cart.css";
 @import "/static/orders/css/wishlist.css";
+@import "/static/accounts/css/auth.css";
 
 body {
     font-family: system-ui, sans-serif;

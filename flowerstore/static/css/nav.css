@@ -1,6 +1,6 @@
 body > nav > ul {
     display: flex;
-    gap: 1.2rem;
+    gap: 2rem;
     list-style: none;
 }
 
@@ -22,14 +22,25 @@ ul > li > a {
     margin-bottom: 1rem;          
 }
 
+#main-nav ul{
+    display:flex;
+    list-style:none;
+}
+
+.nav-right{
+    margin-left:auto;
+}
+
+.username{
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff85a2;
+}
+
 #site-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-#account-nav {
-    /*font-size: 1.2rem;*/
 }
 
 #account-nav a {

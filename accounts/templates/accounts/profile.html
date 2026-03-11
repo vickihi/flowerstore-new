@@ -1,48 +1,74 @@
-<h2>{{ user.full_name }}'s Account</h2>
+{% extends "base.html" %}
+{% block title %}Account{% endblock %}
 
-<h3>Profile Information</h3>
-<form method="post" action="{% url 'accounts:profile_update' %}">
-    {% csrf_token %}
-    <label for="id_full_name">Full name</label>
-    {{ profile_form.full_name }}
-    <label for="id_email">Email</label>
-    {{ profile_form.email }}
-    <button type="submit">Update profile</button>
-</form>
+{% block main %}
+<section class="account-info">
+    <h1>{{ user.full_name }}'s Account</h1>
 
-<h3>Change Password</h3>
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
-<form method="post" action="{% url 'accounts:profile_password_update' %}">
-    {% csrf_token %}
-    {{ password_form }}
-    <button type="submit">Update password</button>
-</form>
+    <div class="account-container">
+        <div class="account-profile">
+            <h2>Profile Information</h2>
+            <form method="post" action="{% url 'accounts:profile_update' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_full_name">Full name</label>
+                    {{ profile_form.full_name }}
+                    {{ profile_form.full_name.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_email">Email</label>
+                    {{ profile_form.email }}
+                    {{ profile_form.email.errors }}
+                </div>
+                <button type="submit">Update profile</button>
+            </form>
+        </div>
 
-<h2>My Orders</h2>
-{% if orders %}
-    <ul>
-    {% for order in orders %}
-        <li>
-            Order created at: {{ order.created_at }}
-            <ul>
+        <div class="account-password">
+            <h2>Change Password</h2>
+            <form method="post" action="{% url 'accounts:profile_password_update' %}">
+                {% csrf_token %}
+                {{ password_form }}
+                <button type="submit">Update password</button>
+            </form>
+        </div>               
+    </div>
+</section>
+
+<section class="account-orders">
+    <h2>My Orders</h2>
+
+    {% if orders %}
+    <ul class="orders-list">
+        {% for order in orders %}
+        <li class="order-wrap">
+            <h3>Order created at: {{ order.created_at }}</h3>
+            <ul class="order-products">
                 {% for item in order.items.all %}
-                    <li>
-                        {{ item.product.name }} : ${{ item.unit_price }} x {{ item.quantity }}
-                    </li>
+                <li>
+                    {% if item.product.image %}
+                    <img class="order-product-image"
+                        src="{{ item.product.image.url }}"
+                        alt="{{ item.product.name }}">
+                    {% endif %}
+                    {{ item.product.name }} : ${{ item.unit_price }} x {{ item.quantity }}
+                </li>
                 {% endfor %}
             </ul>
+            <p class="order-total">
             Total price: ${{ order.total_price }}
+            </p>
         </li>
-    {% endfor %}
-    </ul>   
-{% else %}
+        {% endfor %}
+    </ul>
+    {% else %}
     <p>You have no orders yet.</p>
-{% endif %}
+    {% endif %}
+</section>
+{% endblock main %}
 
-<a href="{% url 'home' %}" class="btn-continue">Go back home</a>
+
+
+
+
+
