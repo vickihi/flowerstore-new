@@ -1,0 +1,40 @@
+{% load static %}
+
+<ul class="product-list">
+    {% for product in products %}
+    <li class="product-card">
+        <a class="product-card__stretched-link" href="{% url 'flowerproducts:product_detail' product.id %}"
+            aria-label="View {{ product.name }}"></a>
+        <div class="product-image-wrapper">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            {% else %}
+            <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image">
+            {% endif %}
+        </div>
+
+        <h3 class="product-name">
+            <a href="{% url 'flowerproducts:product_detail' product.id %}">
+                {{ product.name }}
+            </a>
+        </h3>
+
+        <dl class="product-info">
+            <dt>Price:</dt>
+            <dd>${{ product.price }}</dd>
+
+            <dt>Description:</dt>
+            <dd>{{ product.description }}</dd>
+
+            <dt>Quantity:</dt>
+            <dd>{{ product.quantity }}</dd>
+
+            <dt>Category:</dt>
+            <dd>{{ product.category.name }}</dd>
+
+            <dt>Created at:</dt>
+            <dd>{{ product.created_at|date:"Y-m-d" }}</dd>
+        </dl>
+    </li>
+    {% endfor %}
+</ul>

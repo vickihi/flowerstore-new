@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumbs %}
+    <a href="{% url 'flowerproducts:index' %}">Home</a> /
+    <a href="{% url 'flowerproducts:categories' %}">Categories</a> /
+    {{ category.name }}
+{% endblock %}
+
+{% block main %}
+    <h1>{{ category.name }}</h1>
+    <p>Description:{{ category.description }}</p>
+
+    <form method="get">
+        {{ cat_form }}
+        <button type="submit">Apply</button>
+    </form>
+
+    {% include "flowerproducts/snippets/product_list.html" %}
+{% endblock %}

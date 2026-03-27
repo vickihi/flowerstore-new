@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Vote on Review {% endblock %}
+
+{% block main %}
+    <h1>Vote Review</h1>
+
+    {% include "flowerproducts/snippets/single_review.html" %}
+
+    <form method="post" action="{% url 'reviews:create_vote_submit' review.id %}" class="vote-form">
+        {% csrf_token %}  
+        <p>Leave your vote for this review:</p>
+        {{ form }}
+        <button class="btn btn-vote-submit">Vote</button>
+    </form>
+{% endblock %}

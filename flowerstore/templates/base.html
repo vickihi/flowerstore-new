@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <title>{% block title %}Flower Store{% endblock %}</title>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<header id="site-header">
+    <a href="{% url 'flowerproducts:index' %}">
+        <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
+    </a>
+</header>
+
+{% block nav %}
+<nav id="main-nav">
+    <ul>
+        <li><a href="{% url 'flowerproducts:index' %}">Home</a></li>
+        <li><a href="{% url 'flowerproducts:categories' %}">Categories</a></li>
+
+        {% if user.is_authenticated %}
+            <li class="nav-right">
+                <a href="{% url 'flowerproducts:index' %}" class="username">Hi, {{ user.full_name }}</a>
+            </li>
+            <li><a href="{% url 'orders:cart_detail' %}">Cart ({{ cart_total_quantity }})</a></li>
+            <li><a href="{% url 'orders:wishlist_detail' %}">Wish List</a></li>
+            <li><a href="{% url 'accounts:profile' %}">Account</a></li>
+            <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+        {% else %}
+            <li class="nav-right"><a href="{% url 'orders:cart_detail' %}">Cart ({{ cart_total_quantity }})</a></li>
+            <li><a href="{% url 'accounts:register' %}">Register</a></li>
+            <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}
+
+<header>
+    <nav id="breadcrumbs">
+        <div class="breadcrumb">
+            {% block breadcrumbs %}{% endblock %}
+        </div>
+    </nav>
+</header>
+{% if messages %}
+    <section class="messages" aria-live="polite">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </section>
+{% endif %}
+<main
+        class="
+            {{ request.resolver_match.app_name }}
+            {{ request.resolver_match.url_name }}
+        "
+>
+    {% block main %}{% endblock %}
+</main>
+
+</body>
+</html>

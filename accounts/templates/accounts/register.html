@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block main %}
+<section class="register-page">
+    <h1>Register</h1>
+
+    <div class="register-container">
+        <form method="post" action="{% url 'accounts:register_submit' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_full_name">Full name</label>
+                {{ form.full_name }}
+                {{ form.full_name.errors }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            <div class="form-group">
+                <label for="id_password1">New Password</label>
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+                
+                <div class="password-help">
+                {{ form.password1.help_text }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_password2">Confirm Password</label>
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </div>  
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+{% endblock main %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Wish list{% endblock %}
+
+{% block main %}
+    <section class="wishlist-page">
+        <header class="cart-page__header">
+            <h1>My wish list</h1>
+        </header>
+
+        {% if items %}
+            <div class="wishlist-container">
+                <table class="wishlist-table">
+                    <thead>
+                    <tr class="wishlist-tr">
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                        <th>Move to cart</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in items %}
+                        <tr class="wishlist-tr">
+                            <td class="wishlist-td">
+                                <div class="wishlist-product">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                    {% endif %}
+                                    <span> {{ item.product.name }}</span>
+                                </div>
+                            </td>
+
+                            <td class="wishlist-td"><p>Price: ${{ item.product.price|floatformat:2 }}</p></td>
+                            <td class="wishlist-td">
+                                <form method="post" action="{% url 'orders:wishlist_remove' item.product.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Remove</button>
+                                </form>
+                            </td>
+
+
+                            <td class="wishlist-td">
+                                <form method="post"
+                                      action="{% url 'orders:wishlist_move_to_cart' item.product.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Move to cart</button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>Your wish list is empty.</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock main %}

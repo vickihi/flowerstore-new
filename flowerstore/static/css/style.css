@@ -1,0 +1,16 @@
+@import "/static/css/nav.css";
+@import "/static/flowerproducts/css/styles.css";
+@import "/static/flowerproducts/css/product_detail.css";
+@import "/static/flowerproducts/css/form.css";
+@import "/static/orders/css/cart.css";
+@import "/static/orders/css/wishlist.css";
+@import "/static/accounts/css/auth.css";
+
+body {
+    font-family: system-ui, sans-serif;
+    margin: 0;
+    padding: 1rem;
+    min-height: 100vh;
+}
+
+

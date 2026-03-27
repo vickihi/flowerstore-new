@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumb">
+        <a href="{% url 'products:index' %}">Home</a> /
+        Categories
+    </div>
+{% endblock %}
+{% block main %}
+    <h1>Categories</h1>
+
+    <ul class="category-list">
+
+        {% for category in categories %}
+
+            <li class="category-card">
+            <h3>
+                <a href="{% url 'products:category' category.id %}">
+                    {{ category.name }}
+                </a>
+            </h3>
+            <p>{{ category.description }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

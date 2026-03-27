@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block main %}
+
+    <section class="product">
+        <div class="product__grid">
+            <div class="product__image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="product__image--placeholder" aria-hidden="true">No image</div>
+                {% endif %}
+            </div>
+
+            <div class="product__info">
+                <div>
+                    <h1>{{ product.name }}</h1>
+                    <div class="product__rating">
+                    <span class="rating-stars"
+                          aria-label="Average rating {{ average_rating|default:0|floatformat:1 }} out of 5">
+                        {% for i in star_range %}
+                            {% if i <= average_rating_full %} <i class="bi bi-star-fill"></i>
+                            {% elif average_rating_half and i == average_rating_full|add:1 %}
+                                <i class="bi bi-star-half"></i>
+                            {% else %}
+                                <i class="bi bi-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                        <a class="rating-count" href="#reviews">({{ review_count }})</a>
+                    </div>
+                    <p class="product__desc">{{ product.description }}</p>
+
+                    <div class="product__priceblock">
+                        <h3 class="text-primary">Price: ${{ product.price|floatformat:2 }}</h3>
+                        <p class="product__stock">Stock: {{ product.quantity }}</p>
+                    </div>
+                    <form method="post" action="{% url 'orders:add_cart_item' product.id %}">
+                        {% csrf_token %}
+                        <label for="quantity">Quantity:</label>
+                        <input id="quantity" name="quantity" type="number" min="1" max="{{ product.quantity }}"
+                               value="1" required>
+                        <button type="submit">Add to cart</button>
+                    </form>
+                    {% if request.user.is_authenticated %}
+                        <form method="post" action="{% url 'orders:wishlist_add' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Add to wish list</button>
+                        </form>
+                    {% else %}
+                        <p><a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in to add to wish list</a>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <section class="section related">
+            <h2 class="section__title related__title">Related Products</h2>
+            {% if related_products %}
+                <div class="related__grid">
+                    {% for rp in related_products %}
+                        <div class="product-card">
+                            <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
+                                <div class="product-card__image">
+                                    {% if rp.image %}
+                                        <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
+                                    {% else %}
+                                        <div class="product-card__placeholder" aria-hidden="true">No image</div>
+                                    {% endif %}
+                                </div>
+                                <div class="product-card-details">
+                                    <h3 class="product-card__title">{{ rp.name }}</h3>
+                                    <span class="product__price">${{ rp.price|floatformat:2 }}</span>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="related__empty">No related products found.</p>
+            {% endif %}
+        </section>
+
+        {% include "reviews/flowerproduct_reviews.html" %}
+
+    </section>
+{% endblock main %}

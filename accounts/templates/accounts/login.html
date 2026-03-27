@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block main %}
+<section class="login-page">
+    <h1>Login</h1>
+
+    <div class="login-container">
+        <form method="post" action="{% url 'accounts:login_submit' %}">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Login</button>
+        </form>
+        <p><a href="{% url 'accounts:password_reset' %}">Forgot your password?</a></p>
+        <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+        <a href="{% url 'home' %}" class="btn-continue">Go back home</a>
+    </div>
+</section>
+{% endblock main %}
+
+
+
