@@ -13,11 +13,13 @@ class IndexForm(forms.Form):
         ("-avg_rating", "Rating (high to low)"),
         ("avg_rating", "Rating (low to high)"),
     ]
+    SORT_CHOICES = [("", "")]
+    SORT_CHOICES.extend(SORT_ORDERS)
 
     sort_order = forms.ChoiceField(
         label="Order by",
         required=False,
-        choices=SORT_ORDERS,
+        choices=SORT_CHOICES,
     )
 
     available = forms.BooleanField(
@@ -50,11 +52,13 @@ class CategoryForm(forms.Form):
         ("-avg_rating", "Rating (high to low)"),
         ("avg_rating", "Rating (low to high)"),
     ]
+    SORT_CHOICES = [("", "")]
+    SORT_CHOICES.extend(SORT_ORDERS)
 
     sort_order = forms.ChoiceField(
         label="Order by",
         required=False,
-        choices=SORT_ORDERS,
+        choices=SORT_CHOICES,
     )
 
     available = forms.BooleanField(

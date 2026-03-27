@@ -5,36 +5,24 @@
     <li class="product-card">
         <a class="product-card__stretched-link" href="{% url 'flowerproducts:product_detail' product.id %}"
             aria-label="View {{ product.name }}"></a>
-        <div class="product-image-wrapper">
+        <div class="product-image-stack">
             {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image product-image--default">
             {% else %}
-            <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image">
+                <img src="{% static 'images/default_flower.png' %}" alt="Default flower" class="product-image product-image--default">
             {% endif %}
-        </div>
 
+            {% if product.hover_image %}
+                <img src="{{ product.hover_image.url }}" alt="{{ product.name }} alternate view" class="product-image product-image--hover">
+            {% endif %}
+            <span class="product-hover-cta" aria-hidden="true">+ Add to cart</span>
+        </div>
         <h3 class="product-name">
             <a href="{% url 'flowerproducts:product_detail' product.id %}">
                 {{ product.name }}
             </a>
         </h3>
-
-        <dl class="product-info">
-            <dt>Price:</dt>
-            <dd>${{ product.price }}</dd>
-
-            <dt>Description:</dt>
-            <dd>{{ product.description }}</dd>
-
-            <dt>Quantity:</dt>
-            <dd>{{ product.quantity }}</dd>
-
-            <dt>Category:</dt>
-            <dd>{{ product.category.name }}</dd>
-
-            <dt>Created at:</dt>
-            <dd>{{ product.created_at|date:"Y-m-d" }}</dd>
-        </dl>
+        <p class="product-price">${{ product.price }} CAD</p>
     </li>
     {% endfor %}
 </ul>

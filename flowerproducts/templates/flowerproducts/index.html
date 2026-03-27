@@ -1,26 +1,413 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}🌸Flower Store🌸{% endblock %}
 
 {% block main %}
-    <h1>Our Products</h1>
+    <section class="hero-banner">
+        <div class="hero-video-wrapper">
+            <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="{% static 'media/hero-poster.png' %}">
+                <source src="{% static 'media/hero-video.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <p class="hero-kicker">Look your best with our flowers</p>
+                <h1>Blooms in Motion</h1>
+                <p class="hero-copy">Let our team help you convey just the right message. We make the flower ordering experience easy, enjoyable and memorable.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="{% url 'flowerproducts:categories' %}">Shop Categories</a>
+                    <a class="btn btn-secondary" href="{% url 'flowerproducts:index' %}#catalog">View Catalogue</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Search form -->
-    <form method="get" action="{% url 'flowerproducts:search_results' %}" >
-        {{ search_form }}
-        <!-- Preserve current filter/sort values -->
-        <input type="hidden" name="sort_order" value="{{ index_form.sort_order.value }}">
-        <input type="hidden" name="available" value="{{ index_form.available.value }}">
-        <input type="hidden" name="filter_category" value="{{ index_form.filter_category.value }}">
-        <button>Search</button>
-    </form>
+    <div class="title">
+        <h1>Best-selling flowers and gifts</h1>
+        <p>Discover our most popular floral arrangements and gift options, perfect for any occasion.</p>
+    </div>
 
-    <!-- Filter / Sort form -->
-    <form>
-        {{ index_form }}
-        <button>Apply</button>
+    <form method="get" action="{% url 'flowerproducts:index' %}" class="catalog-controls" id="catalog-form">
+        <div class="catalog-toolbar">
+            <div class="filter-toggle-group">
+                <button type="button" class="filter-toggle" data-filter-toggle>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M4 7h16M7 12h10M10 17h4" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                    </svg>
+                    <span>Filters</span>
+                </button>
+
+                {% with has_category=index_form.filter_category.value has_sort=request.GET.sort_order has_available=index_form.available.value %}
+                <div class="active-filters" data-active-filters>
+                    {% with current_category=index_form.filter_category.value %}
+                        {% if current_category %}
+                            {% with current_category_str=current_category|stringformat:"s" %}
+                                {% for value, label in index_form.filter_category.field.choices %}
+                                    {% if value|stringformat:"s" == current_category_str %}
+                                        <button type="button" class="filter-chip" data-chip-clear="filter_category" aria-label="Remove category filter {{ label }}">
+                                            <span class="filter-chip__label">{{ label }}</span>
+                                            <span class="filter-chip__close" aria-hidden="true">&times;</span>
+                                        </button>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        {% endif %}
+                    {% endwith %}
+
+                    {% with current_sort=index_form.sort_order.value %}
+                        {% if has_sort %}
+                            {% with current_sort_str=current_sort|stringformat:"s" %}
+                                {% for value, label in index_form.sort_order.field.choices %}
+                                    {% if value and value|stringformat:"s" == current_sort_str %}
+                                        <button type="button" class="filter-chip" data-chip-clear="sort_order" aria-label="Remove sort filter {{ label }}">
+                                            <span class="filter-chip__label">{{ label }}</span>
+                                            <span class="filter-chip__close" aria-hidden="true">&times;</span>
+                                        </button>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if index_form.available.value %}
+                        <button type="button" class="filter-chip" data-chip-clear="available" aria-label="Remove availability filter">
+                            <span class="filter-chip__label">In stock</span>
+                            <span class="filter-chip__close" aria-hidden="true">&times;</span>
+                        </button>
+                    {% endif %}
+
+                    {% if has_category and has_sort or has_category and has_available or has_sort and has_available %}
+                        <a href="{% url 'flowerproducts:index' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}" class="filter-clear-all">Clear all</a>
+                    {% endif %}
+                </div>
+                {% endwith %}
+
+            </div>
+
+            {% with current_sort=index_form.sort_order.value %}
+            <div class="sort-control" data-choice-group data-choice-type="sort">
+                <div class="sort-control__header">
+                    <label class="sort-label" for="{{ index_form.sort_order.id_for_label }}">Sort by: </label>
+                    <span class="sort-current{% if not current_sort %} is-muted{% endif %}" data-sort-display data-placeholder="">
+                        {% if current_sort %}
+                            {% for value, label in index_form.sort_order.field.choices %}
+                                {% if value == current_sort %}{{ label }}{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                    <button type="button" class="filter-sort__icon" data-choice-toggle aria-expanded="false" aria-controls="toolbar-sort-list" aria-label="Toggle sort options">
+                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="sr-only">
+                    <label class="sr-only" for="{{ index_form.sort_order.id_for_label }}">Sort products</label>
+                    {{ index_form.sort_order }}
+                </div>
+                <div class="filter-sort__list" id="toolbar-sort-list" data-choice-list aria-hidden="true">
+                    {% for value, label in index_form.sort_order.field.choices %}
+                        {% if value %}
+                            <button type="button" class="filter-sort__option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                {{ label }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endwith %}
+
+        </div>
+
+        <div class="filter-modal" data-filter-modal>
+            <div class="filter-modal__overlay" data-filter-close></div>
+            <div class="filter-modal__panel">
+                <header class="filter-modal__header">
+                    <h2>Filters</h2>
+                    <button class="filter-close" type="button" data-filter-close aria-label="Close filters">&times;</button>
+                </header>
+
+                <div class="filter-section">
+                    {% with current_sort=index_form.sort_order.value %}
+                        <div class="filter-section__row filter-section__row--stacked" data-choice-group data-choice-type="sort">
+                            <div class="filter-section__header">
+                                <span class="filter-section__label">Sort by</span>
+                                <button type="button" class="filter-sort__icon" data-choice-toggle aria-expanded="false" aria-controls="modal-sort-list" aria-label="Toggle sort options">
+                                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="sr-only">
+                                <label class="sr-only" for="{{ index_form.sort_order.id_for_label }}">Sort products</label>
+                                {{ index_form.sort_order }}
+                            </div>
+                            <div class="filter-sort__list" id="modal-sort-list" data-choice-list aria-hidden="true">
+                                {% for value, label in index_form.sort_order.field.choices %}
+                                    <button type="button" class="filter-sort__option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                        {{ label }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-section__row">
+                        <span class="filter-section__label">Availability</span>
+                        <label class="filter-checkbox">
+                            {{ index_form.available }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    {% with current_category=index_form.filter_category.value %}
+                        <div class="filter-section__row filter-section__row--stacked" data-choice-group data-choice-type="category">
+                            <div class="filter-section__header">
+                                <span class="filter-section__label">Category</span>
+                                <button type="button" class="filter-sort__icon" data-choice-toggle aria-expanded="false" aria-controls="modal-category-list" aria-label="Toggle category options">
+                                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="sr-only">
+                                <label class="sr-only" for="{{ index_form.filter_category.id_for_label }}">Filter by category</label>
+                                {{ index_form.filter_category }}
+                            </div>
+                            <div class="filter-sort__list" id="modal-category-list" data-choice-list aria-hidden="true">
+                                {% for value, label in index_form.filter_category.field.choices %}
+                                    {% if value %}
+                                        <button type="button" class="filter-sort__option {% if value == current_category %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                            {{ label }}
+                                        </button>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a class="btn filter-reset" href="{% url 'flowerproducts:index' %}">Reset</a>
+                </div>
+            </div>
+        </div>
+
+        {% if request.GET.search %}
+            <input type="hidden" name="search" value="{{ request.GET.search }}">
+        {% endif %}
     </form>
 
     <!-- Product lists -->
     {% include "flowerproducts/snippets/product_list.html" %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const video = document.querySelector(".hero-video");
+            if (video) {
+                const tryPlay = () => {
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(() => {
+                            video.setAttribute("controls", "controls");
+                            video.classList.add("hero-video--controls");
+                        });
+                    }
+                };
+
+                if (video.readyState >= 2) {
+                    tryPlay();
+                } else {
+                    video.addEventListener("loadeddata", tryPlay, { once: true });
+                }
+            }
+
+            const filterToggle = document.querySelector("[data-filter-toggle]");
+            const filterModal = document.querySelector("[data-filter-modal]");
+            const closeTriggers = document.querySelectorAll("[data-filter-close]");
+            const choiceGroups = document.querySelectorAll("[data-choice-group]");
+            const filterForm = document.getElementById("catalog-form");
+            const filterChips = document.querySelectorAll("[data-chip-clear]");
+            const sortDisplay = document.querySelector("[data-sort-display]");
+            const sortSelects = document.querySelectorAll('select[name="sort_order"]');
+
+            const escapeValue = (value) => {
+                if (window.CSS && CSS.escape) {
+                    return CSS.escape(value);
+                }
+                return value.replace(/["\\]/g, "\\$&");
+            };
+
+            const syncSortInputs = (value, sourceSelect) => {
+                if (!sortSelects.length) return;
+                sortSelects.forEach((selectEl) => {
+                    if (sourceSelect && selectEl === sourceSelect) return;
+                    selectEl.value = value;
+                });
+            };
+
+            const updateSortDisplay = () => {
+                if (!sortDisplay || !sortSelects.length) return;
+                const primarySelect = sortSelects[0];
+                const currentValue = primarySelect.value;
+                if (!currentValue) {
+                    sortDisplay.textContent = sortDisplay.dataset.placeholder || "";
+
+                    sortDisplay.classList.add("is-muted");
+                    return;
+                }
+                const optionSelector = `option[value="${escapeValue(currentValue)}"]`;
+                const option = primarySelect.querySelector(optionSelector);
+                const label = option ? option.textContent.trim() : "";
+                sortDisplay.textContent = label || (sortDisplay.dataset.placeholder || "");
+                if (label) {
+                    sortDisplay.classList.remove("is-muted");
+                } else {
+                    sortDisplay.classList.add("is-muted");
+                }
+            };
+
+            if (filterToggle && filterModal) {
+                const openModal = () => {
+                    filterModal.classList.add("is-open");
+                    document.body.style.overflow = "hidden";
+                };
+
+                const closeModal = () => {
+                    filterModal.classList.remove("is-open");
+                    document.body.style.overflow = "";
+                };
+
+                filterToggle.addEventListener("click", openModal);
+                closeTriggers.forEach((btn) => btn.addEventListener("click", closeModal));
+                filterModal.addEventListener("click", (event) => {
+                    if (event.target === filterModal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            choiceGroups.forEach((group) => {
+                const toggleBtn = group.querySelector("[data-choice-toggle]");
+                const list = group.querySelector("[data-choice-list]");
+                const optionButtons = list ? list.querySelectorAll("[data-choice-value]") : [];
+                const select = group.querySelector("select");
+                const isSortGroup = group.dataset.choiceType === "sort";
+                if (!toggleBtn || !list || !select || !optionButtons.length) return;
+
+                const setActiveOption = (value) => {
+                    optionButtons.forEach((btn) => {
+                        btn.classList.toggle("is-active", btn.dataset.choiceValue === value);
+                    });
+                    if (isSortGroup) {
+                        updateSortDisplay();
+                    }
+                };
+
+                const closeList = () => {
+                    group.classList.remove("is-open");
+                    toggleBtn.setAttribute("aria-expanded", "false");
+                    list.setAttribute("aria-hidden", "true");
+                };
+
+                const openList = () => {
+                    group.classList.add("is-open");
+                    toggleBtn.setAttribute("aria-expanded", "true");
+                    list.setAttribute("aria-hidden", "false");
+                };
+
+                toggleBtn.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    if (group.classList.contains("is-open")) {
+                        closeList();
+                    } else {
+                        openList();
+                    }
+                });
+
+                optionButtons.forEach((btn) => {
+                    btn.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        const selectedValue = btn.dataset.choiceValue;
+                        if (select.value !== selectedValue) {
+                            select.value = selectedValue;
+                            select.dispatchEvent(new Event("change", { bubbles: true }));
+                        }
+                        setActiveOption(selectedValue);
+                        if (isSortGroup) {
+                            syncSortInputs(selectedValue, select);
+                            updateSortDisplay();
+                            if (filterForm) {
+                                if (typeof filterForm.requestSubmit === "function") {
+                                    filterForm.requestSubmit();
+                                } else {
+
+                                    filterForm.submit();
+                                }
+                            }
+                        }
+                    });
+                });
+
+                group.addEventListener("keydown", (event) => {
+                    if (event.key === "Escape") {
+                        closeList();
+                        toggleBtn.focus();
+                    }
+                });
+
+                setActiveOption(select.value);
+                if (isSortGroup) {
+                    updateSortDisplay();
+                }
+            });
+
+            if (sortDisplay && sortSelects.length) {
+                updateSortDisplay();
+                sortSelects.forEach((select) => select.addEventListener("change", () => {
+                    syncSortInputs(select.value, select);
+                    updateSortDisplay();
+                }));
+            }
+
+            if (filterForm && filterChips.length) {
+                filterChips.forEach((chip) => {
+                    chip.addEventListener("click", () => {
+                        const targetField = chip.dataset.chipClear;
+                        if (!targetField) return;
+
+                        if (targetField === "filter_category") {
+                            const select = filterForm.querySelector('[name="filter_category"]');
+                            if (select) {
+                                select.value = "";
+                            }
+                        }
+
+                        if (targetField === "available") {
+                            const checkbox = filterForm.querySelector('[name="available"]');
+                            if (checkbox) {
+                                checkbox.checked = false;
+                            }
+                        }
+
+                        if (targetField === "sort_order") {
+                            const sortFields = filterForm.querySelectorAll('[name="sort_order"]');
+                            sortFields.forEach((field) => {
+                                field.value = "";
+                                field.dispatchEvent(new Event("change", { bubbles: true }));
+                            });
+                        }
+
+                        filterForm.submit();
+                    });
+                });
+            }
+        });
+    </script>
 
 {% endblock main %}

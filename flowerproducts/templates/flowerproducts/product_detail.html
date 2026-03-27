@@ -65,20 +65,22 @@
             {% if related_products %}
                 <div class="related__grid">
                     {% for rp in related_products %}
-                        <div class="product-card">
-                            <a class="card__link" href="{% url 'flowerproducts:product_detail' rp.id %}">
-                                <div class="product-card__image">
+                        <div class="related-card">
+                            <a class="related-card__image-link" href="{% url 'flowerproducts:product_detail' rp.id %}">
+                                <div class="related-card__image">
                                     {% if rp.image %}
                                         <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
                                     {% else %}
-                                        <div class="product-card__placeholder" aria-hidden="true">No image</div>
+                                        <div class="related-card__placeholder" aria-hidden="true">No image</div>
                                     {% endif %}
                                 </div>
-                                <div class="product-card-details">
-                                    <h3 class="product-card__title">{{ rp.name }}</h3>
-                                    <span class="product__price">${{ rp.price|floatformat:2 }}</span>
-                                </div>
                             </a>
+                            <div class="related-card__meta">
+                                <h3 class="related-card__title">
+                                    <a href="{% url 'flowerproducts:product_detail' rp.id %}">{{ rp.name }}</a>
+                                </h3>
+                                <span class="related-card__price">${{ rp.price|floatformat:2 }}</span>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
