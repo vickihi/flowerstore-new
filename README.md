@@ -38,13 +38,13 @@ This is a collaborative team project. My contributions include:
 
 ---
 
-### My Future Updates
-Planning to improve the project with the following enhancements:
-- Modernize the UI with a refreshed color palette and typography
-- Redesign layout with clearer visual sections and hierarchy
-- Optimize images and media for better performance
-- Make the site fully responsive on mobile and smaller screens
-- Improve user flow and navigation clarity
+### Updates I Made
+As a solo follow-up, I redesigned and improved the project after the team submission:
+- Modernized the UI with a refreshed color palette and typography
+- Redesigned layout with clearer visual sections and hierarchy
+- Optimized images and media for better performance
+- Made the site fully responsive on mobile and smaller screens
+- Improved user flow and navigation clarity
 
 ---
 
