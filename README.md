@@ -84,6 +84,7 @@ flowerstore-new/
 
 ### My Contributions
 This is a collaborative team project. https://github.com/582-41B-VA/flowerstore.git
+
 My contributions include:
 - **Authentication system** — custom user model (`AbstractBaseUser`), register/login/account page, order history, password reset via email
 - **Stripe webhook integration** — order fulfillment, cart clearance, and address handling triggered by payment events
