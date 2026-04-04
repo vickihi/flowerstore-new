@@ -1,66 +1,59 @@
-# FlowerStore
+## 🌸 Flower Store — Full-Stack E-commerce Web App
 
-A professional e-commerce platform dedicated to fresh flowers and premium floral arrangements. This repository tracks the development of our online storefront from conception to deployment.
-
-## Project Overview
-**FlowerStore** The project focuses on building a responsive, user-friendly interface backed by a robust management system for inventory and orders.
-
-* **Industry:** E-commerce / Florist Services
-* **Key Features:** Product browsing,and secure checkout.
-* **Objective:** Use Django to build an online shop
+### Project Overview
+A team-built online flower shop where customers can browse floral products,
+manage a shopping cart, make wish lists, write reviews, and complete secure purchases.
+Developed collaboratively using Django's MVT architecture over multiple milestones.
 
 ---
 
-## The Team
-This project is developed and maintained by:
-* **Xin He**
-* **Weiwei Guo**
-* **Xia He**
+### Key Features
+- Product browsing with search, sort, and category filtering
+- User authentication with registration, login, and account management
+- Persistent shopping cart and wishlist
+- Stripe payment integration with webhook-based order fulfillment
+- Product review and voting system
+- Password reset via email
 
 ---
 
-## 🚀 Getting Started
+### Tech Stack
+| Layer    | Technology                   |
+|----------|------------------------------|
+| Backend  | Django 6, Python 3.13        |
+| Database | SQLite (dev)                 |
+| Payments | Stripe API + Webhooks        |
+| Frontend | HTML, CSS (Django templates) |
+| Tools    | uv, Ruff, python-dotenv      |
 
+---
+
+### My Contributions
+This is a collaborative team project. My contributions include:
+- **Authentication system** — custom user model (`AbstractBaseUser`), login/register/account page, password reset via email
+- **Stripe webhook integration** — order fulfillment, cart clearance, and address handling triggered by payment events
+- **Review voting system** — `Vote` model, upvote/downvote on reviews, live vote count display
+- **Shopping cart UX** — persistent cart item count in navigation, cart display updates
+- **Security setup** — moved `SECRET_KEY` and API keys to `.env`, removed sensitive files from git tracking
+
+---
+
+### My Future Updates
+Planning to improve the project with the following enhancements:
+- Modernize the UI with a refreshed color palette and typography
+- Redesign layout with clearer visual sections and hierarchy
+- Optimize images and media for better performance
+- Make the site fully responsive on mobile and smaller screens
+- Improve user flow and navigation clarity
+
+---
+
+### Getting Started
 To set up the project environment on your local machine, follow these instructions:
 
-### 1. Clone the Repository
 ```bash
-git clone [https://github.com/582-41B-VA/flowerstore](https://github.com/582-41B-VA/flowerstore)
+git clone https://github.com/582-41B-VA/flowerstore
 cd flowerstore
-```
-### Install Project & Dependencies
-```bash
 uv sync
-```
-### Initialize the Database
-```
 uv run manage.py migrate
-```
-### Run the Development Server
-```
 uv run manage.py runserver
-```
-## How to Make Changes
-
-1. Make sure your local main branch is up to date with the remote main
-   branch by running `git pull`.
-
-2. From your local main branch, create a local feature branch with
-   `git checkout -b <branch-name>`, where `<branch-name>` corresponds to
-   the name of the feature you will implement.
-
-3. Apply Model Changes `uv run manage.py makemigrations`,
-`uv run manage.py migrate`
-4. Commit your changes with `git add <path>` and `git commit` (many
-   times if necessary).
-
-5. Once your code is ready, push your commits to GitHub with
-   `git push -u origin <branch-name>`.
-
-6. Incorporate the latest changes from the main branch into your
-    local feature branch with `git rebase main`.
-
-## Roadmap
-[x] Milestone 0: Repository Setup & Environment Initialization.
-
-[ ] Milestone 1: Project Planning & Requirements.
