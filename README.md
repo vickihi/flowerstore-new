@@ -9,11 +9,12 @@ Developed collaboratively using Django's MVT architecture over multiple mileston
 
 ### Key Features
 - Product browsing with search, sort, and category filtering
-- User authentication with registration, login, and account management
-- Persistent shopping cart and wishlist
-- Stripe payment integration with webhook-based order fulfillment
-- Product review and voting system
-- Password reset via email
+- Product reviews with ratings, voting, flagging, and comments
+- Shopping cart with real-time item count and quantity management
+- Secure checkout via Stripe with billing and shipping address collection
+- Webhook-based order fulfillment triggered by payment confirmation
+- User authentication with registration, login, account management, and password reset
+- Wishlist for saving and transferring products to cart
 
 ---
 
@@ -21,9 +22,9 @@ Developed collaboratively using Django's MVT architecture over multiple mileston
 | Layer    | Technology                   |
 |----------|------------------------------|
 | Backend  | Django 6, Python 3.13        |
-| Database | SQLite (dev)                 |
+| Database | SQLite                       |
 | Payments | Stripe API + Webhooks        |
-| Frontend | HTML, CSS (Django templates) |
+| Frontend | HTML, CSS, Django templates  |
 | Tools    | uv, Ruff, python-dotenv      |
 
 ---
