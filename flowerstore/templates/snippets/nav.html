@@ -1,0 +1,188 @@
+{% load static %}
+
+<div class="site-nav-wrapper">
+<nav class="site-nav" aria-label="Main navigation">
+    
+    <!-- Desktop nav (hidden on mobile via CSS) -->
+    <a href="{% url 'products:index' %}" class="nav-logo-link nav-logo-link-desktop">
+        <img class="nav-logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
+    </a>
+    <div class="nav-groups">
+        <ul class="nav-list nav-list-center">
+            <li><a href="{% url 'products:index' %}">Home</a></li>
+            <li><a href="{% url 'products:categories' %}">Categories</a></li>
+            <li><a href="">About Us</a></li>
+            <li><a href="">Order</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="nav-search">
+                <button class="nav-action nav-action-search" type="button" aria-label="Search" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M21 21l-4.35-4.35m1.6-5.65a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"/>
+                    </svg>
+                    <span>Search</span>
+                </button>
+                <form id="nav-search-bar" class="nav-search-bar" action="{% url 'products:search_results' %}" method="get" role="search" hidden>
+                    <input class="nav-search-input" type="search" name="search" placeholder="Search flowers…" aria-label="Search flowers">
+                    <button class="nav-search-close" type="button" aria-label="Close search">&times;</button>
+                    <button class="nav-search-submit" type="submit" aria-label="Submit search">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M21 21l-4.35-4.35m1.6-5.65a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            {% if user.is_authenticated %}
+                <a class="nav-action nav-action-account" href="{% url 'accounts:profile' %}" aria-label="Account">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>
+                        <path d="M4.5 20.25a8.25 8.25 0 0115 0"/>
+                    </svg>
+                </a>
+                <a class="nav-action" href="{% url 'accounts:logout' %}">Log out</a>
+            {% else %}
+                <a class="nav-action nav-action-account" href="{% url 'accounts:login' %}" aria-label="Account">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true">
+                        <circle cx="12" cy="8" r="3.2"/>
+                        <path d="M5.5 19c1.5-3 4-4.5 6.5-4.5s5 1.5 6.5 4.5"/>
+                    </svg>
+                    <span>Account</span>
+                </a>
+            {% endif %}
+            <a class="nav-action nav-action-cart" href="{% url 'orders:cart_detail' %}" aria-label="Cart">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 7h16l-3 12H7L4 7z"/>
+                  <path d="M9 7V5a3 3 0 016 0v2"/>
+                </svg>
+                <span>Cart</span>
+                {% if cart_total_quantity %}
+                    <span class="nav-action-badge">{{ cart_total_quantity }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Mobile nav (hidden on desktop via CSS) -->
+    <div class="nav-mobile">
+        <div class="nav-mobile-group nav-mobile-group-left">
+            <button class="hamburger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <button class="nav-action nav-action-search" type="button" aria-label="Search" data-mobile-search-toggle>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 21l-4.35-4.35m1.6-5.65a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"/>
+                </svg>
+            </button>
+        </div>
+
+        <a href="{% url 'products:index' %}" class="nav-logo-link nav-logo-link-mobile" aria-label="Flower shop home">
+            <img class="nav-logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
+        </a>
+
+        <a class="nav-action nav-action-cart nav-mobile-cart" href="{% url 'orders:cart_detail' %}" aria-label="Cart">
+            <svg viewBox="0 0 24 24">
+                <path d="M4 7h16l-3 12H7L4 7z"/>
+                <path d="M9 7V5a3 3 0 016 0v2"/>
+            </svg>
+            {% if cart_total_quantity %}
+                <span class="nav-action-badge">{{ cart_total_quantity }}</span>
+            {% endif %}
+        </a>
+    </div>
+
+    <ul id="mobile-menu" class="nav-list nav-list-mobile" hidden>
+        <li><a href="{% url 'products:index' %}">Home</a></li>
+        <li><a href="{% url 'products:categories' %}">Categories</a></li>
+        <li><a href="">About Us</a></li>
+        <li><a href="">Order</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+            <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+        {% else %}
+            <li><a href="{% url 'accounts:login' %}">Account</a></li>
+        {% endif %}
+    </ul>
+</nav>
+</div>
+
+<!-- Mobile search overlay -->
+<div class="mobile-search-overlay" id="mobile-search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="mobile-search-box">
+        <form action="{% url 'products:search_results' %}" method="get" role="search" style="display:contents">
+            <input type="search" name="search" placeholder="Search for..." aria-label="Search flowers" id="mobile-search-input">
+        </form>
+        <button class="mobile-search-close" type="button" aria-label="Close search">&times;</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Hamburger menu
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
+            hamburger.setAttribute('aria-expanded', String(!isExpanded));
+            mobileMenu.hidden = isExpanded;
+        });
+    }
+
+    // Desktop search bar
+    const desktopSearchBtn = document.querySelector('.nav-search .nav-action-search');
+    const searchBar = document.getElementById('nav-search-bar');
+    const searchCloseBtn = searchBar && searchBar.querySelector('.nav-search-close');
+
+    function openDesktopSearch() {
+        desktopSearchBtn.hidden = true;
+        searchBar.hidden = false;
+        searchBar.querySelector('input').focus();
+    }
+
+    function closeDesktopSearch() {
+        searchBar.hidden = true;
+        desktopSearchBtn.hidden = false;
+        desktopSearchBtn.focus();
+    }
+
+    if (desktopSearchBtn && searchBar) {
+        desktopSearchBtn.addEventListener('click', openDesktopSearch);
+        searchCloseBtn && searchCloseBtn.addEventListener('click', closeDesktopSearch);
+        searchBar.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDesktopSearch();
+        });
+    }
+
+    // Mobile search overlay
+    const mobileSearchBtn = document.querySelector('[data-mobile-search-toggle]');
+    const mobileOverlay = document.getElementById('mobile-search-overlay');
+    const mobileCloseBtn = mobileOverlay && mobileOverlay.querySelector('.mobile-search-close');
+    const mobileInput = document.getElementById('mobile-search-input');
+
+    if (mobileSearchBtn && mobileOverlay) {
+        mobileSearchBtn.addEventListener('click', () => {
+            mobileOverlay.classList.add('is-open');
+            mobileInput && mobileInput.focus();
+        });
+
+        mobileCloseBtn && mobileCloseBtn.addEventListener('click', () => {
+            mobileOverlay.classList.remove('is-open');
+            mobileSearchBtn.focus();
+        });
+
+        mobileOverlay.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                mobileOverlay.classList.remove('is-open');
+                mobileSearchBtn.focus();
+            }
+        });
+
+        // Click backdrop to close
+        mobileOverlay.addEventListener('click', (e) => {
+            if (e.target === mobileOverlay) mobileOverlay.classList.remove('is-open');
+        });
+    }
+});
+</script>
