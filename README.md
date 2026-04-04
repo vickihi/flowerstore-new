@@ -28,6 +28,60 @@ Developed collaboratively using Django's MVT architecture over multiple mileston
 
 ---
 
+### Project Structure
+
+```
+flowerstore-new/
+│
+├── flowerstore/               # Project core
+│   ├── settings.py            # Database, installed apps, static files
+│   ├── urls.py                # Root URLs — routes requests to each app
+│   ├── templates/             # Global templates
+│   │   ├── base.html          # Parent template for all pages
+│   │   └── snippets/
+│   │       ├── nav.html
+│   │       └── footer.html
+│   └── static/css/            # Global CSS
+│       ├── base.css
+│       ├── nav.css
+│       └── ...
+│
+├── accounts/                  # App 1 — User system: registration, login, logout, profile
+│   ├── models.py              # Account (custom user, email login)
+│   ├── views.py               # Register, login, logout, profile
+│   ├── urls.py
+│   ├── forms.py
+│   └── templates/accounts/
+│
+├── products/                  # App 2 — Products: listing, detail, categories, search
+│   ├── models.py              # Product, Category
+│   ├── views.py               # Index, product detail, category list/detail, search
+│   ├── urls.py
+│   ├── forms.py
+│   └── templates/products/
+│
+├── orders/                    # App 3 — Cart, Stripe checkout, wishlist
+│   ├── models.py              # Order, OrderItem, WishlistItem
+│   ├── views.py               # Cart, checkout, wishlist
+│   ├── urls.py
+│   ├── forms.py
+│   ├── session.py             # Cart stored in session (no login required)
+│   └── templates/orders/
+│
+└── reviews/                   # App 4 — Reviews, voting, flagging, comments
+    ├── models/                # Split into 4 files
+    │   ├── review.py          # Review
+    │   ├── vote.py            # Vote
+    │   ├── flag.py            # Flag
+    │   └── comment.py         # Comment
+    ├── views.py
+    ├── urls.py
+    ├── forms.py
+    └── templates/reviews/
+```
+
+---
+
 ### My Contributions
 This is a collaborative team project. My contributions include:
 
