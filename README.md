@@ -30,11 +30,13 @@ Developed collaboratively using Django's MVT architecture over multiple mileston
 
 ### My Contributions
 This is a collaborative team project. My contributions include:
-- **Authentication system** — custom user model (`AbstractBaseUser`), login/register/account page, password reset via email
+
+- **Authentication system** — custom user model (`AbstractBaseUser`), register/login/account page, order history, password reset via email
 - **Stripe webhook integration** — order fulfillment, cart clearance, and address handling triggered by payment events
+- **Product & browsing foundation** — `Product` and `Category` models, product list/detail/category pages, sort and filter by price/date/name/availability, search results page with combined filters
 - **Review voting system** — `Vote` model, upvote/downvote on reviews, live vote count display
-- **Shopping cart UX** — persistent cart item count in navigation, cart display updates
-- **Security setup** — moved `SECRET_KEY` and API keys to `.env`, removed sensitive files from git tracking
+- **Shopping cart UX** — cart item count in navigation, cart display and address logic updates
+- **Security setup** — moved `SECRET_KEY` and Stripe API keys to `.env`, removed sensitive files from git tracking
 
 ---
 
