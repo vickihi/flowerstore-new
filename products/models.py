@@ -38,9 +38,9 @@ class Product(models.Model):
 
     name = models.CharField(max_length=200)
     description = models.TextField()
-    image = models.ImageField(upload_to="flowerproducts/")
+    image = models.ImageField(upload_to="products/")
     hover_image = models.ImageField(
-        upload_to="flowerproducts/",
+        upload_to="products/",
         blank=True,
         null=True,
         help_text="Optional secondary image shown on hover",

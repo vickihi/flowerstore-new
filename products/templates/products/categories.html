@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 
 {% block breadcrumbs %}
-    <div class="breadcrumb">
-        <a href="{% url 'flowerproducts:index' %}">Home</a> /
-        Categories
-    </div>
+    <li><a href="{% url 'products:index' %}">Home</a></li>
+    <li aria-current="page">Categories</li>
 {% endblock %}
+
 {% block main %}
     <h1>Categories</h1>
 
@@ -15,7 +14,7 @@
 
             <li class="category-card">
             <h3>
-                <a href="{% url 'flowerproducts:category' category.id %}">
+                <a href="{% url 'products:category' category.id %}">
                     {{ category.name }}
                 </a>
             </h3>

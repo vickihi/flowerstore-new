@@ -15,7 +15,7 @@
     }
   },
   {
-    "model": "flowerproducts.category",
+    "model": "products.category",
     "pk": 1,
     "fields": {
       "name": "Occasion Bouquets",
@@ -23,7 +23,7 @@
     }
   },
   {
-    "model": "flowerproducts.category",
+    "model": "products.category",
     "pk": 2,
     "fields": {
       "name": "Cut Flowers",
@@ -31,7 +31,7 @@
     }
   },
   {
-    "model": "flowerproducts.category",
+    "model": "products.category",
     "pk": 3,
     "fields": {
       "name": "Potted Plants",
@@ -39,12 +39,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 1,
     "fields": {
       "name": "Birthday Rose Bouquet",
       "description": "Bright roses perfect for birthdays",
-      "image": "flowerproducts/birthday_roses.jpg",
+      "image": "products/birthday_roses.jpg",
       "price": "39.99",
       "quantity": 12,
       "created_at": "2025-01-05T10:00:00Z",
@@ -52,12 +52,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 2,
     "fields": {
       "name": "Anniversary Bouquet",
       "description": "Elegant mixed flowers for anniversaries",
-      "image": "flowerproducts/anniversary_bouquet.jpg",
+      "image": "products/anniversary_bouquet.jpg",
       "price": "49.99",
       "quantity": 6,
       "created_at": "2025-01-06T11:00:00Z",
@@ -65,12 +65,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 3,
     "fields": {
       "name": "Valentine Special Bouquet",
       "description": "Romantic roses for Valentine’s Day",
-      "image": "flowerproducts/valentine_bouquet.jpg",
+      "image": "products/valentine_bouquet.jpg",
       "price": "69.99",
       "quantity": 0,
       "created_at": "2025-01-08T14:00:00Z",
@@ -78,12 +78,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 4,
     "fields": {
       "name": "Red Roses (12 stems)",
       "description": "Classic long-stem red roses",
-      "image": "flowerproducts/red_roses_cut.jpg",
+      "image": "products/red_roses_cut.jpg",
       "price": "29.99",
       "quantity": 20,
       "created_at": "2025-01-10T10:00:00Z",
@@ -91,12 +91,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 5,
     "fields": {
       "name": "White Lilies",
       "description": "Fresh cut white lilies",
-      "image": "flowerproducts/white_lilies.jpg",
+      "image": "products/white_lilies.jpg",
       "price": "24.99",
       "quantity": 14,
       "created_at": "2025-01-11T11:00:00Z",
@@ -104,12 +104,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 6,
     "fields": {
       "name": "Sunflower Bunch",
       "description": "Bright sunflowers sold by bunch",
-      "image": "flowerproducts/sunflowers.jpg",
+      "image": "products/sunflowers.jpg",
       "price": "19.99",
       "quantity": 18,
       "created_at": "2025-01-12T09:00:00Z",
@@ -117,12 +117,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 7,
     "fields": {
       "name": "Monstera Plant",
       "description": "Popular large-leaf indoor plant",
-      "image": "flowerproducts/monstera.jpg",
+      "image": "products/monstera.jpg",
       "price": "49.99",
       "quantity": 6,
       "created_at": "2025-01-14T11:00:00Z",
@@ -130,12 +130,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 8,
     "fields": {
       "name": "Snake Plant",
       "description": "Low maintenance indoor plant",
-      "image": "flowerproducts/snake_plant.jpg",
+      "image": "products/snake_plant.jpg",
       "price": "34.99",
       "quantity": 15,
       "created_at": "2025-01-15T12:00:00Z",
@@ -143,12 +143,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 9,
     "fields": {
       "name": "Peace Lily",
       "description": "Elegant flowering indoor plant",
-      "image": "flowerproducts/peace_lily.jpg",
+      "image": "products/peace_lily.jpg",
       "price": "29.99",
       "quantity": 9,
       "created_at": "2025-01-16T10:30:00Z",
@@ -156,12 +156,12 @@
     }
   },
   {
-    "model": "flowerproducts.product",
+    "model": "products.product",
     "pk": 10,
     "fields": {
       "name": "Mini Succulent Pot",
       "description": "Small succulent in ceramic pot",
-      "image": "flowerproducts/succulent.jpg",
+      "image": "products/succulent.jpg",
       "price": "14.99",
       "quantity": 25,
       "created_at": "2025-01-17T14:45:00Z",

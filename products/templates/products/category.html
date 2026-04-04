@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumbs %}
-    <a href="{% url 'flowerproducts:index' %}">Home</a> /
-    <a href="{% url 'flowerproducts:categories' %}">Categories</a> /
-    {{ category.name }}
+    <li><a href="{% url 'products:index' %}">Home</a></li>
+    <li><a href="{% url 'products:categories' %}">Categories</a></li>
+    <li aria-current="page">{{ category.name }}</li>
 {% endblock %}
 
 {% block main %}
@@ -15,5 +15,5 @@
         <button type="submit">Apply</button>
     </form>
 
-    {% include "flowerproducts/snippets/product_list.html" %}
+    {% include "products/snippets/product_list.html" %}
 {% endblock %}

@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "flowerproducts.apps.FlowerproductsConfig",
+    "products.apps.productsConfig",
     "reviews.apps.ReviewsConfig",
     "orders.apps.OrdersConfig",
     "accounts.apps.AccountsConfig",

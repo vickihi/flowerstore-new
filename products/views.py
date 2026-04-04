@@ -23,7 +23,7 @@ def index(request):
 def _render_index(request, products, index_form, search_form):
     return render(
         request,
-        "flowerproducts/index.html",
+        "products/index.html",
         {
             "products": products,
             "index_form": index_form,
@@ -53,7 +53,7 @@ def search_results(request):
 def _render_search(request, products, index_form, search_form, search_term):
     return render(
         request,
-        "flowerproducts/search_results.html",
+        "products/search_results.html",
         {
             "products": products,
             "index_form": index_form,
@@ -99,7 +99,7 @@ def category_detail(request, category_id):
 
     return render(
         request,
-        "flowerproducts/category.html",
+        "products/category.html",
         {
             "category": category,
             "products": products,
@@ -113,7 +113,7 @@ def category_list(request):
     products = Product.objects.all()
     return render(
         request,
-        "flowerproducts/categories.html",
+        "products/categories.html",
         {
             "categories": categories,
             "products": products,
@@ -125,7 +125,7 @@ def product_detail(request, product_id: int):
     product = get_object_or_404(Product, pk=product_id)
     return render(
         request,
-        "flowerproducts/product_detail.html",
+        "products/product_detail.html",
         build_product_detail_context(
             product=product,
             review_form=ReviewForm(),
