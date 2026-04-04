@@ -1,0 +1,79 @@
+/* ============================================================
+   REVIEWS — Vote & flag form pages
+   ============================================================ */
+
+.review-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: transform 0.2s;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+}
+
+.review-product {
+    font-weight: bold;
+    color: #684611;
+}
+
+.review-author {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.vote-form,
+.flag-form {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.vote-form p,
+.flag-form p {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.vote-form input[type="text"],
+.vote-form input[type="email"],
+.vote-form select,
+.vote-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.btn-vote-submit,
+.btn-flag-submit {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background-color: #684611;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.form-group {
+    margin-bottom: 0.8rem;
+}

@@ -1,0 +1,439 @@
+/* ============================================================
+   FILTERS — Catalog toolbar, filter panel & sort controls
+   ============================================================ */
+
+.catalog-controls {
+    margin: 2.5rem 0 1.5rem;
+    padding: 0;
+}
+
+.catalog-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.filter-toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+}
+
+.filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: none;
+    background: transparent;
+    font: inherit;
+    color: var(--nav-text);
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+    min-height: 38px;
+}
+
+.filter-toggle svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.active-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-chip {
+    border: 1px solid #d9d1cb;
+    background: #f1ece6;
+    color: #3b2f29;
+    border-radius: 6px;
+    padding: 0.35rem 0.95rem;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.filter-chip-label {
+    font-weight: 500;
+}
+
+.filter-chip-close {
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+.filter-chip:hover,
+.filter-chip:focus-visible {
+    background: #3b2f29;
+    color: #fff;
+    border-color: #3b2f29;
+    outline: none;
+}
+
+.filter-clear-all {
+    font-size: 0.9rem;
+    color: #4d4038;
+    text-decoration: underline;
+    padding: 0.35rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+}
+
+.filter-clear-all:hover,
+.filter-clear-all:focus-visible {
+    color: #2b211c;
+}
+
+.sort-control {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    position: relative;
+}
+
+.sort-label {
+    letter-spacing: 0.05em;
+    text-transform: none;
+    color: #4d4038;
+}
+
+.sort-control-header {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.sort-current {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #2b211c;
+}
+
+.sort-current.is-muted {
+    color: rgba(61, 50, 44, 0.55);
+}
+
+.sort-control .filter-sort-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.4rem);
+    width: 260px;
+    background: #fff;
+    padding: 0.35rem 0;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid #ece4de;
+    z-index: 10;
+}
+
+.sort-control .filter-sort-option {
+    text-align: right;
+    padding-right: 1.1rem;
+}
+
+.sort-control.is-open .filter-sort-list {
+    display: block;
+}
+
+.filter-panel {
+    display: none;
+    margin-top: 1rem;
+}
+
+.filter-panel.is-open {
+    display: block;
+}
+
+.filter-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.filter-checkbox,
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1px solid #d4c8bf;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    margin: 0;
+}
+
+.filter-checkbox input[type="checkbox"]::after {
+    content: "";
+    width: 8px;
+    height: 5px;
+    border-left: 2px solid #2b211c;
+    border-bottom: 2px solid #2b211c;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -55%) rotate(-45deg);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.filter-checkbox input[type="checkbox"]:checked {
+    background: #f5f1ed;
+    border-color: #d8cec6;
+}
+
+.filter-checkbox input[type="checkbox"]:checked::after {
+    opacity: 1;
+}
+
+.filter-checkbox {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    font-size: 0.9rem;
+    color: rgba(61, 50, 44, 0.7);
+    justify-self: end;
+    width: 40px;
+    height: 40px;
+}
+
+.filter-checkbox span {
+    font-weight: 500;
+}
+
+.filter-field select {
+    border-radius: 12px;
+    border: 1px solid #d8cec6;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+}
+
+.filter-actions {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-reset {
+    border: 1px solid #f7d7c7;
+    color: #6b5a50;
+    border-radius: 999px;
+    padding: 0.55rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    background: transparent;
+    transition: background 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+}
+
+.filter-reset:hover,
+.filter-reset:focus-visible {
+    background: #3a2419;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* --- Filter modal (mobile slide-in panel) --- */
+
+.filter-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: stretch;
+    justify-content: flex-start;
+    z-index: 1000;
+}
+
+.filter-modal.is-open {
+    display: flex;
+}
+
+.filter-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.filter-modal-panel {
+    width: min(420px, 90vw);
+    background: #fff;
+    padding: 2rem 2rem 1.5rem;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+    position: relative;
+    margin: 1.25rem 0 1.25rem 1.25rem;
+    max-height: calc(100vh - 2.5rem);
+}
+
+.filter-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.filter-modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.filter-close {
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.filter-section {
+    padding: 1rem 0;
+    border-bottom: 1px solid #ece4de;
+}
+
+.filter-section:last-of-type {
+    border-bottom: none;
+}
+
+.filter-section-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.filter-section-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 1rem;
+}
+
+.filter-section-row .filter-section-label {
+    margin-bottom: 0;
+}
+
+.filter-section-row-stacked {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+}
+
+.filter-section-header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 1rem;
+}
+
+.filter-section-field select {
+    width: 100%;
+    border: 1px solid #d8cec6;
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+}
+
+.filter-sort-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #d8cec6;
+    background: #f5f1ed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #5a4d44;
+    cursor: pointer;
+}
+
+.filter-sort-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.filter-sort-list {
+    width: 100%;
+    margin-top: 0.2rem;
+    padding: 0;
+    display: none;
+}
+
+.filter-section-row.is-open .filter-sort-list {
+    display: block;
+}
+
+.filter-sort-option {
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
+    padding: 0.8rem 0;
+    font-size: 0.92rem;
+    color: rgba(61, 50, 44, 0.55);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(61, 50, 44, 0.12);
+}
+
+.filter-sort-option:focus,
+.filter-sort-option:focus-visible {
+    outline: none;
+    color: #2b211c;
+}
+
+.filter-sort-option:last-child {
+    border-bottom: none;
+}
+
+.filter-sort-option:hover,
+.filter-sort-option.is-active {
+    color: #2b211c;
+}
+
+.filter-modal .filter-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.85rem;
+    align-items: center;
+}
+
+.filter-modal .filter-actions .btn,
+.filter-modal .filter-actions .filter-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding-inline: 1.75rem;
+}
