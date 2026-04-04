@@ -25,7 +25,6 @@ Developed collaboratively using Django's MVT architecture over multiple mileston
 | Database | SQLite                       |
 | Payments | Stripe API + Webhooks        |
 | Frontend | HTML, CSS, Django templates  |
-| Tools    | uv, Ruff, python-dotenv      |
 
 ---
 
