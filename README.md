@@ -1,7 +1,7 @@
 ## 🌸 Flower Store — Full-Stack E-commerce Web App
 
 ### Project Overview
-A team-built online flower shop where customers can browse floral products,
+An online flower shop where customers can browse floral products,
 manage a shopping cart, make wish lists, write reviews, and complete secure purchases.
 Developed collaboratively using Django's MVT architecture over multiple milestones.
 

@@ -50,7 +50,7 @@ def login_submit(request):
 def logout(request):
     """Log out the user."""
     django_logout(request)
-    return redirect("flowerproducts:index")
+    return redirect("products:index")
 
 
 @login_required

@@ -12,7 +12,7 @@ def build_related_products(product: Product):
 def build_reviews_queryset(product: Product):
     base_reviews = Review.objects.filter(product=product, is_hidden=False)
     reviews = base_reviews.annotate(
-        vote_total=Count("vote", distinct=True),
+        vote_total=Count("votes", distinct=True),
         flag_off_topic=Count("flags", filter=Q(flags__flag="off-topic"), distinct=True),
         flag_inappropriate=Count(
             "flags", filter=Q(flags__flag="inappropriate"), distinct=True

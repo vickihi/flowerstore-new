@@ -25,6 +25,7 @@ LOGIN_URL = "accounts:login"
 # one for authentication.
 AUTH_USER_MODEL = "accounts.Account"
 
+
 # Email settings for sending emails
 EMAIL_BACKEND = os.environ.get(
     "EMAIL_BACKEND", "django.core.mail.backends.locmem.EmailBackend"

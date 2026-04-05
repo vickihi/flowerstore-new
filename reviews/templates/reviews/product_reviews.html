@@ -14,6 +14,7 @@
                                 - {{ review.created_at|date:"Y-m-d" }}
                             </small>
                             <div class="review-actions">
+
                                 <div class="review-vote">
                                     {% if request.user.is_authenticated %}
                                         <form method="post" action="{% url 'reviews:add_vote' review.id %}">

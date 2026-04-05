@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 
-from flowerproducts.models import Product
+from products.models import Product
 from orders.constants import CART_KEY
 from orders.models import CartItem
 
