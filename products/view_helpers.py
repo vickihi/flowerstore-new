@@ -6,13 +6,14 @@ from .utils import compute_average_rating_stats
 
 
 def build_related_products(product: Product):
-    return Product.objects.filter(category=product.category).exclude(pk=product.id)[:3]
+    return Product.objects.filter(category=product.category).exclude(pk=product.id)[:8]
 
 
 def build_reviews_queryset(product: Product):
     base_reviews = Review.objects.filter(product=product, is_hidden=False)
     reviews = base_reviews.annotate(
         vote_total=Count("votes", distinct=True),
+        flag_total=Count("flags", distinct=True),
         flag_off_topic=Count("flags", filter=Q(flags__flag="off-topic"), distinct=True),
         flag_inappropriate=Count(
             "flags", filter=Q(flags__flag="inappropriate"), distinct=True

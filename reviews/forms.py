@@ -7,6 +7,9 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["body", "rating"]
+        widgets = {
+            "body": forms.Textarea(attrs={"placeholder": "Leave your review here...", "rows": 4}),
+        }
 
     def clean_body(self):
         body = self.cleaned_data.get("body", "")
@@ -18,6 +21,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["body"]
+        widgets = {
+            "body": forms.Textarea(attrs={"placeholder": "Leave your comment here...", "rows": 3}),
+        }
 
     def clean_body(self):
         body = self.cleaned_data.get("body", "")

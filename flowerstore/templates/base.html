@@ -46,6 +46,12 @@
             <div class="message {{ message.tags }}">{{ message }}</div>
         {% endfor %}
     </section>
+    <script>
+        setTimeout(function() {
+            const messages = document.querySelector('.messages');
+            if (messages) messages.style.display = 'none';
+        }, 3000);
+    </script>
 {% endif %}
 
 <!-- Main Content -->

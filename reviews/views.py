@@ -40,7 +40,7 @@ def add_review(request, product_id):
             review.save()
             return redirect("products:product_detail", product_id=product_id)
         except IntegrityError:
-            review_form.add_error(None, "You have already reviewed this product.") # if goes here, also render the form below
+            review_form.add_error(None, "You have already reviewed this product.")
 
     return render(
         request,
@@ -52,11 +52,11 @@ def add_review(request, product_id):
         ),
     )
 
-    
+
 @require_POST
 @login_required
 def add_vote(request, review_id):
-    """ Create a vote for a review. """
+    """ Add a vote to a review. """
     review = get_object_or_404(Review, pk=review_id)
 
     if review.user_id == request.user.id:
@@ -70,7 +70,7 @@ def add_vote(request, review_id):
         messages.error(request, "You have already voted on this review.")
 
     return redirect("products:product_detail", product_id=review.product.id)
-   
+
 
 @require_POST
 @login_required
@@ -85,9 +85,9 @@ def add_comment(request, review_id):
         comment.user = request.user
         comment.save()
 
-    return redirect("products:product_detail", product_id=review.product.id) 
+    return redirect("products:product_detail", product_id=review.product.id)
 
-   
+
 @require_POST
 @login_required
 def add_flag(request, review_id):
@@ -109,6 +109,5 @@ def add_flag(request, review_id):
             messages.error(request, "You have already flagged this review.")
 
     return redirect("products:product_detail", product_id=review.product.id)
-    
-  # Review needs render because it has complex form error
-  # Comment/Vote/Flag has no complex form error render like Review, so direactly redirect product detail page
+    # Review needs render because it has complex form error
+    # Comment/Vote/Flag has no complex form error render like Review, so directly redirect product detail page
