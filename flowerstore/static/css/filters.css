@@ -7,6 +7,21 @@
     padding: 0;
 }
 
+.catalog-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.catalog-section-header .section-title {
+    margin: 0;
+}
+
+.catalog-section-header form {
+    display: inline-flex;
+}
+
 .catalog-toolbar {
     display: flex;
     align-items: center;

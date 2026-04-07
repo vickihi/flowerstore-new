@@ -110,13 +110,26 @@ def category_detail(request, category_id):
 
 def category_list(request):
     categories = Category.objects.all()
-    products = Product.objects.all()
+    selected_id = request.GET.get("category")
+    cat_form = CategoryForm(request.GET)
+
+    if selected_id:
+        products = Product.objects.filter(category_id=selected_id)
+        selected_category = next((c for c in categories if str(c.id) == selected_id), None)
+    else:
+        products = Product.objects.all()
+        selected_category = None
+
+    products = apply_sort_and_available(products, cat_form, default_sort="-created_at")
+
     return render(
         request,
         "products/categories.html",
         {
             "categories": categories,
             "products": products,
+            "selected_category": selected_category,
+            "cat_form": cat_form,
         },
     )
 

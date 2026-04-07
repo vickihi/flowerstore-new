@@ -63,13 +63,15 @@
                 <label for="quantity" class="product-detail-qty-label">Quantity</label>
                 <div class="product-detail-cart-row">
                     <div class="qty-stepper">
-                        <button type="button" class="qty-stepper-btn" onclick="const i=this.nextElementSibling;if(+i.value>+i.min)i.value=+i.value-1">−</button>
+                        <button type="button" class="qty-stepper-btn qty-stepper-dec">−</button>
                         <input id="quantity" name="quantity" type="number" min="1"
                                max="{{ product.quantity }}" value="1" required
                                class="qty-stepper-input">
-                        <button type="button" class="qty-stepper-btn" onclick="const i=this.previousElementSibling;if(+i.value<+i.max)i.value=+i.value+1">+</button>
+                        <button type="button" class="qty-stepper-btn qty-stepper-inc">+</button>
                     </div>
-                    <button type="submit" class="btn btn-add-to-cart">Add to cart</button>
+                    <button type="submit" class="btn btn-add-to-cart" {% if not product.is_available %}disabled{% endif %}>
+                        {% if product.is_available %}Add to cart{% else %}Out of stock{% endif %}
+                    </button>
                 </div>
             </form>
 
@@ -130,7 +132,22 @@
 
 </div>
 
+
+{# Carousel #}
 <script>
+// Quantity stepper
+(function () {
+    const input = document.querySelector('.qty-stepper-input');
+    if (!input) return;
+    document.querySelector('.qty-stepper-dec').addEventListener('click', () => {
+        if (+input.value > +input.min) input.value = +input.value - 1;
+    });
+    document.querySelector('.qty-stepper-inc').addEventListener('click', () => {
+        if (+input.value < +input.max) input.value = +input.value + 1;
+    });
+})();
+
+// Carousel
 (function () {
     const track = document.querySelector('.carousel-track');
     if (!track) return;
