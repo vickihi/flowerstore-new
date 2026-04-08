@@ -39,7 +39,10 @@
                         <path d="M4.5 20.25a8.25 8.25 0 0115 0"/>
                     </svg>
                 </a>
-                <a class="nav-action" href="{% url 'accounts:logout' %}">Log out</a>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-action nav-logout-btn">Log out</button>
+                </form>
             {% else %}
                 <a class="nav-action nav-action-account" href="{% url 'accounts:login' %}" aria-label="Account">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true">
@@ -47,6 +50,17 @@
                         <path d="M5.5 19c1.5-3 4-4.5 6.5-4.5s5 1.5 6.5 4.5"/>
                     </svg>
                     <span>Account</span>
+                </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <a class="nav-action nav-action-wishlist" href="{% url 'orders:wishlist_detail' %}" aria-label="Wishlist">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 21C12 21 3 14 3 8.5A5.5 5.5 0 0112 5.5 5.5 5.5 0 0121 8.5C21 14 12 21 12 21z"/>
+                    </svg>
+                    <span>Wishlist</span>
+                    {% if wishlist_count %}
+                        <span class="nav-action-badge">{{ wishlist_count }}</span>
+                    {% endif %}
                 </a>
             {% endif %}
             <a class="nav-action nav-action-cart" href="{% url 'orders:cart_detail' %}" aria-label="Cart">
@@ -99,7 +113,12 @@
         <li><a href="">Order</a></li>
         {% if user.is_authenticated %}
             <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
-            <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
+            <li>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-logout-btn">Log out</button>
+                </form>
+            </li>
         {% else %}
             <li><a href="{% url 'accounts:login' %}">Account</a></li>
         {% endif %}

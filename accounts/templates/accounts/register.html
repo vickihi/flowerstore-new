@@ -4,7 +4,6 @@
 {% block main %}
 <section class="register-page">
     <h1>Register</h1>
-
     <div class="register-container">
         <form method="post" action="{% url 'accounts:register_submit' %}">
             {% csrf_token %}
@@ -34,6 +33,7 @@
             </div>  
             <button type="submit">Register</button>
         </form>
+        <p>Already have an account? <a href="{% url 'accounts:login' %}">Log in here</a></p>
     </div>
-
+</section>
 {% endblock main %}

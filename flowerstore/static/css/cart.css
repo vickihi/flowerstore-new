@@ -84,13 +84,40 @@
     padding: 0.35rem 0.45rem;
 }
 
-.cart-qty-form button,
-.cart-remove-btn {
-    padding: 0.38rem 0.7rem;
-    border: 1px solid #b6b6b6;
-    background: #f2f2f2;
-    border-radius: 4px;
+.cart-qty-form button {
+    padding: 0.38rem 0.9rem;
+    border: 1.5px solid #d6ccc5;
+    background: transparent;
+    color: #7a6a60;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: inherit;
     cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.cart-qty-form button:hover {
+    border-color: #532a2a;
+    color: #532a2a;
+}
+
+.cart-remove-btn {
+    padding: 0.38rem 0.9rem;
+    border: 1.5px solid #d6ccc5;
+    background: transparent;
+    color: #7a6a60;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.cart-remove-btn:hover {
+    border-color: #532a2a;
+    color: #532a2a;
 }
 
 .cart-line-total {
@@ -126,6 +153,20 @@
     margin-bottom: 0.65rem;
     text-align: center;
     text-decoration: none;
+    background: #532a2a;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.cart-summary-checkout:hover {
+    background: #3a1c1c;
 }
 
 .cart-empty {
@@ -146,6 +187,28 @@
 }
 
 /* --- Wishlist --- */
+
+.wishlist-move-btn {
+    padding: 0.38rem 0.9rem;
+    border: none;
+    background: #532a2a;
+    color: #fff;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.wishlist-move-btn:hover {
+    background: #3a1c1c;
+}
+
+.wishlist-move-btn:disabled {
+    background: #b0a09a;
+    cursor: default;
+}
 
 .wishlist-page {
     max-width: 1100px;

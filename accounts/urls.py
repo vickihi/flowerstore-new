@@ -17,14 +17,14 @@ urlpatterns = [
     path(
         "profile/password/update/",
         views.password_update,
-        name="profile_password_update",
+        name="password_update",
     ),
     path(
         "password-reset/",
         CustomPasswordResetView.as_view(
             template_name="accounts/password_reset_form.html",
             email_template_name="accounts/password_reset_email.html",
-            success_url="/accounts/password-reset/done/",
+            success_url=reverse_lazy("accounts:password_reset_done"),
         ),
         name="password_reset",
     ),

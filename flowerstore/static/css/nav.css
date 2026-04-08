@@ -420,8 +420,20 @@
 }
 
 .nav-action:hover,
-.nav-list a:hover {
+.nav-list a:hover,
+.nav-logout-btn:hover {
     color: #b78f78;
+}
+
+.nav-logout-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: #46352b;
+    font-weight: 500;
+    font-size: 1.05rem;
 }
 
 .cart-badge {

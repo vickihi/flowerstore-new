@@ -20,15 +20,62 @@
                     {{ profile_form.email }}
                     {{ profile_form.email.errors }}
                 </div>
+
+                <h3>Shipping Address</h3>
+                <div class="form-group">
+                    <label for="id_address_line1">Address line 1</label>
+                    {{ profile_form.address_line1 }}
+                    {{ profile_form.address_line1.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_address_line2">Address line 2</label>
+                    {{ profile_form.address_line2 }}
+                    {{ profile_form.address_line2.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_city">City</label>
+                    {{ profile_form.city }}
+                    {{ profile_form.city.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_province">Province</label>
+                    {{ profile_form.province }}
+                    {{ profile_form.province.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_postal_code">Postal code</label>
+                    {{ profile_form.postal_code }}
+                    {{ profile_form.postal_code.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_country">Country</label>
+                    {{ profile_form.country }}
+                    {{ profile_form.country.errors }}
+                </div>
+
                 <button type="submit">Update profile</button>
             </form>
         </div>
 
         <div class="account-password">
             <h2>Change Password</h2>
-            <form method="post" action="{% url 'accounts:profile_password_update' %}">
+            <form method="post" action="{% url 'accounts:password_update' %}">
                 {% csrf_token %}
-                {{ password_form }}
+                <div class="form-group">
+                    <label for="id_old_password">Current password</label>
+                    {{ password_form.old_password }}
+                    {{ password_form.old_password.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_new_password1">New password</label>
+                    {{ password_form.new_password1 }}
+                    {{ password_form.new_password1.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_new_password2">Confirm new password</label>
+                    {{ password_form.new_password2 }}
+                    {{ password_form.new_password2.errors }}
+                </div>
                 <button type="submit">Update password</button>
             </form>
         </div>               
@@ -42,7 +89,7 @@
     <ul class="orders-list">
         {% for order in orders %}
         <li class="order-wrap">
-            <h3>Order created at: {{ order.created_at }}</h3>
+            <h3>Order placed: {{ order.created_at|date:"N j, Y" }}</h3>
             <ul class="order-products">
                 {% for item in order.items.all %}
                 <li>

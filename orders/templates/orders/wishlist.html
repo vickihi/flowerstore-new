@@ -35,17 +35,19 @@
                             <td class="wishlist-td">
                                 <form method="post" action="{% url 'orders:wishlist_remove' item.product.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Remove</button>
+                                    <button type="submit" class="cart-remove-btn">Remove</button>
                                 </form>
                             </td>
 
-
                             <td class="wishlist-td">
-                                <form method="post"
-                                      action="{% url 'orders:wishlist_move_to_cart' item.product.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit">Move to cart</button>
-                                </form>
+                                {% if item.product.is_available %}
+                                    <form method="post" action="{% url 'orders:wishlist_move_to_cart' item.product.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="wishlist-move-btn">Move to cart</button>
+                                    </form>
+                                {% else %}
+                                    <button class="wishlist-move-btn" disabled>Out of stock</button>
+                                {% endif %}
                             </td>
 
                         </tr>

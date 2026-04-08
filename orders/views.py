@@ -279,6 +279,10 @@ def wishlist_move_to_cart(request: HttpRequest, product_id) -> HttpResponse:
         messages.info(request, f"{product.name} is not in wish list.")
         return redirect("orders:wishlist_detail")
 
+    if not product.is_available:
+        messages.error(request, f"{product.name} is out of stock and cannot be added to your cart.")
+        return redirect("orders:wishlist_detail")
+
     cart_store = CartStore(request)
     cart_store.add(product.id, 1)
     item.delete()
