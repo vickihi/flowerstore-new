@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && python manage.py createsuperuser --noinput || true && gunicorn flowerstore.wsgi
+web: python manage.py migrate && python manage.py collectstatic --noinput && python create_superuser.py && gunicorn flowerstore.wsgi
