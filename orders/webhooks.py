@@ -96,11 +96,13 @@ def stripe_webhook(request):
     )
 
     if is_checkout_event:
-        stripe_checkout_session = event["data"]["object"]
-        if stripe_checkout_session.get("payment_status") != "paid":
+        session = event["data"]["object"]
+        session_dict = session if isinstance(session, dict) else session.to_dict()
+
+        if session_dict.get("payment_status") != "paid":
             return HttpResponse(status=200)
 
-        order_id = stripe_checkout_session.get("client_reference_id")
+        order_id = session_dict.get("client_reference_id")
         if not order_id:
             return HttpResponse(status=400)
         try:
@@ -111,12 +113,10 @@ def stripe_webhook(request):
         if order.is_fulfilled:
             return HttpResponse(status=200)
 
-        customer_details = stripe_checkout_session.get("customer_details") or {}
+        customer_details = session_dict.get("customer_details") or {}
         shipping_details = (
-            stripe_checkout_session.get("shipping_details")
-            or stripe_checkout_session.get("collected_information", {}).get(
-                "shipping_details"
-            )
+            session_dict.get("shipping_details")
+            or (session_dict.get("collected_information") or {}).get("shipping_details")
             or {}
         )
         account_name = (
@@ -133,7 +133,7 @@ def stripe_webhook(request):
                 or ""
             ),
             email=customer_details.get("email", ""),
-            payment_id=stripe_checkout_session["payment_intent"],
+            payment_id=session_dict.get("payment_intent"),
             billing_address=customer_details.get("address"),
             shipping_address=shipping_details.get("address"),
         )
