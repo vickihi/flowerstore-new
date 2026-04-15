@@ -13,6 +13,7 @@ class ProductQuerySet(models.QuerySet):
         return self.filter(name__icontains=query)
 
     def with_avg_rating(self):
+        """Calculate average rating for each product."""
         return self.annotate(
             avg_rating=Coalesce(
                 Avg("reviews__rating", filter=Q(reviews__is_hidden=False)),
@@ -64,20 +65,3 @@ class Product(models.Model):
         """
         return self.quantity > 0
 
-    @classmethod
-    def query_with_form(cls, products, cleaned_data):
-        sort_order = cleaned_data["sort_order"] or "-created_at"
-        available = cleaned_data["available"]
-        filter_category = cleaned_data["filter_category"]
-
-        if available:
-            products = products.available()
-
-        if filter_category:
-            products = products.filter(category=filter_category)
-
-        if "avg_rating" in sort_order:
-            products = products.with_avg_rating()
-            return products.order_by(sort_order, "-created_at")
-
-        return products.order_by(sort_order)

@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 
 from products.models import Product
 from products.view_helpers import build_product_detail_context
-from orders.models import OrderItem
+# from orders.models import OrderItem
 from reviews.models.review import Review
 from reviews.models.vote import Vote
 from .forms import ReviewForm, CommentForm, FlagForm

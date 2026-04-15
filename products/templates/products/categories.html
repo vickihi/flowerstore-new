@@ -42,13 +42,13 @@
             {% if selected_category %}
                 <input type="hidden" name="category" value="{{ selected_category.id }}">
             {% endif %}
-            {% with current_sort=cat_form.sort_order.value %}
+            {% with current_sort=filter_form.sort_order.value %}
             <div class="sort-control" data-choice-group data-choice-type="sort" data-auto-submit>
                 <div class="sort-control-header">
-                    <label class="sort-label" for="{{ cat_form.sort_order.id_for_label }}">Sort by: </label>
+                    <label class="sort-label" for="{{ filter_form.sort_order.id_for_label }}">Sort by: </label>
                     <span class="sort-current{% if not current_sort %} is-muted{% endif %}" data-sort-display data-placeholder="">
                         {% if current_sort %}
-                            {% for value, label in cat_form.sort_order.field.choices %}
+                            {% for value, label in filter_form.sort_order.field.choices %}
                                 {% if value == current_sort %}{{ label }}{% endif %}
                             {% endfor %}
                         {% endif %}
@@ -60,10 +60,10 @@
                     </button>
                 </div>
                 <div class="sr-only">
-                    {{ cat_form.sort_order }}
+                    {{ filter_form.sort_order }}
                 </div>
                 <div class="filter-sort-list" id="toolbar-sort-list" data-choice-list aria-hidden="true">
-                    {% for value, label in cat_form.sort_order.field.choices %}
+                    {% for value, label in filter_form.sort_order.field.choices %}
                         {% if value %}
                             <button type="button" class="filter-sort-option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
                                 {{ label }}

@@ -19,7 +19,7 @@
 <div class="product-detail">
     <div class="product-detail-grid">
 
-        <!-- Left: Product image -->
+        {# Left: Product image #}
         <div class="product-detail-image-col">
             {% if product.image %}
                 <div class="product-detail-image-wrap">
@@ -33,7 +33,7 @@
             {% endif %}
         </div>
 
-        <!-- Right: Product info -->
+        {# Right: Product info #}
         <div class="product-detail-info-col">
             <h1 class="product-detail-title">{{ product.name }}</h1>
 
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <!-- Related Products -->
+    {# Related Products #}
     <section class="section related">
         <h2 class="section-title">You may also like</h2>
         {% if related_products %}

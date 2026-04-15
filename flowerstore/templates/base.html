@@ -26,12 +26,12 @@
 
 <body>
 
-<!-- Navigation -->
+{# Navigation #}
 {% block nav %}
 {% include "snippets/nav.html" %}
 {% endblock %}
 
-<!-- Breadcrumbs -->
+{# Breadcrumbs #}
 <header>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -40,7 +40,7 @@
     </nav>
 </header>
 
-<!-- Django Messages -->
+{# Django Messages #}
 {% if messages %}
     <section class="messages" aria-live="polite">
         {% for message in messages %}
@@ -55,20 +55,15 @@
     </script>
 {% endif %}
 
-<!-- Main Content -->
-<main
-        class="
-            {{ request.resolver_match.app_name }}
-            {{ request.resolver_match.url_name }}
-        "
->
+{# Main Content #}
+<main>
     {% block main %}{% endblock %}
 </main>
 
-<!-- Footer -->
+{# Footer #}
 {% include "snippets/footer.html" %}
 
-<!-- Add to cart toast -->
+{# Add to cart toast #}
 <div id="cart-toast" class="cart-toast" hidden aria-live="polite">
     <div class="cart-toast-header">
         <svg class="cart-toast-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -87,63 +82,9 @@
     <a href="{% url 'orders:cart_detail' %}" class="cart-toast-btn">View cart</a>
 </div>
 
-<script>
-(function () {
-    const toast = document.getElementById('cart-toast');
-    const toastName = document.getElementById('cart-toast-name');
-    const toastPrice = document.getElementById('cart-toast-price');
-    const toastImage = document.getElementById('cart-toast-image');
-    let toastTimer = null;
+<script src="{% static 'js/cart-toast.js' %}"></script>
 
-    function showToast(data) {
-        toastName.textContent = data.product_name;
-        toastPrice.textContent = data.product_price;
-        if (data.product_image) {
-            toastImage.src = data.product_image;
-            toastImage.alt = data.product_name;
-            toastImage.hidden = false;
-        } else {
-            toastImage.hidden = true;
-        }
-
-        // Update cart badge
-        const qty = data.cart_total_quantity;
-        const cartLinks = document.querySelectorAll('.nav-action-cart');
-        cartLinks.forEach(link => {
-            let badge = link.querySelector('.nav-action-badge');
-            if (qty > 0) {
-                if (!badge) {
-                    badge = document.createElement('span');
-                    badge.className = 'nav-action-badge';
-                    link.appendChild(badge);
-                }
-                badge.textContent = qty;
-            }
-        });
-
-        toast.hidden = false;
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => { toast.hidden = true; }, 4000);
-    }
-
-    document.addEventListener('submit', async function (e) {
-        const form = e.target.closest('form[action*="cart/add/"]');
-        if (!form) return;
-        e.preventDefault();
-        try {
-            const res = await fetch(form.action, {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: new FormData(form),
-            });
-            const data = await res.json();
-            if (data.success) showToast(data);
-        } catch {
-            form.submit();
-        }
-    });
-})();
-</script>
+{% block scripts %}{% endblock %}
 
 </body>
 

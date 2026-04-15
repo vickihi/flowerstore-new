@@ -1,101 +1,60 @@
-from django.db.models import Avg, Q
-from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 
 from reviews.forms import ReviewForm, CommentForm
-from .forms import IndexForm, SearchForm, CategoryForm
+from .forms import FilterForm, SearchForm, SORT_ORDERS
 from .models import Product, Category
-from .view_helpers import build_product_detail_context
+from .view_helpers import build_product_detail_context, filter_products
 
 
 def index(request):
-    index_form = IndexForm(request.GET)
-    search_form = SearchForm()
+    filter_form = FilterForm(request.GET)
+    search_form = SearchForm(request.GET)
     products = Product.objects.all()
+    search_term = ""
 
-    if not index_form.is_valid():
-        return _render_index(request, products, index_form, search_form)
+    if search_form.is_valid():
+        search_term = search_form.cleaned_data["search"]
+        if search_term:
+            products = products.search(search_term)
 
-    products = Product.query_with_form(products, index_form.cleaned_data)
-    return _render_index(request, products, index_form, search_form)
+    if filter_form.is_valid():
+        products = filter_products(products, filter_form.cleaned_data)
 
-
-def _render_index(request, products, index_form, search_form):
     return render(
         request,
         "products/index.html",
         {
             "products": products,
-            "index_form": index_form,
+            "filter_form": filter_form,
             "search_form": search_form,
-        },
-    )
-
-
-def search_results(request):
-    search_form = SearchForm(request.GET)
-    index_form = IndexForm(request.GET)
-    products = Product.objects.all()
-    search_term = ""
-
-    if not search_form.is_valid():
-        return _render_search(request, products, index_form, search_form, search_term)
-
-    search_term = search_form.cleaned_data["search"]
-    products = products.search(search_term)
-
-    if index_form.is_valid():
-        products = Product.query_with_form(products, index_form.cleaned_data)
-
-    return _render_search(request, products, index_form, search_form, search_term)
-
-
-def _render_search(request, products, index_form, search_form, search_term):
-    return render(
-        request,
-        "products/search_results.html",
-        {
-            "products": products,
-            "index_form": index_form,
             "search_term": search_term,
-            "search_form": search_form,
+            "active_filters": _get_active_filters(filter_form),
         },
     )
 
 
-def apply_sort_and_available(products, form, default_sort):
-    sort_order = default_sort
-
-    if form.is_valid():
-        sort_order = form.cleaned_data.get("sort_order") or default_sort
-        available = form.cleaned_data.get("available")
-
-        if available:
-            products = products.available()
-    if sort_order in ("rating", "-rating"):
-        products = products.annotate(
-            avg_rating=Coalesce(
-                Avg("reviews__rating", filter=Q(reviews__is_hidden=False)),
-                0.0,
-            )
-        )
-        if sort_order == "rating":
-            return products.order_by("-avg_rating", "-created_at")
-        else:
-            return products.order_by("avg_rating", "-created_at")
-
-    return products.order_by(sort_order)
+def _get_active_filters(form):
+    """Returns a dict of active filter chips."""
+    if not form.is_valid():
+        return {}
+    data = form.cleaned_data
+    active = {}
+    if data.get("filter_category"):
+        active["category"] = str(data["filter_category"])
+    if data.get("sort_order"):
+        active["sort"] = dict(SORT_ORDERS).get(data["sort_order"], data["sort_order"])
+    if data.get("available"):
+        active["available"] = True
+    return active
 
 
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     products = Product.objects.filter(category=category)
-    cat_form = CategoryForm(request.GET)
-    products = apply_sort_and_available(
-        products,
-        cat_form,
-        default_sort="-created_at",
-    )
+    filter_form = FilterForm(request.GET)
+
+    if filter_form.is_valid():
+        products = filter_products(products, filter_form.cleaned_data)
 
     return render(
         request,
@@ -103,7 +62,7 @@ def category_detail(request, category_id):
         {
             "category": category,
             "products": products,
-            "cat_form": cat_form,
+            "filter_form": filter_form,
         },
     )
 
@@ -111,16 +70,12 @@ def category_detail(request, category_id):
 def category_list(request):
     categories = Category.objects.all()
     selected_id = request.GET.get("category")
-    cat_form = CategoryForm(request.GET)
+    filter_form = FilterForm(request.GET)
 
-    if selected_id:
-        products = Product.objects.filter(category_id=selected_id)
-        selected_category = next((c for c in categories if str(c.id) == selected_id), None)
-    else:
-        products = Product.objects.all()
-        selected_category = None
-
-    products = apply_sort_and_available(products, cat_form, default_sort="-created_at")
+    selected_category = Category.objects.filter(id=selected_id).first() if selected_id else None
+    products = Product.objects.filter(category=selected_category) if selected_category else Product.objects.all()
+    if filter_form.is_valid():
+        products = filter_products(products, filter_form.cleaned_data)
 
     return render(
         request,
@@ -129,7 +84,7 @@ def category_list(request):
             "categories": categories,
             "products": products,
             "selected_category": selected_category,
-            "cat_form": cat_form,
+            "filter_form": filter_form,
         },
     )
 

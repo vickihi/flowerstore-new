@@ -3,7 +3,7 @@
 <div class="site-nav-wrapper">
 <nav class="site-nav" aria-label="Main navigation">
     
-    <!-- Desktop nav (hidden on mobile via CSS) -->
+    {# Desktop nav (hidden on mobile via CSS) #}
     <a href="{% url 'products:index' %}" class="nav-logo-link nav-logo-link-desktop">
         <img class="nav-logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
     </a>
@@ -22,7 +22,7 @@
                     </svg>
                     <span>Search</span>
                 </button>
-                <form id="nav-search-bar" class="nav-search-bar" action="{% url 'products:search_results' %}" method="get" role="search" hidden>
+                <form id="nav-search-bar" class="nav-search-bar" action="{% url 'products:index' %}" method="get" role="search" hidden>
                     <input class="nav-search-input" type="search" name="search" placeholder="Search flowers…" aria-label="Search flowers">
                     <button class="nav-search-close" type="button" aria-label="Close search">&times;</button>
                     <button class="nav-search-submit" type="submit" aria-label="Submit search">
@@ -44,7 +44,7 @@
                     <button type="submit" class="nav-action nav-logout-btn">Log out</button>
                 </form>
             {% else %}
-                <a class="nav-action nav-action-account" href="{% url 'accounts:login' %}" aria-label="Account">
+                <a class="nav-action nav-action-account" href="{% url 'accounts:login' %}">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true">
                         <circle cx="12" cy="8" r="3.2"/>
                         <path d="M5.5 19c1.5-3 4-4.5 6.5-4.5s5 1.5 6.5 4.5"/>
@@ -53,7 +53,7 @@
                 </a>
             {% endif %}
             {% if user.is_authenticated %}
-                <a class="nav-action nav-action-wishlist" href="{% url 'orders:wishlist_detail' %}" aria-label="Wishlist">
+                <a class="nav-action nav-action-wishlist" href="{% url 'orders:wishlist_detail' %}">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 21C12 21 3 14 3 8.5A5.5 5.5 0 0112 5.5 5.5 5.5 0 0121 8.5C21 14 12 21 12 21z"/>
                     </svg>
@@ -63,7 +63,7 @@
                     {% endif %}
                 </a>
             {% endif %}
-            <a class="nav-action nav-action-cart" href="{% url 'orders:cart_detail' %}" aria-label="Cart">
+            <a class="nav-action nav-action-cart" href="{% url 'orders:cart_detail' %}">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 7h16l-3 12H7L4 7z"/>
                   <path d="M9 7V5a3 3 0 016 0v2"/>
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <!-- Mobile nav (hidden on desktop via CSS) -->
+    {# Mobile nav (hidden on desktop via CSS) #}
     <div class="nav-mobile">
         <div class="nav-mobile-group nav-mobile-group-left">
             <button class="hamburger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -126,10 +126,10 @@
 </nav>
 </div>
 
-<!-- Mobile search overlay -->
+{# Mobile search overlay #}
 <div class="mobile-search-overlay" id="mobile-search-overlay" role="dialog" aria-modal="true" aria-label="Search">
     <div class="mobile-search-box">
-        <form action="{% url 'products:search_results' %}" method="get" role="search" style="display:contents">
+        <form action="{% url 'products:index' %}" method="get" role="search" style="display:contents">
             <input type="search" name="search" placeholder="Search for..." aria-label="Search flowers" id="mobile-search-input">
         </form>
         <button class="mobile-search-close" type="button" aria-label="Close search">&times;</button>
