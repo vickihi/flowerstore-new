@@ -7,7 +7,7 @@ wheels/
 *.egg-info
 
 # user uploaded files
-media/
+/media/
 
 # Virtual environments
 .venv
