@@ -1,0 +1,181 @@
+{# =========================================================== #}
+{# REVIEWS SECTION                                             #}
+{# =========================================================== #}
+<section class="section reviews" id="reviews">
+    <h2 class="section-title">Reviews</h2>
+
+    {% if reviews %}
+        <ul class="review-list">
+            {% for review in reviews %}
+                <li class="review-item">
+
+                    {# Header #}
+                    <div class="review-header">
+                        <div class="review-stars">
+                            {% for i in star_range %}
+                                {% if i <= review.rating %}
+                                    <span class="star star-filled">★</span>
+                                {% else %}
+                                    <span class="star star-empty">★</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="review-author">{{ review.user.full_name }}</span>
+                        <span class="review-date">{{ review.created_at|date:"Y-m-d" }}</span>
+                    </div>
+
+                    {# Review body #}
+                    <p class="review-body">{{ review.body }}</p>
+
+                    {# Actions #}
+                    <div class="review-actions">
+                        {# Vote #}
+                        {% if request.user.is_authenticated %}
+                            <form method="post" action="{% url 'reviews:add_vote' review.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-helpful">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+                                        <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                                    </svg>
+                                    Helpful{% if review.vote_total %} · {{ review.vote_total }}{% endif %}
+                                </button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn-helpful">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+                                    <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                                </svg>
+                                Helpful{% if review.vote_total %} · {{ review.vote_total }}{% endif %}
+                            </a>
+                        {% endif %}
+
+                        {# Flag #}
+                        <div class="review-flag">
+                            {% if request.user.is_authenticated %}
+                                <details class="flag-details">
+                                    <summary class="btn-flag">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                                            <line x1="4" y1="22" x2="4" y2="15"/>
+                                        </svg>
+                                        Flag{% if review.flag_total %} · {{ review.flag_total }}{% endif %}
+                                    </summary>
+                                    <form method="post" action="{% url 'reviews:add_flag' review.id %}" class="flag-dropdown">
+                                        {% csrf_token %}
+                                        <select name="flag" class="flag-select">
+                                            <option value="" disabled selected>Flag as...</option>
+                                            <option value="off-topic">Off-topic</option>
+                                            <option value="inappropriate">Inappropriate</option>
+                                            <option value="fake">Fake</option>
+                                        </select>
+                                        <button type="submit" class="btn-flag-submit">Submit</button>
+                                    </form>
+                                </details>
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn-flag">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                                        <line x1="4" y1="22" x2="4" y2="15"/>
+                                    </svg>
+                                    Flag{% if review.flag_total %} · {{ review.flag_total }}{% endif %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Comments drawer #}
+                    {% with comments=review.comments.all %}
+                    <details class="comment-drawer">
+                        <summary class="comment-drawer-summary">
+                            Comments{% if comments %} ({{ comments|length }}){% endif %}
+                        </summary>
+
+                        {% if comments %}
+                            <ul class="comment-list">
+                                {% for comment in comments %}
+                                    <li class="comment-item">
+                                        <p class="comment-body">{{ comment.body }}</p>
+                                        <small class="comment-meta">
+                                            {{ comment.user.full_name }} · {{ comment.created_at|date:"Y-m-d" }}
+                                        </small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        {# Add comment form, hidden until toggled #}
+                        {% if request.user.is_authenticated %}
+                            <div class="comment-section" id="comment-section-{{ review.id }}">
+                                <button type="button" class="btn-helpful" onclick="this.closest('.comment-section').querySelector('.comment-form').classList.toggle('hidden')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    Add Comment
+                                </button>
+                                <form method="post" action="{% url 'reviews:add_comment' review.id %}" class="comment-form hidden">
+                                    {% csrf_token %}
+                                    {{ comment_form.body }}
+                                    <div class="comment-form-actions">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        {% else %}
+                            <p class="login-prompt"><a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in to comment.</a></p>
+                        {% endif %}
+
+                    </details>
+                    {% endwith %}
+
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="empty-state">No reviews yet. Be the first one!</p>
+    {% endif %}
+</section>
+
+{# Add a review form #}
+<section class="section add-review" id="add-review">
+    <div class="add-review-card">
+    <h2 class="section-title">Add a Review</h2>
+    {% if request.user.is_authenticated %}
+        <form method="post" action="{% url 'reviews:add_review' product.id %}#add-review" class="review-form">
+            {% csrf_token %}
+
+            {# Star rating: pure CSS radio inputs #}
+            <div class="star-rating" role="group" aria-label="Rating">
+                <input type="radio" name="rating" id="star5" value="5"><label for="star5">★</label>
+                <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
+                <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
+                <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
+                <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
+            </div>
+
+            {{ review_form.body }}
+
+            {# Validation errors #}
+            {% if review_form.errors %}
+                <ul class="review-form-errors">
+                    {% for error in review_form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    {% for field in review_form %}
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    {% else %}
+        <p class="login-prompt">
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in to add a review.</a>
+        </p>
+    {% endif %}
+    </div>
+</section>

@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'products:index' %}">Home</a></li>
+    <li><a href="{% url 'products:categories' %}">Categories</a></li>
+    <li aria-current="page">{{ category.name }}</li>
+{% endblock %}
+
+{% block main %}
+
+<div class="title">
+    <h1>{{ category.name }}</h1>
+    {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+</div>
+
+<form method="get" action="{% url 'products:category' category.id %}" class="catalog-controls" id="catalog-form">
+
+    <div class="catalog-toolbar">
+        <div class="filter-toggle-group">
+            <button type="button" class="filter-toggle" data-filter-toggle>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4 7h16M7 12h10M10 17h4" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                </svg>
+                <span>Filters</span>
+            </button>
+
+            <div class="active-filters" data-active-filters>
+                {% with current_sort=filter_form.sort_order.value %}
+                    {% if current_sort %}
+                        {% for value, label in filter_form.sort_order.field.choices %}
+                            {% if value and value == current_sort %}
+                                <button type="button" class="filter-chip" data-chip-clear="sort_order" aria-label="Remove sort filter {{ label }}">
+                                    <span class="filter-chip-label">{{ label }}</span>
+                                    <span class="filter-chip-close" aria-hidden="true">&times;</span>
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if filter_form.available.value %}
+                    <button type="button" class="filter-chip" data-chip-clear="available" aria-label="Remove availability filter">
+                        <span class="filter-chip-label">In stock</span>
+                        <span class="filter-chip-close" aria-hidden="true">&times;</span>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Right: Sort by (auto-submits on click) #}
+        {% with current_sort=filter_form.sort_order.value %}
+        <div class="sort-control" data-choice-group data-choice-type="sort" data-auto-submit>
+            <div class="sort-control-header">
+                <label class="sort-label" for="{{ filter_form.sort_order.id_for_label }}">Sort by: </label>
+                <span class="sort-current{% if not current_sort %} is-muted{% endif %}" data-sort-display data-placeholder="">
+                    {% if current_sort %}
+                        {% for value, label in filter_form.sort_order.field.choices %}
+                            {% if value == current_sort %}{{ label }}{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </span>
+                <button type="button" class="filter-sort-icon" data-choice-toggle aria-expanded="false" aria-controls="toolbar-sort-list" aria-label="Toggle sort options">
+                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+            <div class="sr-only">
+                <label class="sr-only" for="{{ filter_form.sort_order.id_for_label }}">Sort products</label>
+                {{ filter_form.sort_order }}
+            </div>
+            <div class="filter-sort-list" id="toolbar-sort-list" data-choice-list aria-hidden="true">
+                {% for value, label in filter_form.sort_order.field.choices %}
+                    {% if value %}
+                        <button type="button" class="filter-sort-option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
+                            {{ label }}
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endwith %}
+
+    </div>
+
+    {# Filter modal (sort + availability, Apply button required) #}
+    <div class="filter-modal" data-filter-modal>
+        <div class="filter-modal-overlay" data-filter-close></div>
+        <div class="filter-modal-panel">
+            <header class="filter-modal-header">
+                <h2>Filters</h2>
+                <button class="filter-close" type="button" data-filter-close aria-label="Close filters">&times;</button>
+            </header>
+
+            <div class="filter-section">
+                {% with current_sort=filter_form.sort_order.value %}
+                    <div class="filter-section-row filter-section-row-stacked" data-choice-group data-choice-type="sort">
+                        <div class="filter-section-header">
+                            <span class="filter-section-label">Sort by</span>
+                            <button type="button" class="filter-sort-icon" data-choice-toggle aria-expanded="false" aria-controls="modal-sort-list" aria-label="Toggle sort options">
+                                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="sr-only">
+                            <label class="sr-only" for="{{ filter_form.sort_order.id_for_label }}">Sort products</label>
+                            {{ filter_form.sort_order }}
+                        </div>
+                        <div class="filter-sort-list" id="modal-sort-list" data-choice-list aria-hidden="true">
+                            {% for value, label in filter_form.sort_order.field.choices %}
+                                <button type="button" class="filter-sort-option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                    {{ label }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endwith %}
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-section-row">
+                    <span class="filter-section-label">Availability</span>
+                    <label class="filter-checkbox">
+                        {{ filter_form.available }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a class="btn filter-reset" href="{% url 'products:category' category.id %}">Reset</a>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+{% include "products/snippets/product_list.html" %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const filterToggle = document.querySelector("[data-filter-toggle]");
+    const filterModal = document.querySelector("[data-filter-modal]");
+    const closeTriggers = document.querySelectorAll("[data-filter-close]");
+    const choiceGroups = document.querySelectorAll("[data-choice-group]");
+    const filterForm = document.getElementById("catalog-form");
+    const filterChips = document.querySelectorAll("[data-chip-clear]");
+    const sortDisplay = document.querySelector("[data-sort-display]");
+    const sortSelects = document.querySelectorAll('select[name="sort_order"]');
+
+    const escapeValue = (value) => {
+        if (window.CSS && CSS.escape) return CSS.escape(value);
+        return value.replace(/["\\]/g, "\\$&");
+    };
+
+    const syncSortInputs = (value, sourceSelect) => {
+        sortSelects.forEach((sel) => {
+            if (sourceSelect && sel === sourceSelect) return;
+            sel.value = value;
+        });
+    };
+
+    const updateSortDisplay = () => {
+        if (!sortDisplay || !sortSelects.length) return;
+        const primary = sortSelects[0];
+        const val = primary.value;
+        if (!val) { sortDisplay.textContent = ""; sortDisplay.classList.add("is-muted"); return; }
+        const opt = primary.querySelector(`option[value="${escapeValue(val)}"]`);
+        const label = opt ? opt.textContent.trim() : "";
+        sortDisplay.textContent = label;
+        sortDisplay.classList.toggle("is-muted", !label);
+    };
+
+    // Modal open/close
+    if (filterToggle && filterModal) {
+        filterToggle.addEventListener("click", () => {
+            filterModal.classList.add("is-open");
+            document.body.style.overflow = "hidden";
+        });
+        closeTriggers.forEach((btn) => btn.addEventListener("click", () => {
+            filterModal.classList.remove("is-open");
+            document.body.style.overflow = "";
+        }));
+    }
+
+    // Choice groups (sort dropdowns)
+    choiceGroups.forEach((group) => {
+        const toggleBtn = group.querySelector("[data-choice-toggle]");
+        const list = group.querySelector("[data-choice-list]");
+        const optionButtons = list ? list.querySelectorAll("[data-choice-value]") : [];
+        const select = group.querySelector("select");
+        const isSortGroup = group.dataset.choiceType === "sort";
+        const isAutoSubmit = group.hasAttribute("data-auto-submit");
+        if (!toggleBtn || !list || !select || !optionButtons.length) return;
+
+        const setActiveOption = (value) => {
+            optionButtons.forEach((btn) => btn.classList.toggle("is-active", btn.dataset.choiceValue === value));
+            if (isSortGroup) updateSortDisplay();
+        };
+
+        toggleBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = group.classList.contains("is-open");
+            group.classList.toggle("is-open", !isOpen);
+            toggleBtn.setAttribute("aria-expanded", String(!isOpen));
+            list.setAttribute("aria-hidden", String(isOpen));
+        });
+
+        optionButtons.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const val = btn.dataset.choiceValue;
+                if (select.value !== val) {
+                    select.value = val;
+                    select.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+                setActiveOption(val);
+                if (isSortGroup) {
+                    syncSortInputs(val, select);
+                    updateSortDisplay();
+                    if (isAutoSubmit && filterForm) {
+                        if (typeof filterForm.requestSubmit === "function") {
+                            filterForm.requestSubmit();
+                        } else {
+                            filterForm.submit();
+                        }
+                    }
+                }
+            });
+        });
+
+        group.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") { group.classList.remove("is-open"); toggleBtn.focus(); }
+        });
+
+        setActiveOption(select.value);
+        if (isSortGroup) updateSortDisplay();
+    });
+
+    if (sortDisplay && sortSelects.length) {
+        updateSortDisplay();
+        sortSelects.forEach((sel) => sel.addEventListener("change", () => {
+            syncSortInputs(sel.value, sel);
+            updateSortDisplay();
+        }));
+    }
+
+    // Filter chips
+    if (filterForm && filterChips.length) {
+        filterChips.forEach((chip) => {
+            chip.addEventListener("click", () => {
+                const field = chip.dataset.chipClear;
+                if (field === "available") {
+                    const cb = filterForm.querySelector('[name="available"]');
+                    if (cb) cb.checked = false;
+                }
+                if (field === "sort_order") {
+                    filterForm.querySelectorAll('[name="sort_order"]').forEach((s) => {
+                        s.value = "";
+                        s.dispatchEvent(new Event("change", { bubbles: true }));
+                    });
+                }
+                filterForm.submit();
+            });
+        });
+    }
+});
+</script>
+
+{% endblock main %}

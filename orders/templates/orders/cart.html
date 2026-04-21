@@ -4,7 +4,7 @@
 
 {% block main %}
 <section class="cart-page">
-    <header class="cart-page__header">
+    <header class="cart-page-header">
         <h1>Shopping Cart</h1>
     </header>
 
@@ -28,12 +28,12 @@
                             <td>
                                 <div class="cart-product">
                                     {% if product.image %}
-                                    <img class="cart-product__image" src="{{ product.image.url }}" alt="{{ product.name }}">
+                                    <img class="cart-product-image" src="{{ product.image.url }}" alt="{{ product.name }}">
                                     {% else %}
-                                    <div class="cart-product__placeholder" aria-hidden="true">No image</div>
+                                    <div class="cart-product-placeholder" aria-hidden="true">No image</div>
                                     {% endif %}
-                                    <div class="cart-product__meta">
-                                        <p class="cart-product__name">{{ product.name }}</p>
+                                    <div class="cart-product-meta">
+                                        <p class="cart-product-name">{{ product.name }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -58,25 +58,25 @@
                 </table>
             </section>
             <div>
-                <a href="{% url 'flowerproducts:index' %}" class="btn-continue">Continue shopping</a>
+                <a href="{% url 'products:index' %}" class="btn-continue">Continue shopping</a>
             </div>
         </div>
         <aside class="cart-summary">
             <h2>Order Summary</h2>
-            <p class="cart-summary__total">
+            <p class="cart-summary-total">
                 <span>Total</span>
                 <strong>${{ order_total|floatformat:2 }}</strong>
             </p>
              <form method="post" action="{% url 'orders:checkout' %}">
                     {% csrf_token %}
-                    <button class="btn cart-summary__checkout" type="submit">Checkout</button>
+                    <button class="btn cart-summary-checkout" type="submit">Checkout</button>
             </form>
         </aside>
     </div>
     {% else %}
     <section class="cart-empty">
         <p>Your shopping cart is empty.</p>
-        <a href="{% url 'flowerproducts:index' %}" class="btn-continue">Continue shopping</a>
+        <a href="{% url 'products:index' %}" class="btn-continue">Continue shopping</a>
     </section>
     {% endif %}
  </section>

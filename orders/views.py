@@ -4,12 +4,12 @@ from decimal import Decimal, ROUND_HALF_UP
 import stripe
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from flowerproducts.models import Product
+from products.models import Product
 from orders.forms import AddCartItemForm, UpdateCartItemForm
 from orders.models import Order, OrderItem, WishlistItem
 from orders.session import CartStore
@@ -52,7 +52,7 @@ def _build_or_update_stripe_customer(request: HttpRequest) -> str | None:
 @require_http_methods(["POST"])
 def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method != "POST":
-        return redirect("flowerproducts:product_detail", product_id=product_id)
+        return redirect("products:product_detail", product_id=product_id)
 
     product = get_object_or_404(Product, id=product_id)
     cart_store = CartStore(request)
@@ -66,10 +66,19 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
             form.non_field_errors() or form.errors.get("quantity") or ["Invalid input."]
         )
         messages.error(request, str(error[0]))
-        return redirect("flowerproducts:product_detail", product_id=product_id)
+        return redirect("products:product_detail", product_id=product_id)
 
     requested_quantity = form.cleaned_data["quantity"]
     cart_store.add(product.id, requested_quantity)
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return JsonResponse({
+            "success": True,
+            "product_name": product.name,
+            "product_price": f"${product.price:.2f} CAD",
+            "product_image": product.image.url if product.image else None,
+            "cart_total_quantity": cart_store.count_items(),
+        })
 
     messages.success(
         request,
@@ -243,7 +252,7 @@ def wishlist_add(request: HttpRequest, product_id) -> HttpResponse:
         messages.success(request, f"{product.name} was added to your wish list.")
     else:
         messages.info(request, f"{product.name} is already in your wish list.")
-    return redirect("flowerproducts:product_detail", product_id=product_id)
+    return redirect("products:product_detail", product_id=product_id)
 
 
 @login_required
@@ -268,6 +277,10 @@ def wishlist_move_to_cart(request: HttpRequest, product_id) -> HttpResponse:
     item = WishlistItem.objects.filter(user=request.user, product=product).first()
     if not item:
         messages.info(request, f"{product.name} is not in wish list.")
+        return redirect("orders:wishlist_detail")
+
+    if not product.is_available:
+        messages.error(request, f"{product.name} is out of stock and cannot be added to your cart.")
         return redirect("orders:wishlist_detail")
 
     cart_store = CartStore(request)

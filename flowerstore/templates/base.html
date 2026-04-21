@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hero.css' %}">
+    <link rel="stylesheet" href="{% static 'css/filters.css' %}">
+    <link rel="stylesheet" href="{% static 'css/products.css' %}">
+    <link rel="stylesheet" href="{% static 'css/categories.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
 
     <title>{% block title %}Flower Store{% endblock %}</title>
 
@@ -14,57 +26,66 @@
 
 <body>
 
-<header id="site-header">
-    <a href="{% url 'flowerproducts:index' %}">
-        <img id="logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
-    </a>
-</header>
-
+{# Navigation #}
 {% block nav %}
-<nav id="main-nav">
-    <ul>
-        <li><a href="{% url 'flowerproducts:index' %}">Home</a></li>
-        <li><a href="{% url 'flowerproducts:categories' %}">Categories</a></li>
-
-        {% if user.is_authenticated %}
-            <li class="nav-right">
-                <a href="{% url 'flowerproducts:index' %}" class="username">Hi, {{ user.full_name }}</a>
-            </li>
-            <li><a href="{% url 'orders:cart_detail' %}">Cart ({{ cart_total_quantity }})</a></li>
-            <li><a href="{% url 'orders:wishlist_detail' %}">Wish List</a></li>
-            <li><a href="{% url 'accounts:profile' %}">Account</a></li>
-            <li><a href="{% url 'accounts:logout' %}">Log out</a></li>
-        {% else %}
-            <li class="nav-right"><a href="{% url 'orders:cart_detail' %}">Cart ({{ cart_total_quantity }})</a></li>
-            <li><a href="{% url 'accounts:register' %}">Register</a></li>
-            <li><a href="{% url 'accounts:login' %}">Log in</a></li>
-        {% endif %}
-    </ul>
-</nav>
+{% include "snippets/nav.html" %}
 {% endblock %}
 
+{# Breadcrumbs #}
 <header>
-    <nav id="breadcrumbs">
-        <div class="breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
             {% block breadcrumbs %}{% endblock %}
-        </div>
+        </ol>
     </nav>
 </header>
+
+{# Django Messages #}
 {% if messages %}
     <section class="messages" aria-live="polite">
         {% for message in messages %}
             <div class="message {{ message.tags }}">{{ message }}</div>
         {% endfor %}
     </section>
+    <script>
+        setTimeout(function() {
+            const messages = document.querySelector('.messages');
+            if (messages) messages.style.display = 'none';
+        }, 3000);
+    </script>
 {% endif %}
-<main
-        class="
-            {{ request.resolver_match.app_name }}
-            {{ request.resolver_match.url_name }}
-        "
->
+
+{# Main Content #}
+<main>
     {% block main %}{% endblock %}
 </main>
 
+{# Footer #}
+{% include "snippets/footer.html" %}
+
+{# Add to cart toast #}
+<div id="cart-toast" class="cart-toast" hidden aria-live="polite">
+    <div class="cart-toast-header">
+        <svg class="cart-toast-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M7 13l3 3 7-7"/>
+        </svg>
+        <span>Added to your cart!</span>
+    </div>
+    <div class="cart-toast-body">
+        <img id="cart-toast-image" class="cart-toast-image" src="" alt="" hidden>
+        <div class="cart-toast-info">
+            <p id="cart-toast-name" class="cart-toast-name"></p>
+            <p id="cart-toast-price" class="cart-toast-price"></p>
+        </div>
+    </div>
+    <a href="{% url 'orders:cart_detail' %}" class="cart-toast-btn">View cart</a>
+</div>
+
+<script src="{% static 'js/cart-toast.js' %}"></script>
+
+{% block scripts %}{% endblock %}
+
 </body>
+
 </html>

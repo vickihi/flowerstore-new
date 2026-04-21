@@ -55,7 +55,7 @@ class OrderItem(models.Model):
     """OrderItem model for order items."""
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey("flowerproducts.Product", on_delete=models.PROTECT)
+    product = models.ForeignKey("products.Product", on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -79,7 +79,7 @@ class CartItem(models.Model):
         on_delete=models.CASCADE,
         related_name="cart_items",
     )
-    product = models.ForeignKey("flowerproducts.Product", on_delete=models.CASCADE)
+    product = models.ForeignKey("products.Product", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
@@ -103,7 +103,7 @@ class WishlistItem(models.Model):
         related_name="wishlist_items",
     )
 
-    product = models.ForeignKey("flowerproducts.Product", on_delete=models.CASCADE)
+    product = models.ForeignKey("products.Product", on_delete=models.CASCADE)
 
     class Meta:
         constraints = [

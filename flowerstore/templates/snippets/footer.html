@@ -1,0 +1,81 @@
+{% load static %}
+<footer class="site-footer">
+    <div class="site-footer-content">
+        <div class="site-footer-grid">
+            <div class="site-footer-map">
+                <div class="site-footer-brand">
+                    <a href="{% url 'products:index' %}" class="nav-logo-link">
+                        <img class="nav-logo" src="{% static 'images/logo.png' %}" alt="Flower shop logo">
+                    </a>
+                    <p class="site-footer-tagline">Blooming joy delivered daily.</p>
+                </div>
+                <iframe
+                    title="Flower Shop on Google Maps"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.583486045596!2d-73.60220559999999!3d45.4781937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc910a6eb546a95%3A0x92f9d30c355032ba!2s360%20Av.%20Victoria%2C%20Westmount%2C%20QC%20H3Z%202N4!5e0!3m2!1sen!2sca!4v1774569778127!5m2!1sen!2sca"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen>
+                </iframe>
+                <p class="site-footer-map-label">Studio & boutique — Downtown, Montreal</p>
+            </div>
+            <div class="site-footer-contact">
+                <h4>Visit & Contact</h4>
+                <p>245 Bloom Street, Montreal, QC</p>
+                <p>
+                    <a href="tel:+12125551234">(514) 555-1234</a><br>
+                    <a href="mailto:hello@flowershop.com">hello@flowershop.com</a>
+                </p>
+                <div class="site-footer-hours">
+                    <h4>Hours</h4>
+                    <dl>
+                        <div><dt>Mon – Fri</dt><dd>9:00 am – 7:00 pm</dd></div>
+                        <div><dt>Sat</dt><dd>10:00 am – 6:00 pm</dd></div>
+                        <div><dt>Sun</dt><dd>11:00 am – 4:00 pm</dd></div>
+                    </dl>
+                </div>
+            </div>
+            <div class="site-footer-social">
+                <h4>Follow us</h4>
+                <p>Fresh stems, design tips, and behind-the-scenes clips.</p>
+                <ul>
+                    <li>
+                        <a href="https://www.facebook.com" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M15 8h3V4h-3c-2.2 0-4 1.8-4 4v2H8v4h3v6h4v-6h3l1-4h-4V8c0-0.6 0.4-1 1-1Z" />
+                            </svg>
+                            Facebook
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.instagram.com" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="4" y="4" width="16" height="16" rx="4" ry="4" />
+                                <circle cx="12" cy="12" r="3.5" />
+                                <circle cx="17.2" cy="6.8" r="1.2" />
+                            </svg>
+                            Instagram
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.pinterest.com" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 16.5c1.8 0 3.5-1.4 3.5-3.6S14 9.5 12 9.5s-3.5 1.2-3.5 3.4c0 1.3 0.5 2.4 1.6 2.9l-0.6 3" />
+                            </svg>
+                            Pinterest
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.tiktok.com" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M16 4c0 2 1.7 3.6 3.8 3.6v3.2c-1.1 0-2.2-0.3-3.3-0.9v5.4a5.3 5.3 0 11-5.3-5.3c0.4 0 0.8 0 1.1 0.1v3.1a2.2 2.2 0 102.2 2.2V4h1.5Z" />
+                            </svg>
+                            TikTok
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <p class="site-footer-note">© {{ now|default:None|date:'Y' }} Flower Shop. All rights reserved.</p>
+    </div>
+</footer>

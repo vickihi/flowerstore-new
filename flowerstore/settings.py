@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import dj_database_url
 from pathlib import Path
-from django.forms.renderers import TemplatesSetting
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,6 +24,7 @@ LOGIN_URL = "accounts:login"
 # Tell Django to use our own Account model instead of the built-in User
 # one for authentication.
 AUTH_USER_MODEL = "accounts.Account"
+
 
 # Email settings for sending emails
 EMAIL_BACKEND = os.environ.get(
@@ -48,7 +49,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-secret-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes", "on")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -61,14 +62,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "flowerproducts.apps.FlowerproductsConfig",
+    "products.apps.productsConfig",
     "reviews.apps.ReviewsConfig",
     "orders.apps.OrdersConfig",
     "accounts.apps.AccountsConfig",
 ]
 
+if os.environ.get("CLOUDINARY_CLOUD_NAME"):
+    INSTALLED_APPS += ["cloudinary_storage", "cloudinary"]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -99,12 +104,6 @@ TEMPLATES = [
 ]
 
 
-class CustomFormRenderer(TemplatesSetting):
-    form_template_name = "snippets/form.html"
-
-
-FORM_RENDERER = "flowerstore.settings.CustomFormRenderer"
-
 
 WSGI_APPLICATION = "flowerstore.wsgi.application"
 
@@ -112,12 +111,16 @@ WSGI_APPLICATION = "flowerstore.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES = {"default": dj_database_url.config(default=DATABASE_URL, conn_max_age=600)}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
 
 
 # Password validation
@@ -158,3 +161,39 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     PROJECT_PACKAGE / "static",
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME")
+
+if CLOUDINARY_CLOUD_NAME:
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": CLOUDINARY_CLOUD_NAME,
+        "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+        "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+    }
+    DEFAULT_MEDIA_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    DEFAULT_MEDIA_STORAGE = "django.core.files.storage.FileSystemStorage"
+
+STORAGES = {
+    "default": {
+        "BACKEND": DEFAULT_MEDIA_STORAGE,
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = [x for x in CSRF_TRUSTED_ORIGINS if x]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "ERROR",
+    },
+}

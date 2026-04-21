@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}🌸Flower Store🌸{% endblock %}
+
+{% block main %}
+    {# Hero banner #}
+    <section class="hero-banner">
+        <div class="hero-video-wrapper">
+            <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="{% static 'media/hero-poster.png' %}">
+                <source src="{% static 'media/hero-video.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <p class="hero-kicker">Look your best with our flowers</p>
+                <h1>Blooms in Motion</h1>
+                <p class="hero-copy">Let our team help you convey just the right message. We make the flower ordering experience easy, enjoyable and memorable.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="{% url 'products:categories' %}">Shop Categories</a>
+                    <a class="btn btn-secondary" href="{% url 'products:index' %}#catalog">View Catalogue</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Product catalog section #}
+    <div class="title">
+        {% if search_term %}
+            <h1>Search results for "{{ search_term }}"</h1>
+        {% else %}
+            <h1>Best-selling flowers and gifts</h1>
+            <p>Discover our most popular floral arrangements and gift options, perfect for any occasion.</p>
+        {% endif %}
+    </div>
+
+    {# Filter / Sort form #}
+    <form method="get" action="{% url 'products:index' %}" class="catalog-controls" id="catalog-form">
+        <div class="catalog-toolbar">
+            <div class="filter-toggle-group">
+                <button type="button" class="filter-toggle" data-filter-toggle>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M4 7h16M7 12h10M10 17h4" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                    </svg>
+                    <span>Filters</span>
+                </button>
+
+                <div class="active-filters" data-active-filters>
+                    {% if active_filters.category %}
+                        <button type="button" class="filter-chip" data-chip-clear="filter_category" aria-label="Remove category filter {{ active_filters.category }}">
+                            <span class="filter-chip-label">{{ active_filters.category }}</span>
+                            <span class="filter-chip-close" aria-hidden="true">&times;</span>
+                        </button>
+                    {% endif %}
+                    {% if active_filters.sort %}
+                        <button type="button" class="filter-chip" data-chip-clear="sort_order" aria-label="Remove sort filter {{ active_filters.sort }}">
+                            <span class="filter-chip-label">{{ active_filters.sort }}</span>
+                            <span class="filter-chip-close" aria-hidden="true">&times;</span>
+                        </button>
+                    {% endif %}
+                    {% if active_filters.available %}
+                        <button type="button" class="filter-chip" data-chip-clear="available" aria-label="Remove availability filter">
+                            <span class="filter-chip-label">In stock</span>
+                            <span class="filter-chip-close" aria-hidden="true">&times;</span>
+                        </button>
+                    {% endif %}
+                    {% if active_filters|length > 1 %}
+                        <a href="{% url 'products:index' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}" class="filter-clear-all">Clear all</a>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            {% with current_sort=filter_form.sort_order.value %}
+            <div class="sort-control" data-choice-group data-choice-type="sort" data-auto-submit>
+                <div class="sort-control-header">
+                    <label class="sort-label" for="{{ filter_form.sort_order.id_for_label }}">Sort by: </label>
+                    <span class="sort-current{% if not current_sort %} is-muted{% endif %}" data-sort-display data-placeholder="">
+                        {% if current_sort %}
+                            {% for value, label in filter_form.sort_order.field.choices %}
+                                {% if value == current_sort %}{{ label }}{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                    <button type="button" class="filter-sort-icon" data-choice-toggle aria-expanded="false" aria-controls="toolbar-sort-list" aria-label="Toggle sort options">
+                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="sr-only">
+                    <label class="sr-only" for="{{ filter_form.sort_order.id_for_label }}">Sort products</label>
+                    {{ filter_form.sort_order }}
+                </div>
+                <div class="filter-sort-list" id="toolbar-sort-list" data-choice-list aria-hidden="true">
+                    {% for value, label in filter_form.sort_order.field.choices %}
+                        {% if value %}
+                            <button type="button" class="filter-sort-option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                {{ label }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endwith %}
+
+        </div>
+
+        <div class="filter-modal" data-filter-modal>
+            <div class="filter-modal-overlay" data-filter-close></div>
+            <div class="filter-modal-panel">
+                <header class="filter-modal-header">
+                    <h2>Filters</h2>
+                    <button class="filter-close" type="button" data-filter-close aria-label="Close filters">&times;</button>
+                </header>
+
+                <div class="filter-section">
+                    {% with current_sort=filter_form.sort_order.value %}
+                        <div class="filter-section-row filter-section-row-stacked" data-choice-group data-choice-type="sort">
+                            <div class="filter-section-header">
+                                <span class="filter-section-label">Sort by</span>
+                                <button type="button" class="filter-sort-icon" data-choice-toggle aria-expanded="false" aria-controls="modal-sort-list" aria-label="Toggle sort options">
+                                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="sr-only">
+                                <label class="sr-only" for="{{ filter_form.sort_order.id_for_label }}">Sort products</label>
+                                {{ filter_form.sort_order }}
+                            </div>
+                            <div class="filter-sort-list" id="modal-sort-list" data-choice-list aria-hidden="true">
+                                {% for value, label in filter_form.sort_order.field.choices %}
+                                    <button type="button" class="filter-sort-option {% if value == current_sort %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                        {{ label }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-section-row">
+                        <span class="filter-section-label">Availability</span>
+                        <label class="filter-checkbox">
+                            {{ filter_form.available }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    {% with current_category=filter_form.filter_category.value %}
+                        <div class="filter-section-row filter-section-row-stacked" data-choice-group data-choice-type="category">
+                            <div class="filter-section-header">
+                                <span class="filter-section-label">Category</span>
+                                <button type="button" class="filter-sort-icon" data-choice-toggle aria-expanded="false" aria-controls="modal-category-list" aria-label="Toggle category options">
+                                    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="sr-only">
+                                <label class="sr-only" for="{{ filter_form.filter_category.id_for_label }}">Filter by category</label>
+                                {{ filter_form.filter_category }}
+                            </div>
+                            <div class="filter-sort-list" id="modal-category-list" data-choice-list aria-hidden="true">
+                                {% for value, label in filter_form.filter_category.field.choices %}
+                                    {% if value %}
+                                        <button type="button" class="filter-sort-option {% if value == current_category %}is-active{% endif %}" data-choice-value="{{ value }}">
+                                            {{ label }}
+                                        </button>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a class="btn filter-reset" href="{% url 'products:index' %}">Reset</a>
+                </div>
+            </div>
+        </div>
+
+        {% if request.GET.search %}
+            <input type="hidden" name="search" value="{{ request.GET.search }}">
+        {% endif %}
+    </form>
+
+    {# Product lists #}
+    {% include "products/snippets/product_list.html" %}
+
+{% endblock main %}
+
+{# JS #}
+{% block scripts %}<script src="{% static 'js/catalog.js' %}"></script>{% endblock %}
