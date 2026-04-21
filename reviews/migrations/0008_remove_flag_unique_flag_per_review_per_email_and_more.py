@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("flowerproducts", "0003_remove_product_views_count"),
+        ("products", "0002_add_category_image"),
         ("reviews", "0007_alter_vote_unique_together"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

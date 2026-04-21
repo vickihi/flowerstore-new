@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("flowerproducts", "0002_product_views_count"),
+        ("products", "0001_initial"),
         ("reviews", "0001_initial"),
     ]
 
