@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from reviews.models.review import Review
@@ -22,6 +23,13 @@ class Vote(models.Model):
             )
         ]
 
+    def clean(self):
+        if self.user_id == self.review.user_id:
+            raise ValidationError("You cannot vote on your own review.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Vote by {self.user} on review #{self.review.id}"

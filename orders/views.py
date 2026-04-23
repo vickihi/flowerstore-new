@@ -157,6 +157,7 @@ def cart_detail(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["POST"])
+@login_required
 def checkout(request) -> HttpResponse:
     """Checkout start page"""
     cart_store = CartStore(request)
@@ -167,8 +168,7 @@ def checkout(request) -> HttpResponse:
         return redirect("orders:cart_detail")
 
     order = Order()
-    if request.user.is_authenticated:
-        order.user = request.user
+    order.user = request.user
     order.save()
     for product, qty, _line_total in rows:
         OrderItem.objects.create(
@@ -209,10 +209,9 @@ def checkout(request) -> HttpResponse:
         "shipping_address_collection": {"allowed_countries": ["CA", "US"]},
         "success_url": request.build_absolute_uri(reverse("orders:checkout_success")),
     }
-    if request.user.is_authenticated:
-        customer_id = _build_or_update_stripe_customer(request)
-        if customer_id:
-            checkout_kwargs["customer"] = customer_id
+    customer_id = _build_or_update_stripe_customer(request)
+    if customer_id:
+        checkout_kwargs["customer"] = customer_id
 
     checkout_session = stripe.checkout.Session.create(**checkout_kwargs)
     request.session["last_order_id"] = order.id
@@ -220,6 +219,7 @@ def checkout(request) -> HttpResponse:
 
 
 def checkout_success(request: HttpRequest) -> HttpResponse:
+    """Checkout success page"""
     order_id = request.session.get("last_order_id")
     order = Order.objects.filter(pk=order_id).first() if order_id else None
     if not order or not order.is_fulfilled:

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -59,15 +60,11 @@ def add_vote(request, review_id):
     """ Add a vote to a review. """
     review = get_object_or_404(Review, pk=review_id)
 
-    if review.user_id == request.user.id:
-        messages.error(request, "You cannot vote on your own review.")
-        return redirect("products:product_detail", product_id=review.product.id)
-
     vote = Vote(review=review, user=request.user)
     try:
         vote.save()
-    except IntegrityError:
-        messages.error(request, "You have already voted on this review.")
+    except (IntegrityError, ValidationError) as e:
+        messages.error(request, str(e))
 
     return redirect("products:product_detail", product_id=review.product.id)
 

@@ -114,7 +114,8 @@ def password_update(request):
 
 
 class CustomPasswordResetView(PasswordResetView):
-    """Save the email for prefilling the form after password reset."""
+    """Handle password reset.
+    Save the email for prefilling the form after password reset."""
     def form_valid(self, form):
         self.request.session["prefill_email"] = form.cleaned_data["email"]
         return super().form_valid(form)
