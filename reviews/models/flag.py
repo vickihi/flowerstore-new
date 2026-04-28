@@ -30,6 +30,5 @@ class Flag(models.Model):
             )
         ]
 
-
     def __str__(self):
         return f"Flag({self.review_id}, {self.user}, {self.flag})"

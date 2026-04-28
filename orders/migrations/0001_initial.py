@@ -6,62 +6,162 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('products', '0002_add_category_image'),
+        ("products", "0002_add_category_image"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('payment_id', models.CharField(blank=True, default='', max_length=100)),
-                ('customer_name', models.CharField(blank=True, default='', max_length=100)),
-                ('customer_email', models.EmailField(blank=True, default='', max_length=254)),
-                ('bill_address', models.TextField(blank=True, default='')),
-                ('ship_address', models.TextField(blank=True, default='')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='orders', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "payment_id",
+                    models.CharField(blank=True, default="", max_length=100),
+                ),
+                (
+                    "customer_name",
+                    models.CharField(blank=True, default="", max_length=100),
+                ),
+                (
+                    "customer_email",
+                    models.EmailField(blank=True, default="", max_length=254),
+                ),
+                ("bill_address", models.TextField(blank=True, default="")),
+                ("ship_address", models.TextField(blank=True, default="")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="orders",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='CartItem',
+            name="CartItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=1)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.product')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cart_items', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField(default=1)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="products.product",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cart_items",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('user', 'product'), name='unique_user_cart_item')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("user", "product"), name="unique_user_cart_item"
+                    )
+                ],
             },
         ),
         migrations.CreateModel(
-            name='OrderItem',
+            name="OrderItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=1)),
-                ('unit_price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='orders.order')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='products.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField(default=1)),
+                ("unit_price", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="items",
+                        to="orders.order",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="products.product",
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('order', 'product'), name='unique_order_item')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("order", "product"), name="unique_order_item"
+                    )
+                ],
             },
         ),
         migrations.CreateModel(
-            name='WishlistItem',
+            name="WishlistItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.product')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='wishlist_items', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="products.product",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="wishlist_items",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('user', 'product'), name='unique_user_wishlist_item')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("user", "product"), name="unique_user_wishlist_item"
+                    )
+                ],
             },
         ),
     ]

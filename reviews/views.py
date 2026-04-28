@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 
 from products.models import Product
 from products.view_helpers import build_product_detail_context
+
 # from orders.models import OrderItem
 from reviews.models.review import Review
 from reviews.models.vote import Vote
@@ -16,7 +17,7 @@ from .forms import ReviewForm, CommentForm, FlagForm
 @require_POST
 @login_required
 def add_review(request, product_id):
-    """ Add a review to a product. """
+    """Add a review to a product."""
     product = get_object_or_404(Product, pk=product_id)
 
     # Temporary comment out for testing
@@ -57,7 +58,7 @@ def add_review(request, product_id):
 @require_POST
 @login_required
 def add_vote(request, review_id):
-    """ Add a vote to a review. """
+    """Add a vote to a review."""
     review = get_object_or_404(Review, pk=review_id)
 
     vote = Vote(review=review, user=request.user)
@@ -72,7 +73,7 @@ def add_vote(request, review_id):
 @require_POST
 @login_required
 def add_comment(request, review_id):
-    """ Add a comment to a review. """
+    """Add a comment to a review."""
     review = get_object_or_404(Review, pk=review_id)
 
     comment_form = CommentForm(request.POST)
@@ -88,7 +89,7 @@ def add_comment(request, review_id):
 @require_POST
 @login_required
 def add_flag(request, review_id):
-    """ Add a flag to a review. """
+    """Add a flag to a review."""
     review = get_object_or_404(Review, pk=review_id)
 
     if review.user_id == request.user.id:

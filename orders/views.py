@@ -72,13 +72,15 @@ def add_cart_item(request: HttpRequest, product_id: int) -> HttpResponse:
     cart_store.add(product.id, requested_quantity)
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        return JsonResponse({
-            "success": True,
-            "product_name": product.name,
-            "product_price": f"${product.price:.2f} CAD",
-            "product_image": product.image.url if product.image else None,
-            "cart_total_quantity": cart_store.count_items(),
-        })
+        return JsonResponse(
+            {
+                "success": True,
+                "product_name": product.name,
+                "product_price": f"${product.price:.2f} CAD",
+                "product_image": product.image.url if product.image else None,
+                "cart_total_quantity": cart_store.count_items(),
+            }
+        )
 
     messages.success(
         request,
@@ -280,7 +282,9 @@ def wishlist_move_to_cart(request: HttpRequest, product_id) -> HttpResponse:
         return redirect("orders:wishlist_detail")
 
     if not product.is_available:
-        messages.error(request, f"{product.name} is out of stock and cannot be added to your cart.")
+        messages.error(
+            request, f"{product.name} is out of stock and cannot be added to your cart."
+        )
         return redirect("orders:wishlist_detail")
 
     cart_store = CartStore(request)

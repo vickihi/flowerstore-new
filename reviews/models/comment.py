@@ -6,6 +6,7 @@ from reviews.models.review import Review
 
 class Comment(models.Model):
     """Comment on a review."""
+
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name="comments"
     )

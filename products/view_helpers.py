@@ -6,7 +6,7 @@ from .utils import compute_average_rating_stats
 
 def filter_products(products, cleaned_data, *, default_sort="-created_at"):
     """Filter and sort a product queryset from form cleaned_data.
-    
+
     Pass an empty dict when the form is invalid to fall back to default_sort.
     filter_category is only present in ProductFilterForm (index/search views).
     """
@@ -58,7 +58,9 @@ def build_reviews_context(product: Product):
     base_reviews, reviews = build_reviews_queryset(product)
     average_rating = base_reviews.aggregate(avg=Avg("rating"))["avg"]
     review_count = reviews.count()
-    _, average_rating_full, average_rating_half = compute_average_rating_stats(average_rating)
+    _, average_rating_full, average_rating_half = compute_average_rating_stats(
+        average_rating
+    )
     return {
         "reviews": reviews,
         "average_rating": average_rating,

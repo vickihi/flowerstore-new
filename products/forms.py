@@ -40,5 +40,3 @@ class SearchForm(forms.Form):
         label="Search",
         required=False,
     )
-
-

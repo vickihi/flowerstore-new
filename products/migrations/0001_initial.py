@@ -5,40 +5,71 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField()),
             ],
             options={
-                'verbose_name_plural': 'Categories',
-                'ordering': ['name'],
+                "verbose_name_plural": "Categories",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('image', models.ImageField(upload_to='products/')),
-                ('hover_image', models.ImageField(blank=True, help_text='Optional secondary image shown on hover', null=True, upload_to='products/')),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('quantity', models.PositiveIntegerField(default=0)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='products.category')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("image", models.ImageField(upload_to="products/")),
+                (
+                    "hover_image",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Optional secondary image shown on hover",
+                        null=True,
+                        upload_to="products/",
+                    ),
+                ),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("quantity", models.PositiveIntegerField(default=0)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="products.category",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at', 'name'],
+                "ordering": ["-created_at", "name"],
             },
         ),
     ]

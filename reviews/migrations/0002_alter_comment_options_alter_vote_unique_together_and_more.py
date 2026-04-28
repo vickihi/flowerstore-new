@@ -7,83 +7,98 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reviews', '0001_initial'),
+        ("reviews", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='comment',
-            options={'ordering': ['-created_at']},
+            name="comment",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterUniqueTogether(
-            name='vote',
+            name="vote",
             unique_together=set(),
         ),
         migrations.RemoveField(
-            model_name='comment',
-            name='author',
+            model_name="comment",
+            name="author",
         ),
         migrations.RemoveField(
-            model_name='comment',
-            name='email',
+            model_name="comment",
+            name="email",
         ),
         migrations.RemoveField(
-            model_name='flag',
-            name='email',
+            model_name="flag",
+            name="email",
         ),
         migrations.RemoveField(
-            model_name='review',
-            name='email',
+            model_name="review",
+            name="email",
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='body',
+            model_name="comment",
+            name="body",
             field=models.TextField(max_length=2000),
         ),
         migrations.AlterField(
-            model_name='flag',
-            name='created_at',
+            model_name="flag",
+            name="created_at",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='flag',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="flag",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
-            model_name='review',
-            name='body',
+            model_name="review",
+            name="body",
             field=models.TextField(max_length=2000),
         ),
         migrations.AlterField(
-            model_name='review',
-            name='created_at',
+            model_name="review",
+            name="created_at",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='review',
-            name='rating',
-            field=models.PositiveSmallIntegerField(help_text='Rating score given by the user (1-5).', validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)]),
+            model_name="review",
+            name="rating",
+            field=models.PositiveSmallIntegerField(
+                help_text="Rating score given by the user (1-5).",
+                validators=[
+                    django.core.validators.MinValueValidator(1),
+                    django.core.validators.MaxValueValidator(5),
+                ],
+            ),
         ),
         migrations.AlterField(
-            model_name='vote',
-            name='review',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='votes', to='reviews.review'),
+            model_name="vote",
+            name="review",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="votes",
+                to="reviews.review",
+            ),
         ),
         migrations.AlterField(
-            model_name='vote',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="vote",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddConstraint(
-            model_name='vote',
-            constraint=models.UniqueConstraint(fields=('user', 'review'), name='unique_vote_per_user_per_review'),
+            model_name="vote",
+            constraint=models.UniqueConstraint(
+                fields=("user", "review"), name="unique_vote_per_user_per_review"
+            ),
         ),
         migrations.RemoveField(
-            model_name='vote',
-            name='email',
+            model_name="vote",
+            name="email",
         ),
     ]

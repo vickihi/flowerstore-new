@@ -57,7 +57,9 @@ def login_submit(request):
     cart_store = CartStore(request)
     cart_store.merge_session_cart()
     next_url = request.POST.get("next") or request.GET.get("next")
-    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url, allowed_hosts={request.get_host()}
+    ):
         return redirect(next_url)
     return redirect("accounts:profile")
 
@@ -116,6 +118,7 @@ def password_update(request):
 class CustomPasswordResetView(PasswordResetView):
     """Handle password reset.
     Save the email for prefilling the form after password reset."""
+
     def form_valid(self, form):
         self.request.session["prefill_email"] = form.cleaned_data["email"]
         return super().form_valid(form)

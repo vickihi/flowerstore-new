@@ -64,4 +64,3 @@ class Product(models.Model):
         Avoid using this for queryset filtering.
         """
         return self.quantity > 0
-

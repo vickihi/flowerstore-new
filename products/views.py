@@ -72,8 +72,14 @@ def category_list(request):
     selected_id = request.GET.get("category")
     filter_form = FilterForm(request.GET)
 
-    selected_category = Category.objects.filter(id=selected_id).first() if selected_id else None
-    products = Product.objects.filter(category=selected_category) if selected_category else Product.objects.all()
+    selected_category = (
+        Category.objects.filter(id=selected_id).first() if selected_id else None
+    )
+    products = (
+        Product.objects.filter(category=selected_category)
+        if selected_category
+        else Product.objects.all()
+    )
     if filter_form.is_valid():
         products = filter_products(products, filter_form.cleaned_data)
 
